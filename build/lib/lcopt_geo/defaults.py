@@ -1,4 +1,4 @@
-from data_structures import Substance, Product
+from lcopt_geo.data_structures import Substance, Product
 
 """Set up global substances"""
 
