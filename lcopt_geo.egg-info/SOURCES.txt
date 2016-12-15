@@ -1,0 +1,11 @@
+LICENSE.txt
+MANIFEST.in
+setup.cfg
+setup.py
+lcopt_geo/__init__.py
+lcopt_geo/data_structures.py
+lcopt_geo/defaults.py
+lcopt_geo.egg-info/PKG-INFO
+lcopt_geo.egg-info/SOURCES.txt
+lcopt_geo.egg-info/dependency_links.txt
+lcopt_geo.egg-info/top_level.txt
