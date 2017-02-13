@@ -1,4 +1,4 @@
-from lcopt_geo.io import *
+from lcopt.io import *
 from functools import partial
 from collections import OrderedDict
 import numpy as np

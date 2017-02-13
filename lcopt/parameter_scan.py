@@ -1,7 +1,7 @@
 from functools import partial
 import numpy as np
 from collections import OrderedDict
-from lcopt_geo.io import defaultDatabase, get_name
+from lcopt.io import defaultDatabase, get_name
 import re
 
 
