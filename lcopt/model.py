@@ -9,6 +9,29 @@ from copy import deepcopy
 import pandas as pd
 from flask import Flask, request, render_template
 import webbrowser
+import warnings
+
+DISABLE_SEARCH = False
+
+# bw2data isn't strictly required, but it's used to run the search functions
+try:
+    from bw2data.query import *
+except ImportError:
+    warnings.warn("bw2data module not found. Search functions will not work")
+    DISABLE_SEARCH = True
+
+
+# This is the decorator for functions to be disabled if bw2data isn't found
+def req_bw2data(my_function):
+    def req_check(*args,**kwargs):
+        #print ("checking requirements are met...")
+        if DISABLE_SEARCH:
+            warnings.warn("bw2data module not found. Search functions do not work")
+        else:
+            ret = my_function(*args, **kwargs)
+            return ret
+    return req_check
+
 
 def shutdown_server():
     func = request.environ.get('werkzeug.server.shutdown')
@@ -31,6 +54,7 @@ class LcoptModel(object):
         
         # set up the database, parameter dictionaries, the matrix and the names of the exchanges
         self.database = {'items': {}, 'name': '{}_Database'.format(self.name)}
+        self.external_databases = []
         self.params = OrderedDict()
         self.ext_params = []
         self.matrix = None
@@ -83,6 +107,7 @@ class LcoptModel(object):
             self.model_matrices = savedInstance.model_matrices
             self.technosphere_matrices = savedInstance.technosphere_matrices
             self.leontif_matrices = savedInstance.leontif_matrices
+            self.external_databases = savedInstance.external_databases
         except Exception:
             pass
 
@@ -278,6 +303,35 @@ class LcoptModel(object):
         df = pd.DataFrame(data = matrix, index=self.names, columns = self.names)
 
         return df
+
+    def import_external_db(self, db_file):
+        db = pickle.load(open("{}.pickle".format(db_file), "rb"))
+        name = list(db.keys())[0][0]
+        new_db = {'items': db, 'name': name}
+        self.external_databases.append(new_db)
+
+
+    @req_bw2data
+    def search_databases(self, search_term, location = None, markets_only=False):
+
+        data = Dictionaries(self.database['items'], *[x['items'] for x in self.external_databases])
+
+        query = Query()
+        
+        if markets_only:
+            market_filter = Filter("name", "has", "market for")
+            query.add(market_filter)
+        
+        if location is not None:
+            location_filter = Filter("location", "has", location)
+            query.add(location_filter)
+        
+        query.add(Filter("name", "has", search_term))
+        
+        result = query(data)
+        
+        return result
+
 
 ### Flask ###
 
