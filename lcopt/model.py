@@ -7,6 +7,16 @@ import pickle
 import random
 from copy import deepcopy
 import pandas as pd
+from flask import Flask, request, render_template
+import webbrowser
+
+def shutdown_server():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+
+#PARAMETER_TEMPLATE = read template file as string?
 
 def loadModel(modelName):
     return pickle.load(open("{}.pickle".format(modelName), "rb"))
@@ -20,13 +30,14 @@ class LcoptModel(object):
         self.name = name
         
         # set up the database, parameter dictionaries, the matrix and the names of the exchanges
-        self.database = {'items': [], 'name': '{}_Database'.format(self.name)}
+        self.database = {'items': {}, 'name': '{}_Database'.format(self.name)}
         self.params = OrderedDict()
         self.ext_params = []
         self.matrix = None
         self.names = None
         self.parameter_sets = OrderedDict()
         self.model_matrices = OrderedDict()
+        self.technosphere_matrices = OrderedDict()
         self.leontif_matrices = OrderedDict()
                 
         # create partial version of io functions
@@ -70,6 +81,7 @@ class LcoptModel(object):
             self.names = savedInstance.names
             self.parameter_sets = savedInstance.parameter_sets
             self.model_matrices = savedInstance.model_matrices
+            self.technosphere_matrices = savedInstance.technosphere_matrices
             self.leontif_matrices = savedInstance.leontif_matrices
         except Exception:
             pass
@@ -119,7 +131,8 @@ class LcoptModel(object):
         cr_list = []
         items = self.database['items']
 
-        for i in items:
+        for key in items.keys():
+            i = items[key]
             if i['type'] == 'product':
                 cr_list.append(i['code'])
 
@@ -129,7 +142,8 @@ class LcoptModel(object):
 
         self.matrix = np.zeros((no_products, no_products))
         
-        for i in items:
+        for key in items.keys():
+            i = items[key]
             if i['type']== 'process':
                 inputs = []
                 for e in i['exchanges']:
@@ -206,7 +220,10 @@ class LcoptModel(object):
         
         #overwrite old matrices
         self.model_matrices = OrderedDict()
+        self.technosphere_matrices = OrderedDict()
+        self.leontif_matrices = OrderedDict()
         
+        #generate coefficient matrices
         for ps_k in self.parameter_sets.keys():
             ps = self.parameter_sets[ps_k]
             matrix_copy = deepcopy(self.matrix)
@@ -222,6 +239,11 @@ class LcoptModel(object):
                     
             self.model_matrices[ps_k] = matrix_copy
         
+        #generate technosphere matrices
+        for ps_k in self.parameter_sets.keys():
+            self.technosphere_matrices[ps_k] = self.model_matrices[ps_k] - np.identity(len(self.model_matrices[ps_k]))
+
+        #generate leontif matrices
         for ps_k in self.parameter_sets.keys():
             self.leontif_matrices[ps_k] = np.linalg.inv(np.identity(len(self.model_matrices[ps_k]))-self.model_matrices[ps_k])
     
@@ -250,3 +272,59 @@ class LcoptModel(object):
         df = pd.DataFrame(to_df)
         
         return df
+
+    def matrix_as_df(self, matrix):
+
+        df = pd.DataFrame(data = matrix, index=self.names, columns = self.names)
+
+        return df
+
+### Flask ###
+
+    def create_parameter_set_flask(self):
+    
+        app = Flask(__name__)
+        print(__name__)
+
+        @app.route('/')
+        def parameter_setup():
+            
+            parameters = []
+            p = self.params
+            for k in p.keys():
+                if p[k]['function'] == None:
+                    parameters.append({'id':k, 'name': p[k]['description'], 'value': '', 'unit':p[k]['unit']})
+                else:
+                    print("{} is determined by a function".format(p[k]['description']))
+
+            for e in self.ext_params:
+                parameters.append({'id':'e_{}'.format(e[0]), 'type':'external', 'name': e[1], 'value': '', 'unit':'?'})
+            
+            return render_template('index.html', 
+                                  title = 'Parameter set',
+                                  items = parameters)
+        
+        
+        @app.route('/', methods=['POST'])
+        def parameter_parsing():
+            
+            p_set = OrderedDict()
+            p_set_name = "ParameterSet_{}".format(len(self.parameter_sets)+1)
+
+            myjson = request.json
+            
+            for i in myjson:
+                try:
+                    p_set[i['id']] = float(i['value'])
+                except ValueError:
+                    p_set[i['id']] = str(i['value'])
+                
+            self.parameter_sets[p_set_name] = p_set
+            
+            shutdown_server()
+            return 'Server shutting down... Please close this tab'
+            
+        if __name__ == 'lcopt_geo.model':
+            url = 'http://127.0.0.1:5000'
+            webbrowser.open_new(url)
+            app.run(debug=False)

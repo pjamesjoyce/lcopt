@@ -1,11 +1,11 @@
-# lcopt_geo
-Life cycle optimisation of geopolymers
+# lcopt
+Life cycle optimisation module
 
 # Installation
 
 Install via pip:
 ```
-pip install https://github.com/pjamesjoyce/lcopt_geo/zipball/master
+pip install https://github.com/pjamesjoyce/lcopt/zipball/master
 ```
 
 # Use

@@ -3,19 +3,20 @@ import hashlib
 
 defaultDatabase = {
     'name':'DefaultDatabase',
-    'items': []
+    'items': {}
 }
 
 # add an item to a specified database
 def add_to_specified_database(item, database):
-    database['items'].append(item)
+    database['items'][(database['name'],item['code'])] = item
     
 # partial function to add the item to the default database
 add_to_database = partial(add_to_specified_database, database = defaultDatabase)
 
 # get an item from the database in the exchange format
 def get_exchange_from_database(name, database):
-    for item in database['items']:
+    for key in database['items'].keys():
+        item = database['items'][key]
         if item['name'] == name:
             return (database.get('name'), item.get('code'))
     return None
@@ -25,7 +26,8 @@ get_exchange = partial(get_exchange_from_database, database=defaultDatabase)
 
 # check if something already exists
 def exists_in_specific_database(code, database):
-    for item in database['items']:
+    for key in database['items'].keys():
+        item = database['items'][key]
         if item['code'] == code:
             return True
     return False
@@ -35,7 +37,8 @@ exists_in_database = partial(exists_in_specific_database, database = defaultData
 
 # get an item from the database in the exchange format
 def get_exchange_name_from_database(code, database):
-    for item in database['items']:
+    for key in database['items'].keys():
+        item = database['items'][key]
         if item['code'] == code:
             return item.get('name')
     return None
@@ -45,7 +48,8 @@ get_name = partial(get_exchange_name_from_database, database=defaultDatabase)
 
 # get an item from the database in the exchange format
 def get_exchange_unit_from_database(code, database):
-    for item in database['items']:
+    for key in database['items'].keys():
+        item = database['items'][key]
         if item['code'] == code:
             return item.get('unit')
     return None

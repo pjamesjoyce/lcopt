@@ -1,0 +1,16 @@
+.helptext{
+  display: none;
+}
+
+.form_table td{
+  text-align: right;
+
+}
+.form_table th{
+
+}
+
+.profile_pic{
+  width: 200px;
+  border: 1px solid aliceblue;
+}

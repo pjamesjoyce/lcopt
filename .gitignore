@@ -1,3 +1,5 @@
 *.ipynb
 *.pickle
 .ipynb_checkpoints/
+notebooks/
+notebooks_preBW2/

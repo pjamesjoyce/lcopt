@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block head-postload %}
+
+<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+
+<!-- Include Bootstrap-select CSS, JS-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.js"></script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.2.9/jsplumb.min.js"></script>
+
+
+<link rel="stylesheet" href="{% static 'lcopt_create/css/sandbox2.css' %}" media="screen" title="no title" charset="utf-8">
+{% endblock %}
+
+{% block content %}
+
+
+
+
+<div class="alt-container col-xs-12">
+<div class="row">
+
+
+  <div class="sandboxTitle col-xs-10 col-xs-offset-1">
+    <h2>Flow sheet for {{model.name}}</h2>
+    <hr>
+    
+    <p>
+      You can create or edit the flow sheet for {{model.name}} in the box below &nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-xs btn-custom"data-toggle="collapse" href="#moreInfo" aria-expanded="false" aria-controls="moreInfo">More info...</a>
+    </p>
+    <div class="collapse" id="moreInfo">
+      <div class="well">
+        <p>
+          <strong>Add processes </strong>(actions in the life cycle where material is transformed) to the flow sheet using the 'add process' button on the left
+        </p>
+        <p>
+          <strong>Edit</strong> the name of a process by clicking on the name (press Enter when done)
+        </p>
+        <p>
+          <strong>Drag</strong> the edges of items to move them around
+        </p>
+        <p>
+          <strong>Hover</strong> over an item to see the actions you reveal the action icons
+        </p>
+        <p>
+          <strong>Connect</strong> processes in the flow sheet by dragging from the 'connect' icon (<i class="material-icons w3-medium">trending_flat</i>) to the next process in the flow sheet
+        </p>
+        <p>
+          <strong>Add inputs</strong> to processes by clicking on the 'input' icon (<i class="material-icons w3-medium">file_download</i>)
+        </p>
+        <p>
+          <strong>Add output</strong> to processes by clicking on the 'output' icon (<i class="material-icons w3-medium">file_upload</i>)
+        </p>
+        <p>
+          <strong>Edit quantities</strong> of an input or output by clicking on the 'edit' icon (<i class="material-icons w3-medium">edit</i>)
+        </p>
+        <p>
+          <strong>Remove</strong> items by clicking on the 'delete' icon (<i class="material-icons w3-medium">cancel</i>)
+        </p>
+        <p>
+          You can <strong>show or hide the arrow labels</strong> using the buttons on the left hand side
+        </p>
+
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+
+  <div class="col-xs-1 controls">
+    
+    <div >
+      <button type="button" name="button" class="btn btn-xs btn-custom processButton" id="addProcess"><div><i class="material-icons">add</i></div>Add process</button>
+    </div>
+    
+    <div class="labelButtons ">
+      <p>
+        <strong>Arrow Labels</strong>
+      </p>
+      <div class="">
+        Links<br>
+        <button type="button" name="button" class="btn btn-xs btn-custom showLabels" id="show_intermediate">Show</button>
+        <button type="button" name="button" class="btn btn-xs btn-custom hideLabels" id="hide_intermediate">Hide</button>
+      </div>
+      <div class="">
+        Inputs<br>
+        <button type="button" name="button" class="btn btn-xs btn-custom showLabels" id="show_input">Show</button>
+        <button type="button" name="button" class="btn btn-xs btn-custom hideLabels" id="hide_input">Hide</button>
+      </div>
+      <div class="">
+        Outputs<br>
+        <button type="button" name="button" class="btn btn-xs btn-custom showLabels" id="show_output">Show</button>
+        <button type="button" name="button" class="btn btn-xs btn-custom hideLabels" id="hide_output">Hide</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo_container col-xs-10" id="main_canvas">
+
+  </div>
+  <div class="col-xs-1 controls">
+    <div >
+      <a type="button" name="button" class="btn btn-xs btn-custom processButton" id="analyse" href = "/flow/analysis/system/{{system_id}}/"><div><i class="material-icons">assessment</i></div>Analyse</a>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+<script src="{% static 'lcopt_create/js/sandbox2.js' %}"></script>
+
+<script type="text/javascript">
+
+  jsPlumb.ready(function () {
+
+    editable = true
+    //console.log(editable)
+
+    var nodes = [];
+    {% for k,v in nodes.items %}
+        nodes.push(['{{v.name}}','{{v.type}}','{{v.id}}','{{v.initX}}','{{v.initY}}']);
+    {% endfor%}
+
+
+    var links = [];
+    {% for k,v in links.items %}
+        links.push(['{{v.sourceID}}', '{{v.targetID}}', '{{v.type}}', {{v.amount}}]);
+    {% endfor%}
+
+    var linklabels = {};
+    {% for k,v in links.items %}
+        linklabels['{{v.sourceID}}_{{v.targetID}}'] = '{{v.text}}';
+    {% endfor%}
+
+    var allInputs = {}
+    {% for k in allInputs %}
+      allInputs['{{k.id}}'] = ['{{k.name}}', '{{k.unit}}'];
+    {% endfor %}
+
+    var allOutputs = []
+    {% for k in allOutputs %}
+      allOutputs['{{k.id}}'] = ['{{k.name}}', '{{k.unit}}'];
+    {% endfor %}
+
+    var allIntermediates = []
+    {% for k in allIntermediates %}
+      allIntermediates['{{k.id}}'] = ['{{k.name}}', '{{k.unit}}'];
+    {% endfor %}
+    //console.log(linklabels)
+
+    //set up jsPlumb
+
+    function getCookie(name) {
+    var cookieValue = null;
+      if (document.cookie && document.cookie != '') {
+          var cookies = document.cookie.split(';');
+          for (var i = 0; i < cookies.length; i++) {
+              var cookie = jQuery.trim(cookies[i]);
+              // Does this cookie string begin with the name we want?
+              if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+  var csrftoken = getCookie('csrftoken');
+
+  var system_id = {{system_id}}
+
+    jsPlumbsetup(nodes, links, linklabels, csrftoken,allInputs,allOutputs,allIntermediates,system_id,editable);
+
+    //console.log(links);
+
+  });
+
+
+
+
+</script>
+
+
+{% endblock %}

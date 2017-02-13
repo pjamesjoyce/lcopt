@@ -10,7 +10,7 @@ root_dir = os.path.dirname(__file__)
 if root_dir:
     os.chdir(root_dir)
 
-for dirpath, dirnames, filenames in os.walk('lcopt_geo'):
+for dirpath, dirnames, filenames in os.walk('lcopt'):
     # Ignore dirnames that start with '.'
     if '__init__.py' in filenames:
         pkg = dirpath.replace(os.path.sep, '.')
@@ -28,7 +28,7 @@ def package_files(directory):
 
 
 setup(
-    name='lcopt_geo',
+    name='lcopt',
     version="0.1",
     packages=packages,
     author="P. James Joyce",
@@ -42,9 +42,9 @@ setup(
     #},
     #install_requires=[
     #],
-    url="https://github.com/pjamesjoyce/lcopt_geo/",
+    url="https://github.com/pjamesjoyce/lcopt/",
     long_description=open('README.md').read(),
-    description='Life cycle optimisation of geopolymers',
+    description='Life cycle optimisation module',
     classifiers=[
         'Intended Audience :: End Users/Desktop',
         'Intended Audience :: Developers',

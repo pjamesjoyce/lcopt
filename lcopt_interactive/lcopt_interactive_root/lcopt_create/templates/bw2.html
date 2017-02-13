@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block head-postload %}
+{% endblock %}
+
+{% block content %}
+
+<h1>Current project is : {{bw2project}}</h1>
+<h2>Databases in this project : </h2>
+<ul>
+{% for d in bw2databases %}
+<li>{{d}}</li>
+{%endfor%}
+</ul>
+
+<h2>Example LCA</h2>
+<p> 1 of {{bw2demand}} = {{bw2score}} kgCO<sub>2</sub>-eq</p>
+
+
+{% endblock %}
