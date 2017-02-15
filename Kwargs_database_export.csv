@@ -1,0 +1,593 @@
+{SimaPro 8.2.0.0}
+{CSV Format version: 8.0.5}
+{CSV separator: Tab}
+{Decimal separator: .}
+{Date separator: /}
+{Short date format: dd/MM/yyyy}
+
+
+Process
+
+Category type
+processing
+
+Process identifier
+KwargsXX13248283779
+
+Type
+
+
+Process name
+Precursor Mix
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Precursor	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Bauxite Residue	kg	p_2_1	Undefined	0	0	0	
+Quartz	kg	p_3_1	Undefined	0	0	0	
+Graphite	kg	p_4_1	Undefined	0	0	0	
+Energy, electricity	kWh	p_0_1	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+p_2_1	1	Undefined	1	0	0	No	Input of Bauxite Residue to create Precursor
+p_3_1	1	Undefined	1	0	0	No	Input of Quartz to create Precursor
+p_4_1	1	Undefined	1	0	0	No	Input of Graphite to create Precursor
+
+Calculated parameters
+p_0_1	myParameter * p_4_1	Input of Energy, electricity to create Precursor
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+KwargsXX98431185811
+
+Type
+
+
+Process name
+Bauxite Residue
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Bauxite Residue	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+KwargsXX32849149552
+
+Type
+
+
+Process name
+Graphite
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Graphite	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Graphite {GLO}| market for | Alloc Def, U	kg	1	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+KwargsXX31799867224
+
+Type
+
+
+Process name
+Energy, electricity
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Energy, electricity	kWh	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Electricity, medium voltage {GR}| market for | Alloc Def, U	kWh	1	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+KwargsXX66898294899
+
+Type
+
+
+Process name
+Quartz
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Quartz	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Silica sand {GLO}| market for | Alloc Def, U	kg	1	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+
+Project Input parameters
+myParameter	0	Undefined	1	0	0	No	Parameter called myParameter
+
+End
+
+Project Calculated parameters
+
+End

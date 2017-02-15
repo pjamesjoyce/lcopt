@@ -10,15 +10,75 @@ import pandas as pd
 from flask import Flask, request, render_template
 import webbrowser
 import warnings
+from random import randint
+
+from jinja2 import Environment, PackageLoader
+
+#From bw2 - edited to reinsert capitalisation of units
+
+UNITS_NORMALIZATION = {
+    "a": "year",  # Common in LCA circles; could be confused with are
+    "Bq": "Becquerel",
+    "g": "gram",
+    "Gj": "gigajoule",
+    "h": "hour",
+    "ha": "hectare",
+    "hr": "hour",
+    "kBq": "kilo Becquerel",
+    "kg": "kilogram",
+    "kgkm": "kilogram kilometer",
+    "km": "kilometer",
+    "kj": "kilojoule",
+    "kWh": "kilowatt hour",
+    "l": "litre",
+    "lu": "livestock unit",
+    "m": "meter",
+    "m*year": "meter-year",
+    "m2": "square meter",
+    "m2*year": "square meter-year",
+    "m2a": "square meter-year",
+    "m2y": "square meter-year",
+    "m3": "cubic meter",
+    "m3*year": "cubic meter-year",
+    "m3a": "cubic meter-year",
+    "m3y": "cubic meter-year",
+    "ma": "meter-year",
+    "metric ton*km": "ton kilometer",
+    "MJ": "megajoule",
+    "my": "meter-year",
+    "nm3": "cubic meter",
+    "p": "unit",
+    "personkm": "person kilometer",
+    "person*km": "person kilometer",
+    "pkm": "person kilometer",
+    "tkm": "ton kilometer",
+    "vkm": "vehicle kilometer",
+    'kg sw': "kilogram separative work unit",
+    'km*year': "kilometer-year",
+    'metric ton*km': "ton kilometer",
+    'person*km': "person kilometer",
+    'Wh': 'watt hour',
+}
+
+def unnormalise_unit(unit):
+    if unit in UNITS_NORMALIZATION.keys():
+        return unit
+    else:
+        
+        un_units = list(filter(lambda x:UNITS_NORMALIZATION[x]==unit, UNITS_NORMALIZATION))
+        #print (un_units)
+        return un_units[0]
+
 
 DISABLE_SEARCH = False
-
-# bw2data isn't strictly required, but it's used to run the search functions
+# This is a copy straight from bw2data.query, extracted so as not to cause a dependency.
 try:
-    from bw2data.query import *
+    from lcopt.bw2query import Query, Dictionaries, Filter
 except ImportError:
     warnings.warn("bw2data module not found. Search functions will not work")
     DISABLE_SEARCH = True
+
+
 
 
 # This is the decorator for functions to be disabled if bw2data isn't found
@@ -63,7 +123,11 @@ class LcoptModel(object):
         self.model_matrices = OrderedDict()
         self.technosphere_matrices = OrderedDict()
         self.leontif_matrices = OrderedDict()
-                
+        self.parameter_map = {}
+         
+        if load != None:
+            self.load(load)
+                    
         # create partial version of io functions
         self.add_to_database = partial(add_to_specified_database, database = self.database)
         self.get_exchange = partial(get_exchange_from_database, database=self.database)
@@ -74,8 +138,7 @@ class LcoptModel(object):
         # create a partial for saving that defaults to the name of the instance
         #self.save = partial(self.saveAs, filename = self.name)
         
-        if load != None:
-            self.load(load)
+        
         
     def rename(self,newname):
         """change the name of the class"""
@@ -108,14 +171,15 @@ class LcoptModel(object):
             self.technosphere_matrices = savedInstance.technosphere_matrices
             self.leontif_matrices = savedInstance.leontif_matrices
             self.external_databases = savedInstance.external_databases
+            self.parameter_map = savedInstance.parameter_map
         except Exception:
             pass
 
     
         
-    def create_product (self, name, location ='GLO', unit='kg'):
+    def create_product (self, name, location ='GLO', unit='kg', **kwargs):
         """create a new product with md5 hash id in the model instances database"""
-        new_product = item_factory(name=name, location=location, unit=unit, type='product')
+        new_product = item_factory(name=name, location=location, unit=unit, type='product', **kwargs)
 
         if not exists_in_database(new_product['code']):
             self.add_to_database(new_product)
@@ -129,30 +193,34 @@ class LcoptModel(object):
         """create a new process, including all new exchanges in the model instance database"""
         found_exchanges = []
         for e in exchanges:
+
+            exc_name = e.pop('name', None)
+            exc_type = e.pop('type', None)
+
+            this_exchange = get_exchange(exc_name)
             
-            this_exchange = self.get_exchange(e[0])
-
             if this_exchange == None:
-                if len(e)== 3:
-                    my_unit = e[2]
-                else:
-                    my_unit = unit
-
-                this_exchange = self.create_product(e[0], location, my_unit)
-
-            found_exchanges.append(exchange_factory(this_exchange, e[1], 1, 1, '{} exchange of {}'.format(e[1], e[0])))
-
+                my_unit = e.pop('unit', unit)
+                    
+                this_exchange = self.create_product(exc_name, location=location, unit=my_unit, **e)
+            
+            found_exchanges.append(exchange_factory(this_exchange, exc_type, 1, 1, '{} exchange of {}'.format(exc_type, exc_name)))
+            
         new_process = item_factory(name=name, location=location, unit=unit, type='process', exchanges=found_exchanges)
-
-        self.add_to_database(new_process)
         
+        self.add_to_database(new_process)
+
         self.parameter_scan()
 
         return True
-        
+
+
     def parameter_scan(self):
         """scan the database of the model instance to generate and expose parameters"""
-    
+        
+        #self.parameter_map = {}
+        #self.params = OrderedDict()
+
         cr_list = []
         items = self.database['items']
 
@@ -197,17 +265,27 @@ class LcoptModel(object):
                             'coords':coords,
                             'unit' : self.get_unit(p_from)
                         }
+
                     else:
                         pass
                         #print('p_{}_{} already exists'.format(coords[0],coords[1]))
 
+                    if not 'p_{}_{}'.format(coords[0],coords[1]) in self.parameter_map:
+                        self.parameter_map[(p_from,p_to)] = 'p_{}_{}'.format(coords[0],coords[1])
+
         return True
         
         
-    def add_parameter(self, param_name, description = None):
+    def add_parameter(self, param_name, description = None, default = 0):
         if description == None:
             description = "Parameter called {}".format(param_name)
-        self.ext_params.append((param_name, description))
+        
+        name_check = lambda x:x['name'] == param_name
+        name_check_list = list(filter(name_check, self.ext_params))
+        if len(name_check_list) == 0:
+            self.ext_params.append({'name':param_name, 'description': description, 'default': default})
+        else:
+            print('{} already exists - choose a different name'.format(param_name))
         
     def create_parameter_set(self):
         p_set = OrderedDict()
@@ -317,7 +395,7 @@ class LcoptModel(object):
         data = Dictionaries(self.database['items'], *[x['items'] for x in self.external_databases])
 
         query = Query()
-        
+
         if markets_only:
             market_filter = Filter("name", "has", "market for")
             query.add(market_filter)
@@ -331,6 +409,123 @@ class LcoptModel(object):
         result = query(data)
         
         return result
+
+
+### Database to SimaPro ###
+
+    def database_to_SimaPro_csv(self):
+
+        csv_args = {}
+        csv_args['processes']=[]
+        db = self.database['items']
+        
+
+        product_filter = lambda x:db[x]['type'] == 'product'
+        process_filter = lambda x:db[x]['type'] == 'process'
+
+        processes = list(filter(process_filter, db))
+        products = list(filter(product_filter, db))
+
+
+        created_exchanges = []
+
+        for k in processes:
+            item = db[k]
+
+            current = {}
+            current['name'] = item['name']
+            current['id'] = (self.name.replace(" ", "") + "XXXXXXXX")[:8] + ('00000000000' + str(randint(1,99999999999)))[-11:]
+            current['unit'] = item['unit']
+            current['exchanges'] = []
+
+            for e in item['exchanges']:
+
+                if e['type'] == 'technosphere':
+                    this_exchange = {}
+
+                    this_code = e['input'][1]
+
+                    formatted_name = self.get_name(this_code)
+                    this_exchange['formatted_name'] = formatted_name
+
+                    # TODO: Make the amount look for parameters
+                    this_exchange['amount'] = e['amount']
+
+                    this_exchange['unit'] = self.get_unit(this_code)
+
+                    current['exchanges'].append(this_exchange)
+
+                elif e['type'] == 'production':
+                    this_code = e['input'][1]
+                    name = self.get_name(this_code)
+                    current['output_name']=name
+
+                    created_exchanges.append(name)
+
+            csv_args['processes'].append(current)
+            
+            
+        for k in products:
+            this_item = db[k]
+            this_name = this_item['name']
+            
+            if this_item['name'] in created_exchanges:
+                #print ('{} already created'.format(this_name))
+                pass
+            else:
+                #print ('Need to create {}'.format(this_name))
+                
+                current = {}
+                current['name'] = this_name
+                current['output_name'] = this_name
+                current['id'] = (self.name.replace(" ", "") + "XXXXXXXX")[:8] + ('00000000000' + str(randint(1,99999999999)))[-11:]
+                current['unit'] = this_item['unit']
+                #current['exchanges'] = []
+                
+                if 'ext_link' in this_item.keys():
+                    
+                    ext_link = this_item['ext_link']
+                    db_filter = lambda x:x['name'] == ext_link[0]
+                    extdb = list(filter(db_filter, self.external_databases))[0]['items']
+                    ext_item = extdb[ext_link]
+                    ref_prod = ext_item['reference product']
+                    name = ext_item['name'].replace(" " + ref_prod, "")
+                    location = ext_item['location']
+                    system_model = "Alloc Def"
+                    process_type = "U"
+                    unit = unnormalise_unit(ext_item['unit'])
+
+                    simaPro_name = "{} {{{}}}| {} | {}, {}".format(ref_prod.capitalize(), location, name, system_model, process_type)
+
+                    print ('{} has an external link to {}'.format(this_name, simaPro_name))
+                    
+                    current['exchanges'] = [{'formatted_name':simaPro_name, 'unit':unit, 'amount':1}]
+                    
+                    
+                else:
+                    warnings.warn('{} has NO internal or external link - it is burden free'.format(this_name))
+                    
+                csv_args['processes'].append(current)
+                created_exchanges.append(this_name)
+            
+            
+        #print(csv_args)
+        #print(created_exchanges)
+
+        env = Environment(
+            loader=PackageLoader('lcopt', 'templates'),
+        )
+
+        fname = "{}_database_export.csv".format(self.name)
+
+        csv_template = env.get_template('export.csv')
+        
+        output = csv_template.render(**csv_args)
+
+        with open(fname, "w") as f:
+            f.write(output)
+        
+        return fname
 
 
 ### Flask ###

@@ -37,6 +37,7 @@ exists_in_database = partial(exists_in_specific_database, database = defaultData
 
 # get an item from the database in the exchange format
 def get_exchange_name_from_database(code, database):
+    #print(database['name'])
     for key in database['items'].keys():
         item = database['items'][key]
         if item['code'] == code:
@@ -44,7 +45,7 @@ def get_exchange_name_from_database(code, database):
     return None
 
 # partial function to get the item from the default database
-get_name = partial(get_exchange_name_from_database, database=defaultDatabase)
+#get_name = partial(get_exchange_name_from_database, database=defaultDatabase)
 
 # get an item from the database in the exchange format
 def get_exchange_unit_from_database(code, database):
@@ -55,7 +56,7 @@ def get_exchange_unit_from_database(code, database):
     return None
 
 # partial function to get the item from the default database
-get_unit = partial(get_exchange_unit_from_database, database=defaultDatabase)
+#get_unit = partial(get_exchange_unit_from_database, database=defaultDatabase)
 
 # Create an exchange data structure
 
@@ -71,7 +72,7 @@ def exchange_factory(input, type, amount, uncertainty, comment):
 
 # Create an item data structure
 
-def item_factory(name, type, unit='kg', exchanges=[], location='GLO', categories=[]):
+def item_factory(name, type, unit='kg', exchanges=[], location='GLO', categories=[], **kwargs):
 
     to_hash = name + type+ unit + location
     code = hashlib.md5(to_hash.encode('utf-8')).hexdigest()
@@ -84,10 +85,14 @@ def item_factory(name, type, unit='kg', exchanges=[], location='GLO', categories
         'unit': unit,
         'exchanges': exchanges
     }
-    return data_structure
 
-def create_product (name, location ='GLO', unit='kg'):
-    new_product = item_factory(name=name, location=location, unit=unit, type='product')
+    for kw in kwargs:
+        data_structure[kw] = kwargs[kw]
+
+    return data_structure
+'''
+def create_product (name, location ='GLO', unit='kg', **kwargs):
+    new_product = item_factory(name=name, location=location, unit=unit, type='product', **kwargs)
     
     if not exists_in_database(new_product['code']):
         add_to_database(new_product)
@@ -101,15 +106,14 @@ def create_process(name, exchanges, location ='GLO', unit='kg'):
     found_exchanges = []
     for e in exchanges:
 
-        this_exchange = get_exchange(e[0])
+        exc_name = e.pop('name', None)
+
+        this_exchange = get_exchange(exc_name)
         
         if this_exchange == None:
-            if len(e)== 3:
-                my_unit = e[2]
-            else:
-                my_unit = unit
+            my_unit = e.pop('unit', unit)
                 
-            this_exchange = create_product(e[0], location, my_unit)
+            this_exchange = create_product(exc_name, location=location, unit=my_unit, **e)
         
         found_exchanges.append(exchange_factory(this_exchange, e[1], 1, 1, '{} exchange of {}'.format(e[1], e[0])))
         
@@ -118,3 +122,5 @@ def create_process(name, exchanges, location ='GLO', unit='kg'):
     add_to_database(new_process)
 
     return True
+
+'''
