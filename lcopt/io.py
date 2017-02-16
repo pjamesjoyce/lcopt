@@ -22,7 +22,7 @@ def get_exchange_from_database(name, database):
     return None
 
 # partial function to get the item from the default database
-get_exchange = partial(get_exchange_from_database, database=defaultDatabase)
+#get_exchange = partial(get_exchange_from_database, database=defaultDatabase)
 
 # check if something already exists
 def exists_in_specific_database(code, database):
@@ -33,7 +33,7 @@ def exists_in_specific_database(code, database):
     return False
 
 # partial function to find an item in the default database
-exists_in_database = partial(exists_in_specific_database, database = defaultDatabase)
+#exists_in_database = partial(exists_in_specific_database, database = defaultDatabase)
 
 # get an item from the database in the exchange format
 def get_exchange_name_from_database(code, database):

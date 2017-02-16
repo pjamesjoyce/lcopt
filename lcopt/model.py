@@ -1,4 +1,5 @@
 from lcopt.io import *
+from lcopt.ipython_interactive import IFS
 from functools import partial
 from collections import OrderedDict
 import numpy as np
@@ -7,6 +8,7 @@ import pickle
 import random
 from copy import deepcopy
 import pandas as pd
+import xlsxwriter
 from flask import Flask, request, render_template
 import webbrowser
 import warnings
@@ -113,7 +115,7 @@ class LcoptModel(object):
         self.name = name
         
         # set up the database, parameter dictionaries, the matrix and the names of the exchanges
-        self.database = {'items': {}, 'name': '{}_Database'.format(self.name)}
+        self.database = {'items': OrderedDict(), 'name': '{}_Database'.format(self.name)}
         self.external_databases = []
         self.params = OrderedDict()
         self.ext_params = []
@@ -181,7 +183,7 @@ class LcoptModel(object):
         """create a new product with md5 hash id in the model instances database"""
         new_product = item_factory(name=name, location=location, unit=unit, type='product', **kwargs)
 
-        if not exists_in_database(new_product['code']):
+        if not self.exists_in_database(new_product['code']):
             self.add_to_database(new_product)
             print ('{} added to database'.format(name))
             return self.get_exchange(name)
@@ -197,7 +199,7 @@ class LcoptModel(object):
             exc_name = e.pop('name', None)
             exc_type = e.pop('type', None)
 
-            this_exchange = get_exchange(exc_name)
+            this_exchange = self.get_exchange(exc_name)
             
             if this_exchange == None:
                 my_unit = e.pop('unit', unit)
@@ -286,6 +288,9 @@ class LcoptModel(object):
             self.ext_params.append({'name':param_name, 'description': description, 'default': default})
         else:
             print('{} already exists - choose a different name'.format(param_name))
+
+    def edit_function(self):
+        function_editor = IFS(self)
         
     def create_parameter_set(self):
         p_set = OrderedDict()
@@ -298,16 +303,38 @@ class LcoptModel(object):
                 print("{} is determined by a function".format(p[k]['description']))
 
         for e in self.ext_params:
-            p_set['e_{}'.format(e[0])] = float(input("value for {} >  ".format(e[1])))
+            p_set['{}'.format(e['name'])] = float(input("value for {} >  ".format(e['description'])))
             
         self.parameter_sets[p_set_name] = p_set
+
+
+    def generate_parameter_set_excel_file(self):
+        p_set = []
+        p_set_name = "ParameterSet_{}_input_file.xlsx".format(self.name)
+        p = self.params
+        for k in p.keys():
+            if p[k]['function'] == None:
+                p_set.append({'id':k, 'name': p[k]['description'], 'value': '', 'unit':p[k]['unit']})
+            else:
+                print("{} is determined by a function".format(p[k]['description']))
+
+        for e in self.ext_params:
+            p_set.append({'id':'{}'.format(e['name']), 'type':'external', 'name': e['description'], 'value': e['default'], 'unit':''})
+
+        df = pd.DataFrame(p_set)
+
+        writer = pd.ExcelWriter(p_set_name, engine='xlsxwriter')
+
+        df.to_excel(writer, sheet_name=self.name, columns = ['name', 'unit', 'id', 'value'],index= False, merge_cells = False)
+       
+        return p_set_name
         
      # convert parameter sets into matrices   
         
     def parse_function(self, function, parameter_set):
 
         int_param_re_pattern = "(p_\d{1,}_\d{1,})"
-        ext_param_re_pattern = "(e_[\d\w_]{1,})"
+        ext_param_re_pattern = "([\d\w_]{1,})"
 
         int_param_re = re.compile(int_param_re_pattern)
         ext_param_re = re.compile(ext_param_re_pattern)
@@ -355,9 +382,9 @@ class LcoptModel(object):
 
         for i, e in enumerate(self.ext_params):
             row = {}
-            row['id'] = e[0]
+            row['id'] = e['name']
             row['coords'] = "n/a"
-            row['description'] = e[1]
+            row['description'] = e['description']
             row['function'] = "n/a"
 
             to_df.append(row)
@@ -429,6 +456,9 @@ class LcoptModel(object):
 
         created_exchanges = []
 
+        project_input_params = []
+        project_calc_params = []
+
         for k in processes:
             item = db[k]
 
@@ -437,6 +467,13 @@ class LcoptModel(object):
             current['id'] = (self.name.replace(" ", "") + "XXXXXXXX")[:8] + ('00000000000' + str(randint(1,99999999999)))[-11:]
             current['unit'] = item['unit']
             current['exchanges'] = []
+            
+            process_params = []
+            
+            production_filter = lambda x:x['type'] == 'production'
+            
+            output_code = list(filter(production_filter, item['exchanges']))[0]['input'][1]
+            
 
             for e in item['exchanges']:
 
@@ -447,9 +484,14 @@ class LcoptModel(object):
 
                     formatted_name = self.get_name(this_code)
                     this_exchange['formatted_name'] = formatted_name
-
-                    # TODO: Make the amount look for parameters
-                    this_exchange['amount'] = e['amount']
+                    
+                    param_key = (this_code, output_code)
+                    #param_check = (formatted_name, item['name'])
+                    this_param = self.parameter_map[param_key]
+                    
+                    process_params.append(this_param)
+                   
+                    this_exchange['amount'] = this_param #e['amount']
 
                     this_exchange['unit'] = self.get_unit(this_code)
 
@@ -461,6 +503,18 @@ class LcoptModel(object):
                     current['output_name']=name
 
                     created_exchanges.append(name)
+                    
+                    
+                #process parameters
+                
+            for p in process_params:
+                if self.params[p]['function'] == None:
+                    project_input_params.append({'name':p, 'comment':self.params[p]['description']})
+                else:
+                    project_calc_params.append({'name':p, 'comment':self.params[p]['description'], 'formula':self.params[p]['function']})
+                
+                
+                        
 
             csv_args['processes'].append(current)
             
@@ -511,6 +565,18 @@ class LcoptModel(object):
             
         #print(csv_args)
         #print(created_exchanges)
+        
+        csv_args['project']={}
+        
+        #NOTE - currently external parameters can only be constants
+
+        csv_args['project']['calculated_parameters']=project_calc_params
+        
+        #add the external parameters to the input parameter list        
+        for p in self.ext_params:
+            project_input_params.append({'name':p['name'], 'comment':p['description'], 'default':p['default']})
+        
+        csv_args['project']['input_parameters']=project_input_params
 
         env = Environment(
             loader=PackageLoader('lcopt', 'templates'),
@@ -547,7 +613,7 @@ class LcoptModel(object):
                     print("{} is determined by a function".format(p[k]['description']))
 
             for e in self.ext_params:
-                parameters.append({'id':'e_{}'.format(e[0]), 'type':'external', 'name': e[1], 'value': '', 'unit':'?'})
+                parameters.append({'id':'{}'.format(e['name']), 'type':'external', 'name': e['description'], 'value': e['default'], 'unit':'?'})
             
             return render_template('index.html', 
                                   title = 'Parameter set',
@@ -573,7 +639,7 @@ class LcoptModel(object):
             shutdown_server()
             return 'Server shutting down... Please close this tab'
             
-        if __name__ == 'lcopt_geo.model':
+        if __name__ == 'lcopt.model':
             url = 'http://127.0.0.1:5000'
             webbrowser.open_new(url)
             app.run(debug=False)
