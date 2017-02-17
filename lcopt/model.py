@@ -126,6 +126,8 @@ class LcoptModel(object):
         self.technosphere_matrices = OrderedDict()
         self.leontif_matrices = OrderedDict()
         self.parameter_map = {}
+
+        self.sandbox_positions = {}
          
         if load != None:
             self.load(load)
@@ -174,6 +176,8 @@ class LcoptModel(object):
             self.leontif_matrices = savedInstance.leontif_matrices
             self.external_databases = savedInstance.external_databases
             self.parameter_map = savedInstance.parameter_map
+
+            self.sandbox_positions = savedInstance.sandbox_positions
         except Exception:
             pass
 
