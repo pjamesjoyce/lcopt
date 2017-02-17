@@ -76,10 +76,7 @@
 		</div>
 		<div class="col-xs-1 controls">
 			<div>
-				<button type="button" name="button" class="btn btn-xs btn-custom processButton" id="echoButton"><div><i class="material-icons">add</i></div>Test AJAX</button>
-			</div>
-			<div>
-				<p>Maybe put some extra buttons here</p>
+				<button type="button" name="button" class="btn btn-xs btn-custom processButton" id="echoButton"><div><i class="material-icons">search</i></div>Search ecoinvent</button>
 			</div>
 		</div>
 	</div>
@@ -112,8 +109,15 @@
     linklabels['{{link.sourceID}}_{{link.targetID}}'] = '{{link.label}}';
     {% endfor%}
 
+    var outputlabels = {};
 
-    jsPlumbsetup(nodes, links, linklabels);
+    {% for outputlabel in args.outputlabels %}
+    outputlabels['{{outputlabel.process_id}}'] = '{{outputlabel.output_name}}';
+    {% endfor%}
+
+
+
+    jsPlumbsetup(nodes, links, linklabels, outputlabels);
 
   });
 

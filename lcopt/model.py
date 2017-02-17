@@ -1,5 +1,6 @@
 from lcopt.io import *
 from lcopt.ipython_interactive import IFS
+from lcopt.interact import FlaskSandbox
 from functools import partial
 from collections import OrderedDict
 import numpy as np
@@ -599,6 +600,12 @@ class LcoptModel(object):
 
 
 ### Flask ###
+
+
+    def launch_interact(self):
+        my_flask = FlaskSandbox(self)
+        my_flask.run()
+
 
     def create_parameter_set_flask(self):
     
