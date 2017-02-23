@@ -1,6 +1,8 @@
 from lcopt.io import *
 from lcopt.ipython_interactive import IFS
 from lcopt.interact import FlaskSandbox
+from lcopt.bw2_export import Bw2Exporter
+
 from functools import partial
 from collections import OrderedDict
 import numpy as np
@@ -206,7 +208,7 @@ class LcoptModel(object):
 
             this_exchange = self.get_exchange(exc_name)
             
-            if this_exchange == None:
+            if this_exchange == False:
                 my_unit = e.pop('unit', unit)
                     
                 this_exchange = self.create_product(exc_name, location=location, unit=my_unit, **e)
@@ -251,6 +253,7 @@ class LcoptModel(object):
                         col_code = cr_list.index(e['input'][1])
 
                     elif e['type'] =='technosphere':
+                        print(e)
                         row_code = cr_list.index(e['input'][1])
                         inputs.append((row_code, e['amount']))
 
@@ -654,3 +657,10 @@ class LcoptModel(object):
             url = 'http://127.0.0.1:5000'
             webbrowser.open_new(url)
             app.run(debug=False)
+
+
+### Brightway2 ###
+
+    def export_to_bw2(self):
+        my_exporter = Bw2Exporter(self)
+        return my_exporter.export_to_bw2()

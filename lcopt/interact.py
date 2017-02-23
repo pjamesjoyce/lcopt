@@ -1,6 +1,8 @@
 from flask import Flask, request, render_template
 import webbrowser
 import json
+from ast import literal_eval
+from lcopt.io import exchange_factory
 
 class FlaskSandbox():
     
@@ -17,6 +19,8 @@ class FlaskSandbox():
             'echo':self.echo,
             'searchEcoinvent':self.searchEcoinvent,
             'newConnection': self.newConnection,
+            'addInput':self.addInput,
+            'inputLookup':self.inputLookup,
         }
         
         #print (self.modelInstance.newVariable)
@@ -62,6 +66,7 @@ class FlaskSandbox():
         
         inputs = [x for x in product_codes if x not in intermediates]
         input_map = dict(zip(inputs, [db[(m.database['name'],x)]['name'] for x in inputs]))
+        self.reverse_input_map = {value:key for key, value in input_map.items()}
         
         label_map = {**input_map, **process_output_name_map}
         
@@ -90,20 +95,22 @@ class FlaskSandbox():
         
         input_duplicates = []
         
-        for c, column in enumerate(matrix.T):
-            for r, i in enumerate(column):
-                if i>0:
-                    p_from = link_indices[r]
-                    p_to = link_indices[c]
-                    if p_from in inputs:
-                        suffix = "__" + str(input_duplicates.count(p_from))
-                        input_duplicates.append(p_from)
-                        p_type = 'input'
-                    else:
-                        suffix = ""
-                        p_type = 'intermediate'
-                    
-                    self.links.append({'sourceID':p_from + suffix, 'targetID':p_to, 'type':p_type, 'amount':1, 'label':label_map[p_from]})
+        #check there is a matrix (new models won't have one until parameter_scan() is run)
+        if matrix != None:
+            for c, column in enumerate(matrix.T):
+                for r, i in enumerate(column):
+                    if i>0:
+                        p_from = link_indices[r]
+                        p_to = link_indices[c]
+                        if p_from in inputs:
+                            suffix = "__" + str(input_duplicates.count(p_from))
+                            input_duplicates.append(p_from)
+                            p_type = 'input'
+                        else:
+                            suffix = ""
+                            p_type = 'intermediate'
+                        
+                        self.links.append({'sourceID':p_from + suffix, 'targetID':p_to, 'type':p_type, 'amount':1, 'label':label_map[p_from]})
                     
         #add extra nodes
         while len(input_duplicates)>0:
@@ -150,14 +157,20 @@ class FlaskSandbox():
         exchanges = [{'name':output_name, 'type':'production', 'unit':unit}]
         location ='GLO'
         m.create_process(name, exchanges, location, unit)
-        
+        self.modelInstance.parameter_scan()
         print (m.database['items'][(m.database['name'], postData['uuid'])])
         
         return "OK"
     
     def newConnection(self, postData):
+
+        print(postData)
         db = self.modelInstance.database
+        self.get_sandbox_variables()
+
         source = postData['sourceId']
+        print(self.reverse_process_output_map[source])
+
         target = postData['targetId']
         label = postData['label']
         new_exchange = {'amount': 1,
@@ -173,6 +186,69 @@ class FlaskSandbox():
         #print (db['items'][(db['name'], target)]['exchanges'])
         
         return "OK"
+    
+    def addInput(self, postData):
+        print(postData)
+        my_targetId = postData['targetId']
+        
+        my_name = postData['name']
+        my_type = postData['type']
+        my_unit = postData['unit']
+        my_location = postData['location']
+        
+        m = self.modelInstance
+
+        exchange_to_link = m.get_exchange(my_name)
+
+        if exchange_to_link == False:
+        
+            #Create the new product
+            if 'ext_link' in postData.keys():
+                my_ext_link = literal_eval(postData['ext_link'])
+                exchange_to_link = m.create_product (name = my_name, location =my_location , unit=my_unit, ext_link = my_ext_link)
+                print('created linked product')
+            else:
+                exchange_to_link = m.create_product (name = my_name, location =my_location , unit=my_unit)
+                print('created unlinked product')
+
+        #link the product
+        #this_exchange = m.get_exchange(my_name)
+        #print(this_exchange)
+        this_exchange_object = exchange_factory(exchange_to_link, 'technosphere', 1, 1, '{} exchange of {}'.format('technosphere', my_name))
+        #print (this_exchange_object)
+        
+        target_item = m.database['items'][(m.database['name'], my_targetId)]
+        #[print(target_item)]
+        target_item['exchanges'].append(this_exchange_object)
+        
+        #run the parameter scan
+        m.parameter_scan()
+        
+        
+        return "OK"
+    
+    def inputLookup(self, postData):
+        m = self.modelInstance
+        myInput = m.database['items'][(m.database['name'], postData['code'])]
+        
+        return_data = {}
+        
+        if 'ext_link' in myInput.keys():
+            ext_link = myInput['ext_link']
+            ext_db = [x['items'] for x in m.external_databases if x['name'] == ext_link[0]][0]
+            full_link = ext_db[ext_link]
+            full_link_string = "{} {{{}}} [{}]".format(full_link['name'], full_link['location'], full_link['unit'])
+            
+            return_data['isLinked']=True
+            return_data['ext_link']=str(ext_link)
+            return_data['ext_link_string'] = full_link_string
+            return_data['ext_link_unit'] = full_link['unit']
+        else:
+            print('This is an unlinked product')
+            return_data['isLinked']=False
+            return_data['unlinked_unit'] = myInput['unit']
+        
+        return json.dumps(return_data)
     
     def echo(self, postData):
         data = {'message':'Hello from echo'}
@@ -217,8 +293,24 @@ class FlaskSandbox():
         def shutdown():
             self.shutdown_server()
             return render_template('shutdown.html')
+        
+        @app.route('/inputs.json')
+        def inputs_as_json():
+            """creates a json file of the reverse input map to send from the server"""
+            self.get_sandbox_variables()
+            # to_json = [x for x in self.reverse_input_map.keys()]
+            #to_json = reverse_input_map
+            to_json = [{'name':k, 'code': v} for k,v in self.reverse_input_map.items()]
+            input_json = json.dumps(to_json)
+            return input_json
+        
+        @app.route('/testing')
+        def testbed():
+            return render_template('testbed.html')
 
         url = 'http://127.0.0.1:5000'
         webbrowser.open_new(url)
-        
+        print ("running from the module")
         app.run()
+
+        

@@ -1,57 +1,89 @@
 var sayHello = function(){
-  console.log("Hello from the functions file")
+  //console.log("Hello from the functions file")
 }
+
 
 // unit choices 
 var UNIT_CHOICES = {
     'Mass': [
-        ['kg', 'kg'],
-        ['t', 'tonne'],
+        ['kg',  'kilogram'],
+        ['g',  'gram'],
     ]
     ,
     'Energy': [
-        ['kWh', 'kWh'],
+        ['kWh',  'kilowatt hour'],
+        ['Wh',  'watt hour'],
+        ['GJ',  'gigajoule'],
+        ['kJ',  'kilojoule'],
+        ['MJ',  'megajoule'],
     ]
     ,
     'Volume': [
-        ['m3', 'm3'],
+        ['l',  'litre'],
+        ['m3',  'cubic meter'],
     ]
     ,
     'Radioactivity': [
-        ['Bq', 'Bq'],
+        ['Bq',  'Becquerel'],
+        ['kBq',  'kilo Becquerel'],
     ]
     ,
     'Time': [
-        ['h', 'hours'],
-        ['d', 'days'],
+        ['a',  'year'],
+        ['h',  'hour'],
     ]
     ,
     'Amount': [
-        ['p', 'Item'],
+        ['p',  'unit'],
     ]
     ,
-}
+    'Area':[
+        ['ha',  'hectare'],
+        ['m2',  'square meter'],
+    ],
+    'Transport':[
+        ['kgkm',  'kilogram kilometer'],
+        ['tkm',  'ton kilometer'],
+        ['personkm',  'person kilometer'],
+        ['vkm',  'vehicle kilometer'],
+    ],
+    'Distance':[
+        ['km',  'kilometer'],
+        ['m',  'meter'],
+    ],
+    'Other':[
+        ['lu',  'livestock unit'],
+        ['m*year',  'meter-year'],
+        ['m2*year',  'square meter-year'],
+        ['m3*year',  'cubic meter-year'],
+        ['kg sw',  'kilogram separative work unit'],
+        ['km*year',  'kilometer-year'],
+    ]
+} 
 
 // This function creates a new node from external data
-var newNodeExternal = function(name, type, id, x, y, instance){
+var newNodeExternal = function(name, type, id, x, y, instance, outputlabel = ''){
   
+  if(outputlabel != ''){instance.data.outputlabels[id] = outputlabel};
+  //console.log(outputlabel)
+  //console.log(instance.data.outputlabels[id])
   var id = id//name.split(' ').join('_')//jsPlumbUtil.uuid();
   var d = $('<div>').attr('id', id).addClass('w ' + type);
   var title =  $('<div>').addClass('title').text(name);
   var buttons = $('<div>').addClass('buttons');
   var connect =  $('<div>').addClass('ep').html('<i class="ep2 material-icons w3-medium" data-toggle="popover" data-placement= "left" data-trigger="hover" title="Connect" data-content="Drag to connect to another process">trending_flat</i>');
   var input =  $('<div>').addClass('ip').html('<i class="material-icons w3-medium" data-toggle="popover" data-placement= "bottom" data-trigger="hover" title="Input" data-content="Add an input to this process">file_download</i>');
-  var output =  $('<div>').addClass('op').html('<i class="material-icons w3-medium" data-toggle="popover" data-placement= "bottom" data-trigger="hover" title="Output" data-content="Add an output to this process">file_upload</i>');
-  var del =  $('<div>').addClass('x').html('<i class="material-icons w3-medium" data-toggle="popover" data-placement= "right" data-trigger="hover" title="Remove" data-content="Remove this item">cancel</i>');
-  var edit = $('<div>').addClass('ed').html('<i class="material-icons w3-medium" data-toggle="popover" data-placement= "bottom" data-trigger="hover" title="Edit" data-content="Edit quantity">edit</i>');
+  //var output =  $('<div>').addClass('op').html('<i class="material-icons w3-medium" data-toggle="popover" data-placement= "bottom" data-trigger="hover" title="Output" data-content="Add an output to this process">file_upload</i>');
+  //var del =  $('<div>').addClass('x').html('<i class="material-icons w3-medium" data-toggle="popover" data-placement= "right" data-trigger="hover" title="Remove" data-content="Remove this item">cancel</i>');
+  //var edit = $('<div>').addClass('ed').html('<i class="material-icons w3-medium" data-toggle="popover" data-placement= "bottom" data-trigger="hover" title="Edit" data-content="Edit quantity">edit</i>');
 
 
   if(type == 'transformation'){
-    buttons.append(connect).append(input).append(output);
+    buttons.append(connect).append(input)//.append(output);
   }else{
-    buttons.append(edit);
+    //buttons.append(edit);
   };
-  buttons.append(del);
+  //buttons.append(del);
   d.append(title);
   d.append(buttons);
 
@@ -70,7 +102,7 @@ var newNodeExternal = function(name, type, id, x, y, instance){
   });
 
   // This is the tooltip that explains the icons
-  //console.log(instance);
+  ////console.log(instance);
   $('[data-toggle="popover"]').popover({
     container: '#sandbox_container',
     delay: {
@@ -85,17 +117,21 @@ var newNodeExternal = function(name, type, id, x, y, instance){
 
 var initNode = function(el, instance) {
 
+            var i = instance
+            //console.log(i.data)
+            //console.log(el)
+
             // initialise draggable elements.
             instance.draggable(el, {
-              grid: [5,5],
+              grid: [0.5,0.5],
               containment:true,
               stop: function(event) {
 
               var getID = el.id;
               if(typeof getID == 'undefined'){getID = el[0].id;};
 
-              console.log('getID');
-              console.log(getID);
+              //console.log('getID');
+              //console.log(getID);
 
               var $target = $('#' + getID)
               if ($target.find('select').length == 0) {
@@ -121,518 +157,46 @@ var initNode = function(el, instance) {
             //This is the delete function
             //TODO: Fix this for Flask implentation
             $('.x').unbind().click(function(e){
-              //console.log('#' + $(this).parent().parent().attr('id'));
-              var target = $( e.target )
-              var thisNodeID = target.parent().parent().parent().attr('id');
-              var thisNode = $('#' + thisNodeID);
+              ////console.log('#' + $(this).parent().parent().attr('id'));
 
-              var thisConnectionsTo = instance.getConnections({ target: thisNodeID });
-              var thisConnectionsFrom = instance.getConnections({ source: thisNodeID });
-
-              var choppingBlock = [];
-
-              for(var i in thisConnectionsTo){
-                var conn = thisConnectionsTo[i];
-                var data = conn.getData();
-                var thisType = data.connection_type;
-                var intNode = thisNode.hasClass('transformation');
-                var intermediate = thisType == "intermediate";
-                if(intermediate == false && intNode == true){
-                  choppingBlock.push($("#" + conn.sourceId + " .title").text());
-                }
-              };
-
-              for(var i in thisConnectionsFrom){
-                var conn = thisConnectionsFrom[i];
-                var data = conn.getData();
-                var thisType = data.connection_type;
-                var intNode = thisNode.hasClass('transformation');
-                var intermediate = thisType == "intermediate";
-                if(intermediate == false && intNode == true){
-                  choppingBlock.push($("#" + conn.targetId + " .title").text());
-                }
-              };
-
-              //console.log(choppingBlock);
-
-              var this_item = $('#' + thisNodeID + " .title").text()
-
-              var del_title = "Delete " + this_item + "?";
-
-              if(choppingBlock.length == 0){
-                var del_body = "<p>Are you sure you want to delete " + this_item + "?</p>"
-              }else{
-                var del_body = `<p>Are you sure you want to delete ` + this_item + `?</p>
-                <p>The following inputs/outputs will also be deleted:</p>
-                <ul>`
-                for(i in choppingBlock){
-                del_body += "<li>" + choppingBlock[i] + "</li>";
-              }
-              del_body += "</ul>"
-              };
-
-              var testmodal = createModal(del_title, del_body);
-              console.log(testmodal);
-              $(document.body).append(testmodal);
-              $('#myModal').modal('show');
-
-
-              $('#confirm_button').unbind().click(function(e){
-                console.log('confirm_button');
-                $('#myModal').modal('hide');
-
-                for(var i in thisConnectionsTo){
-                  var conn = thisConnectionsTo[i];
-                  var data = conn.getData();
-                  var thisType = data.connection_type;
-                  var intNode = thisNode.hasClass('transformation');
-                  var intermediate = thisType == "intermediate";
-                  if(intermediate == false && intNode == true){
-                    console.log(conn.sourceId);
-                    $("#" + conn.sourceId).remove();
-
-                    deleteDatabaseItem(conn.sourceId,csrftoken,thisType,system_id)
-
-                  }else{
-                    $("#" + conn.sourceId).removeClass('inspect');
-                  }
-                  instance.detach(conn);
-                };
-
-                for(var i in thisConnectionsFrom){
-                  var conn = thisConnectionsFrom[i];
-                  var data = conn.getData();
-                  var thisType = data.connection_type;
-                  var intNode = thisNode.hasClass('transformation');
-                  var intermediate = thisType == "intermediate";
-                  if(intermediate == false  && intNode == true){
-                    $("#" + conn.targetId).remove();
-
-                    deleteDatabaseItem(conn.targetId,csrftoken,thisType,system_id)
-
-                  }else{
-                    $("#" + conn.targetId).removeClass('inspect');
-                  }
-                  instance.detach(conn);
-                };
-
-
-
-                if(thisNode.hasClass('input')){
-                  thisNodeType = 'input';
-                }else if (thisNode.hasClass('output')) {
-                  thisNodeType = 'output';
-                }else if (thisNode.hasClass('transformation')) {
-                  thisNodeType = 'transformation';
-                }
-
-                deleteDatabaseItem(thisNodeID,csrftoken,thisNodeType,system_id);
-
-                thisNode.remove();
-
-                $('.popover').remove();
-
-
-
-              });
-              $('#myModal').on('hidden.bs.modal', function () {
-                $('#myModal').remove()
-              })
-
-              e.stopPropagation();
-            });
+              //console.log('TODO: Fix this for Flask implentation')
+              
+            }); 
             
             //This is the add input function
             //TODO: Fix this for Flask implentation
-            $('.ip').unbind().click(function(e){
+            $('.ip').unbind().click(function(e, instance = i){
+              ////console.log(instance)
+              ////console.log(i)
 
-              var target = $( e.target )
+              addInput(e, instance)
 
-              var thisNodeID = target.parent().parent().parent().attr('id');
-              console.log(thisNodeID);
-              var thisConnections = instance.getConnections({ target: thisNodeID });
-
-              thisConnectionList = [];
-
-              for(i=0; i<thisConnections.length; i++){
-                var sId = thisConnections[i].sourceId;
-                thisConnectionList.push($('#'+ sId + " .title").text());
-              }
-
-              console.log(thisConnectionList);
-
-              var x = target.offset().left - canvas.offset().left - 150;
-              var y = target.offset().top - canvas.offset().top - 150;
-
-              var chooseInput = $('<div>').addClass('enter')
-              var inputTitle = $('<div>').addClass('popTitle').text('Select an input');
-              var inputName = $('<select>').attr('name','inputsubstance').attr('id','inputsubstance').attr('data-live-search','true').attr('data-done-button','true').attr('data-live-search-placeholder','Search (or type to create new)').attr('data-width','100%').addClass('selectpicker');
-              var inputAmountTitle = $('<div>').addClass('popTitle').text('How much is needed');
-              var inputAmount = $('<input>').attr('name','inputamount').attr('id','inputamount');
-
-              //input validation
-              inputAmount.keyup(function() {
-               var $th = $(this);
-               $th.val( $th.val().replace(/[^0-9\.]/g, function(str) {  return ''; } ) );
-              });
-              //end
-
-              var inputUnit = $('<div>').addClass('popUnit').text('');
-              var okButton = $('<button>').text('OK');
-
-              inputName.append($('<option>').attr('value','default').attr('disabled','disabled').attr('selected','selected').text('-------'));
-
-              for(var key in allInputs){
-                if($.inArray(allInputs[key][0],thisConnectionList) == -1){
-                  inputName.append($('<option>').attr('value',key).text(allInputs[key][0]));
-                }
-              }
-
-
-              chooseInput.css('left', x + "px");
-              chooseInput.css('top', y + "px");
-
-              var closeThis = $('<button>').text('Cancel');
-
-              chooseInput.append(inputTitle).append(inputName).append(inputAmountTitle).append(inputAmount).append(inputUnit).append(okButton).append(closeThis);
-
-              canvas.append(chooseInput);
-
-              inputName.selectpicker();
-
-              inputName.on('shown.bs.select',function(){
-                var searchBox = $('.bs-searchbox input')
-                  searchBox.keyup(function(){
-                  //console.log('key pressed');
-                  //input validation
-                  var $th = $(this);
-                  $th.val( $th.val().replace(/[^A-Za-z0-9\(\)\\\[\]/ ]/g, function(str) {  return ''; } ) );
-                  //end
-                  var noResults = $('.no-results');
-                    noResults.html("'" + searchBox.val() + "' not found<button class='create_button btn btn-xs btn-primary pull-right'> Create </button>")
-                    $('.create_button').click(function(){
-                      createItem('input', searchBox.val(), csrftoken);
-                  });
-                });
-
-              });
-
-              closeThis.click(function(){
-                chooseInput.remove();
-              });
-
-              inputName.change(function(){
-                var inputId = $(this).val();
-                var unit = allInputs[inputId][1];
-                inputUnit.text(unit);
-              });
-
-              okButton.click(function(){
-                var id = jsPlumbUtil.uuid();
-                var inputId = inputName.val();
-                var name = inputName.children("option").filter(":selected").text();
-                var amount = inputAmount.val();
-                var type = 'input';
-                var unit = inputUnit.text()//allInputs[inputId][1];
-
-                var thisNewNode = newNodeExternal(name, type, id, x+300, y, instance);
-                initNode(thisNewNode);
-
-                //console.log(id);
-                //console.log(thisNodeID);
-
-                var thisConnection = instance.connect({
-                  source: id,
-                  target: thisNodeID,
-                  type:"basic input",
-                  data:{'connection_type':'input', 'connection_amount':amount}
-                })
-                //thisConnection.addType("new");
-
-                var postData = {
-                    'uuid': id,
-                    'y': y,
-                    'x': x+300,
-                    'csrfmiddlewaretoken': csrftoken,
-                    'transform_id' : thisNodeID,
-                    'input_id' : inputId,
-                    'amount': amount,
-                    'system_id': system_id,
-                    'note': 'Note Placeholder',
-                 }
-
-                 console.log(postData);
-
-                $.post('/sandbox/newInput/', postData);
-
-                 //console.log('tried to post new input');
-
-                thisConnection.getOverlay("label").setLabel(amount + " " + unit);
-
-                chooseInput.remove();
-              });
             });
 
             //This is the add output function
             //TODO: Fix this for Flask implentation
             $('.op').unbind().click(function(e){
 
-
-
-              var target = $( e.target )
-
-              var thisNodeID = target.parent().parent().parent().attr('id');
-              //console.log(thisNodeID);
-              var thisConnections = instance.getConnections({ source: thisNodeID });
-
-              thisConnectionList = [];
-
-              for(i=0; i<thisConnections.length; i++){
-                var sId = thisConnections[i].sourceId;
-                thisConnectionList.push($('#'+ sId + " .title").text());
-              }
-
-              var x = target.offset().left - canvas.offset().left - 150;
-              var y = target.offset().top - canvas.offset().top - 150;
-
-              var chooseOutput = $('<div>').addClass('enter')
-              var outputTitle = $('<div>').addClass('popTitle').text('Select an emission/output');
-              var outputName = $('<select>').attr('name','outputsubstance').attr('id','outputsubstance').attr('data-live-search','true').attr('data-done-button','true').attr('data-live-search-placeholder','Search (or type to create new)').attr('data-width','100%').addClass('selectpicker');
-              var outputAmountTitle = $('<div>').addClass('popTitle').text('How much is needed');
-              var outputAmount = $('<input>').attr('name','outputamount').attr('id','outputamount');
-
-              //input validation
-              outputAmount.keyup(function() {
-               var $th = $(this);
-               $th.val( $th.val().replace(/[^0-9\.]/g, function(str) {  return ''; } ) );
-              });
-              //end
-
-              var outputUnit = $('<div>').addClass('popUnit').text('');
-              var okButton = $('<button>').text('OK');
-
-              outputName.append($('<option>').attr('value','default').attr('disabled','disabled').attr('selected','selected').text('-------'));
-
-              for(var key in allOutputs){
-                if($.inArray(allOutputs[key][0],thisConnectionList) == -1){
-                  outputName.append($('<option>').attr('value',key).text(allOutputs[key][0]));
-                }
-              }
-
-
-              chooseOutput.css('left', x + "px");
-              chooseOutput.css('top', y + "px");
-
-              var closeThis = $('<button>').text('Cancel');
-
-              chooseOutput.append(outputTitle).append(outputName).append(outputAmountTitle).append(outputAmount).append(outputUnit).append(okButton).append(closeThis);
-              console.log('triggered appending');
-              canvas.append(chooseOutput);
-              console.log('triggered appended');
-              outputName.selectpicker();
-
-              outputName.on('shown.bs.select',function(){
-                var searchBox = $('.bs-searchbox input')
-                  searchBox.keyup(function(){
-                  //console.log('key pressed');
-                  //input validation
-                  var $th = $(this);
-                  $th.val( $th.val().replace(/[^A-Za-z0-9\(\)\\\[\]/ ]/g, function(str) {  return ''; } ) );
-                  //end
-                  var noResults = $('.no-results');
-                    noResults.html("'" + searchBox.val() + "' not found<button class='create_button btn btn-xs btn-primary pull-right'> Create </button>")
-                    $('.create_button').click(function(){
-                      createItem('output', searchBox.val(), csrftoken);
-                  });
-                });
-
-              });
-
-              closeThis.click(function(){
-                chooseOutput.remove();
-              });
-
-              outputName.change(function(){
-                var outputId = $(this).val();
-                var unit = allOutputs[outputId][1];
-                outputUnit.text(unit);
-              });
-
-              okButton.click(function(){
-                var id = jsPlumbUtil.uuid();
-                var outputId = outputName.val();
-                var name = outputName.children("option").filter(":selected").text();
-                var amount = outputAmount.val();
-                var type = 'output';
-                var unit = outputUnit.text();//allOutputs[outputId][1];
-
-                var thisNewNode = newNodeExternal(name, type, id, x+300, y, instance);
-                initNode(thisNewNode);
-
-                //console.log(id);
-                //console.log(thisNodeID);
-
-                var thisConnection = instance.connect({
-                  source: thisNodeID,
-                  target: id,
-                  type:"basic output",
-                  data:{'connection_type':'output', 'connection_amount':amount}
-                })
-                //thisConnection.addType("new");
-
-                var postData = {
-                    'uuid': id,
-                    'y': y,
-                    'x': x+300,
-                    'csrfmiddlewaretoken': csrftoken,
-                    'transform_id' : thisNodeID,
-                    'output_id' : outputId,
-                    'amount': amount,
-                    'system_id': system_id,
-                    'note': 'Note Placeholder',
-                 }
-
-                 console.log(postData);
-
-                $.post('/sandbox/newOutput/', postData);
-
-                 //console.log('tried to post new output');
-
-                thisConnection.getOverlay("label").setLabel(amount + " " + unit);
-
-                chooseOutput.remove();
-              });
-            });
+                //console.log('TODO: Fix this for Flask implentation')
+              
+            }); 
+            
 
             //This is the edit function for inputs and outputs
             //TODO: Fix this for Flask implentation
             $('.ed').unbind().click(function(e){
 
-              var target = $( e.target )
-
-              var thisNodeID = target.parent().parent().parent().attr('id');
-              var type = 'input';
-              var thisConnections = instance.getConnections({ source: thisNodeID });
-
-              if(thisConnections.length === 0){
-                thisConnections = instance.getConnections({ target: thisNodeID });
-                type = 'output';
-              }
-
-              var connectionData = thisConnections[0].getData();
-
-
-              var itemName = $('#' + thisNodeID + ' .title').text();
-              var initialValue=connectionData.connection_amount;
-
-              console.log(thisNodeID);
-
-              var formHtml = '<label for="newQuantity">Name:</label> <input name = "newQuantity", id="newQuantity" value = "'+initialValue+'">'
-
-              var createdModal = createModal('Edit quantity of  ' + itemName, formHtml);
-
-              $(document.body).append(createdModal);
-
-              $('#myModal').modal('show');
-
-              var itemIDNo = null
-               $('#confirm_button').unbind().click(function(e){
-                console.log('OK, editing quantity of ' + itemName +'(id = '+thisNodeID+')')
-
-                var postData = {
-
-                  'csrfmiddlewaretoken':csrftoken,
-                  'id': thisNodeID,
-                  'type': type,
-                  'newAmount' : $('#newQuantity').val()
-                }
-                console.log(postData);
-                $.post("/sandbox/editFlow/", postData);
-                $('#myModal').modal('hide');
-
-                //redo the connection
-
-
-
-                console.log(thisConnections[0].sourceId);
-                console.log(thisConnections[0].targetId);
-                currentLabel = thisConnections[0].getOverlay("label").getLabel();
-                unit = currentLabel.split(" ")[1];
-
-                jsPlumb.detach(thisConnections[0]);
-
-
-                var connection = instance.connect({
-                   source: thisConnections[0].sourceId,
-                   target: thisConnections[0].targetId,
-                   type:"basic intermediate",
-                   data:{'connection_type':type, 'connection_amount':$('#newQuantity').val()}
-                 });
-                 console.log(connection.getData());
-
-                 console.log(currentLabel);
-                 console.log(unit);
-                 connection.getOverlay("label").setLabel($('#newQuantity').val() + " " + unit);
-
-                 //connection.addType("new");
-
-
-              });
-
-
-              $('#myModal').on('hidden.bs.modal', function () {
-               $('#myModal').remove();
-              });
-              $('#myModal').on('shown.bs.modal', function () {
-               $('#newQuantity').focus()
-             });
-            });
-
-            //This is the function that edits the title of the node
-            //TODO: Fix this for Flask implentation
-            $('.transformation>.title').unbind().click(function(e){
-              var titleDiv = $(this);
-              thisNodeID = titleDiv.parent().attr('id');
-              console.log(titleDiv);
-              var originalTitle = $(this).text();
-              $(this).text('');
-              console.log($(this).parent().parent().width());
-              var titleInput = $('<input>').attr('id','tempTitleInput').attr('type', 'text').addClass('titleInput').val(originalTitle);
-              $(this).append(titleInput);
-              titleInput.focus().select();;
-
-              titleInput.blur(function(e){
-                $(this).parent().text(originalTitle);
-              });
-
-              titleInput.keyup(function(e) {
-                if (e.keyCode === 13) {
-                  if (this.value == ""){
-                    $(this).parent().text(originalTitle);
-                  }else{
-                    $(this).parent().text(this.value);
-                    console.log(thisNodeID)
-                    var postData = {
-                      'id':thisNodeID,
-                      'newName':this.value,
-                      'csrfmiddlewaretoken': csrftoken,
-                    };
-                    console.log(postData);
-                    $.post("/sandbox/renameProcess/", postData)
-                }
-                }
-                if (e.keyCode === 27) {
-                  $(this).parent().text(originalTitle);
-                }
-              });
-            })
+                //console.log('TODO: Fix this for Flask implentation')
+              
+            }); 
+            
 };
       
 
 // Saves the position of a node after dragging
 // TODO : Implement for Flask      
 var saveState = function(state) {
-  console.log(state.selector)
+  //console.log(state.selector)
   postData ={
       'action' : 'savePosition',
       'uuid': $(state).attr('id'),
@@ -640,13 +204,13 @@ var saveState = function(state) {
       'x': $(state).position().left,
       //'csrfmiddlewaretoken': csrftoken,
    };
-   console.log(postData);
+   //console.log(postData);
 
   $.post('/process_post', postData);
 }
 
 var saveModel = function(){
-  console.log('saving model')
+  //console.log('saving model')
   postData = {
     'action' : 'saveModel'
   }
@@ -655,7 +219,8 @@ var saveModel = function(){
 
 // This function sends the information required to the python side to create a new process in the loaded model instance
 var newProcess = function(uuid, process_name, output_name, unit){
-  console.log('saving model')
+
+  //console.log('sending new process info to python model')
   postData = {
     'action' : 'newProcess',
     'uuid' : uuid,
@@ -667,11 +232,14 @@ var newProcess = function(uuid, process_name, output_name, unit){
 }
 
 var newConnection = function(info, instance){
-  //console.log('Dealing with a connection event (' + sID +')')
+  ////console.log('Dealing with a connection event (' + sID +')')
+
+
 
       source = $('#' + info.sourceId)
       target = $('#' + info.targetId)
-          
+
+      //info.connection.setData({'connection_type':'intermediate'})
 
       postData = {
           'action': 'newConnection',
@@ -680,32 +248,307 @@ var newConnection = function(info, instance){
           'label': info.connection.getOverlay('label').getLabel(),
         }
 
-        console.log(postData);
+        //console.log(postData);
         $.post('/process_post', postData);
 }
 
+var addInput = function(e, instance){
+
+    var target = $( e.target )
+    ////console.log(target)
+
+    var thisNodeID = target.parent().parent().parent().attr('id');
+    ////console.log("thisNodeID is...")
+    ////console.log(thisNodeID);
+    ////console.log(instance)
+    var thisConnections = instance.getConnections({ target: thisNodeID });
+
+    thisConnectionList = [];
 
 
-//test receiving data back from the server
 
-/*var echo = function(){
+    for(i=0; i<thisConnections.length; i++){
+      var sId = thisConnections[i].sourceId;
+      thisConnectionList.push($('#'+ sId + " .title").text());
+    }
 
-  postData = {
-    'action': 'echo'
-  }
+    ////console.log(thisConnectionList);
 
-  $.ajaxSetup({async:false});  //execute synchronously
+    var formTitle = 'Add input'
+    // this is the html that will go in the body of the modal
+    var formHtml = `
+                    <form class="form-horizontal">
+                      <div class="form-group">
+                        <label for="inputName" class="control-label col-xs-3">Name of input</label> 
+                        <div class="col-xs-9">
+                          <input class="form-control typeahead" name = "inputName", id="inputName">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="extLink" class="control-label col-xs-3">Link to external database</label> 
+                        <div class="col-xs-9">
+                          <input class="form-control disabled" name = "extLinkName", id="extLinkName" disabled>
+                          <input class="form-control disabled" name = "extLink", id="extLink" disabled>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="unit" class = "control-label col-xs-3">Unit</label>
+                        <div class="col-xs-6" id="unitDiv"></div>
+                      </div>
+                      <div class="form-group">
+                        <label for="unlinked" class="control-label col-xs-3">Is burden free</label> 
+                        <div class="col-xs-6">
+                          <input type="checkbox" class="checkbox-inline" name = "unlinked", id="unlinked">
+                        </div>
+                        <div id="ext_data_button" class="col-xs-3">
+                          
+                        </div>
+                      </div>
+                    </form>
+                  `
+    
 
-    var returnedData = null
-    $.post('/process_post', postData, function(data){
-       returnedData = data
-    }, "json");
+    var inputModal = BootstrapDialog.show({
+      title:formTitle,
+      message:function(dialogRef){
+        var $message = $('<div></div>').append(formHtml);
+        // This populates the unit list from the UNIT_CHOICES variable
+        var unitMap = {};
+        var unitHtml = "<select name='unit' id='unit' class='selectpicker form-control col-xs-6'>"
 
-    console.log(returnedData)
+        for(i in UNIT_CHOICES){
+          unitHtml += "<optgroup label = '"+ i +"'>";
+          
+          for(j in UNIT_CHOICES[i]){
+            unitHtml += "<option value = '"+UNIT_CHOICES[i][j][0]+"'>"+UNIT_CHOICES[i][j][1]+"</option>"
+            unitMap[UNIT_CHOICES[i][j][1]] = [UNIT_CHOICES[i][j][0]]
+          };
+          unitHtml+="</optgroup>";
+        };
+        unitHtml+="</select>"
+        var $units = $(unitHtml)
+        
 
-  $.ajaxSetup({async:true});  //return to default setting
-}
-*/
+        $message.find('#unitDiv').append($units)
+        $units.selectpicker()
+
+        /*This bit sets up the typeahead*/
+
+        function customTokenizer(datum) {
+          var nameTokens = Bloodhound.tokenizers.whitespace(datum.name);
+          //var ownerTokens = Bloodhound.tokenizers.whitespace(datum.owner);
+          //var languageTokens = Bloodhound.tokenizers.whitespace(datum.language);
+
+          return nameTokens//.concat(ownerTokens).concat(languageTokens);
+        }
+
+        function typeaheadCallback(postResponse){
+          if (postResponse.isLinked == true) {
+            //console.log(postResponse)
+            var unit = unitMap[postResponse.ext_link_unit]
+            $message.find('#extLinkName').val(postResponse.ext_link_string);
+            $message.find('#extLink').val(postResponse.ext_link)
+            $message.find('#unit').selectpicker('val', unit);
+            $message.find('#unit').addClass('disabled').prop( "disabled", true )
+            $message.find('#ext_search_button').addClass('disabled').prop( "disabled", true )
+            $message.find('#unlinked').addClass('disabled').prop( "disabled", true ).prop("checked", false)
+          }
+          else
+          {
+            //console.log(postResponse)
+            $message.find('#unit').selectpicker('val', postResponse.unlinked_unit);
+            $message.find('#unit').addClass('disabled').prop( "disabled", true )
+            $message.find('#unlinked').addClass('disabled').prop( "disabled", true ).prop("checked", true)
+          }
+        }
+
+         function createNewTemplate(){
+          current_input = $('#inputName').val()
+          $create_new = $('<div class="tt-footer"><p>Create new input called <strong>'+current_input+'<strong></p></div>')
+          $create_new.click(function(){
+            $message.find('#ext_search_button').removeClass('disabled').prop( "disabled", false )
+            $message.find('#unit').removeClass('disabled').prop( "disabled", false )
+            $message.find('#unlinked').removeClass('disabled').prop( "disabled", false ).prop('checked', false)
+            $('.typeahead').typeahead('close');
+          })
+          return $create_new
+          }
+
+
+
+        var inputs = new Bloodhound({
+            //local: [{name: "James item", code:1},{name: "Claire item", code:2}],
+            //local: [{"code": "acdf091633109d3b6b7744a602720412", "name": "Input of Unlinked input"}, {"code": "bc1d1b9e06255d25691d4bc25cbed054", "name": "Input of Quartz - linked"}, {"code": "440891b98348acaa325bb80b1e0080fb", "name": "Input of Energy, electricity"}],
+            //identify: function(obj) { return obj.code; },
+              datumTokenizer: customTokenizer,// Bloodhound.tokenizers.whitespace('name'),
+              queryTokenizer: Bloodhound.tokenizers.whitespace,
+              // The url points to a json file that contains an array of input names
+              //prefetch: './inputs.json',
+              prefetch: {
+                url: 'inputs.json',
+                transform: function(list) {
+                    return $.map(list, function(item) {
+                        return {
+                            name: item.name,
+                            code: item.code,
+                            //etc:item.etc
+                        };
+                        
+                    });
+                },
+                cache:false,
+            },
+          });
+         //console.log(inputs)
+
+          // Initializing the typeahead with remote dataset
+          $message.find('.typeahead').typeahead({
+            minLength: 1,
+            highlight: true
+            },
+            {
+                name: 'inputs',
+                display:'name',
+                source: inputs,
+                templates:{
+                  header: '<div class="tt-header"><p>Reuse existing input...</p></div>',
+                  footer: createNewTemplate,
+                  notFound: createNewTemplate,
+            },
+            }
+          );
+
+          function eventHandler(obj, suggestion){
+            //console.log(suggestion)
+            var postData ={
+              'action': 'inputLookup',
+              'code': suggestion.code,
+            }
+            //console.log(postData)
+            $.post('/process_post',
+              postData, 
+              function(data, status, xhr){
+                  if(status == 'success'){
+                    typeaheadCallback(data)
+                  }
+                }, 
+                "json");
+          }
+          
+        $message.find('#inputName').bind('typeahead:selected', function(obj, suggestion) {  
+            //console.log('selected');
+            eventHandler(obj, suggestion);
+        });
+        $message.find('#inputName').bind('typeahead:autocomplete', function(obj, suggestion) {  
+            //console.log('autocomplete');
+            eventHandler(obj, suggestion);
+            $message.find('.tt-footer').addClass('hide')
+        });
+
+        $message.find('#inputName').keypress(function(e){
+          if(e.keyCode==13){
+            //console.log('enter')
+          }
+        });
+
+        $message.find('#inputName').keydown(function(e){
+          if(e.keyCode==8 || e.keyCode==46){
+            //console.log('delete/backspace')
+            $('#extLinkName').val('');
+          $('#extLink').val('')
+          $message.find('#ext_search_button').removeClass('disabled').prop( "disabled", false )
+          $message.find('#unit').removeClass('disabled').prop( "disabled", false )
+          $message.find('#unlinked').removeClass('disabled').prop( "disabled", false ).prop('checked', false)
+          }
+        });
+
+
+        var $button = $('<button type="button" id="ext_search_button" type="submit" class="pull-right btn btn-primary">Search external databases</button>')
+
+        // This is the callback function that gets run by the search box once it has a result
+        function logResult(name, code){
+
+          var unit_re = /\[([\w ]*)\]$/
+          var unit_name = unit_re.exec(name)[1]
+          var unit = unitMap[unit_name]
+          //console.log(unit[0])
+
+
+
+          $message.find('#extLink').val(code);
+          $message.find('#extLinkName').val(name);
+          $message.find('#unit').selectpicker('val', unit);
+          $message.find('#unlinked').addClass("disabled");
+          $message.find('#unit').addClass("disabled");
+          $message.find('#unit').prop('disabled', true);
+          inputModal.setData('code', code);
+          inputModal.setData('ext_link_name', name);
+          inputModal.setData('unit',unit);
+        }
+
+        $button.on('click', function(){
+          // search_ecoinvent_dialog now takes a callback function which gets run when the user clicks ok
+          search_ecoinvent_dialog(logResult)
+
+        })
+        $message.find('#ext_data_button').append($button)
+        return $message
+      },
+      nl2br: false,
+      buttons:[{
+        label:'OK',
+        cssClass: 'btn-primary',
+        action:function(dialogRef){
+
+            var name = $('#inputName').val();
+            var type = 'product'
+            var unit = $('#unit').selectpicker('val');//inputModal.getData('unit')[0],
+            //console.log("unit at OK click " + unit)
+            var location = 'GLO';
+            var code = hex_md5(name+type+unit+location)
+            var suffix = $('[id^=' + code + ']').size()
+            var node_id = code + '__' + suffix
+            //console.log('creating node with id ' + node_id)
+
+            var postData = {
+              'action': 'addInput',
+              'targetId': thisNodeID,
+              'name': name,
+              'type': type,
+              'unit': unit,
+              'location': location,
+              'code':code,
+              'ext_link_name' : inputModal.getData('ext_link_name'),
+              'ext_link': inputModal.getData('code'),
+
+           }
+
+          console.log(postData);
+
+          $.post('/process_post', postData);
+          //close the dialog
+          dialogRef.close()
+
+          var position = $('#'+thisNodeID).position()
+          //console.log(position)
+
+          // create a new node in the js side version for display on screen, and initiate it
+          var thisNode = newNodeExternal(name,'input',node_id,position.left + 25,position.top - 50,instance);
+          initNode(thisNode,instance);
+          saveState(thisNode);
+
+          //connect the new node
+          var thisConnection = instance.connect({
+            source: node_id,
+            target: thisNodeID,
+            type:"basic input",
+            data:{'connection_type':'input'}
+          })
+        }
+      },]
+    });
+  };
+
 
 var echo = function(){
 
@@ -725,13 +568,13 @@ var echo = function(){
 
 // this is the carry_on function that recieves the data from the ajax request after it's been successful
 var carry_on = function(returnedData){
-  console.log("dealing with result from echo");
-  console.log('The server says\n' + returnedData['message']); 
+  //console.log("dealing with result from echo");
+  //console.log('The server says\n' + returnedData['message']); 
 }
 
-var search_ecoinvent_dialog = function(instance){
+var search_ecoinvent_dialog = function(callback){
 
-
+  
     // this is the title of the modal
     var formTitle = 'Search the ecoinvent database'
     // this is the html that will go in the body of the modal
@@ -754,8 +597,8 @@ var search_ecoinvent_dialog = function(instance){
                         <div class="col-xs-6">
                           <input type="checkbox" class="checkbox-inline ecoinventSearchTrigger" name = "marketsOnly", id="marketsOnly" checked="checked">
                         </div>
-                        <div class="col-xs-3">
-                          <button type="button" id="search_button" type="submit" class="pull-right btn btn-primary">Search</button>
+                        <div id = "button_goes_here" class="col-xs-3">
+                          
                         </div>
                       </div>
                     </form>
@@ -771,49 +614,50 @@ var search_ecoinvent_dialog = function(instance){
                     </div>
                   `
 
-    // create the modal
-    var createdModal = createModal(formTitle, formHtml);
 
-    //append the modal to the page
-    $(document.body).append(createdModal);
+    var ecoinventModal = new BootstrapDialog({
+      title:formTitle,
+      message:function(){
+        var $message = $('<div></div>').append(formHtml);
+        var $buttonDiv = $message.find('#button_goes_here');
+        var $button = $('<button type="button" id="search_button" type="submit" class="pull-right btn btn-primary">Search</button>')
+        $button.on('click', function(){
+          var search_term = $('#searchTerm').val()
+          var location = $('#location').val()
+          var markets_only = $('#marketsOnly').is(':checked');
+          search_ecoinvent(search_term, location, markets_only);
+        })
+        $buttonDiv.append($button)
+        //lets try this
+        $message.find('.ecoinventSearchTrigger').keypress(function(e){
+          if(e.keyCode==13){
+                     $('#search_button').trigger('click');
+                 }
+        })
 
-    // bind the enter key to the search button
-    $('.ecoinventSearchTrigger').keypress(function(e){
-      if(e.keyCode==13){
-                 $('#search_button').trigger('click');
-             }
-    })
-   
-    // show the modal
-    $('#myModal').modal('show');
 
-    // this is the action of the search button
-    $('#search_button').unbind().click(function(e){
-      
-      var search_term = $('#searchTerm').val();
-      var location = $('#location').val();
-      var markets_only = $('#marketsOnly').is(':checked');
-      
-      if(search_term != ''){
-        search_ecoinvent(search_term, location, markets_only);  
-      }
-
+        return $message
+      },
+      nl2br: false,
+      //autodestroy:false,
+      buttons:[{
+        label:'OK',
+        action: function(dialogRef){
+          var selected_process = $('#ecoinventSelect :selected').val();
+          var selected_process_name = $('#ecoinventSelect :selected').text();
+          
+          // run the callback function from the calling modal
+          callback(selected_process_name, selected_process);
+          // close the search modal
+          dialogRef.close();
+        }
+      }],
     });
 
-    // this is the action that gets bound to the confirm button on the modal
-    $('#confirm_button').unbind().click(function(e){
+    //ecoinventModal.realize()
 
-      var selected_process = $('#ecoinventSelect :selected').val()
-      console.log(selected_process)
-      // which finishes with closing it
-      $('#myModal').modal('hide');
-
-    })
-
-   // sets the focus to the form item when the modal opens
-   $('#myModal').on('shown.bs.modal', function () {
-    $('#searchTerm').focus()
-  });
+    
+    return ecoinventModal.open()
  };
 
 var search_ecoinvent = function(search_term, location, markets_only){
@@ -824,7 +668,7 @@ var search_ecoinvent = function(search_term, location, markets_only){
     'location': location, 
     'markets_only': markets_only,
   }
-  //console.log(postData)
+  ////console.log(postData)
 
   //send the data using post
   $.post(
@@ -840,7 +684,7 @@ var search_ecoinvent = function(search_term, location, markets_only){
 }
 
 var process_ecoinvent_search_results = function(data){
-  //console.log(data);
+  ////console.log(data);
 
   results = data['result'];
 
@@ -849,12 +693,12 @@ var process_ecoinvent_search_results = function(data){
   for(var key in results){
     if (results.hasOwnProperty(key)) {
       var item = results[key]
-      html += '<option value = "'+ key +'">'+item['name']+' {' + item['location'] + '}</option>\n'
-      //console.log(results[key]['name'] + '\t' + results[key]['location']);
+      html += '<option value = "'+ key +'">'+item['name']+' {' + item['location'] + '} [' + item['unit'] +']</option>\n'
+      ////console.log(results[key]['name'] + '\t' + results[key]['location']);
       result_count++
     }
   }
-  //console.log(result_count)
+  ////console.log(result_count)
   $('#ecoinventResults').html(
    `
     <div class="form-group">
@@ -870,13 +714,13 @@ var process_ecoinvent_search_results = function(data){
     if(e.keyCode==13){
            $('#confirm_button').trigger('click');
        }
-})
+  })
   
   $('#ecoinventResultsTitle').text(result_count + " results")
 }
 
 var nodeOver = function(el, instance){
-  //console.log("TODO: write an updated nodeOver function if necessary")
+  ////console.log("TODO: write an updated nodeOver function if necessary")
   /*
   var thisNodeID = el.currentTarget.id;
 
@@ -907,7 +751,7 @@ var nodeOver = function(el, instance){
 
 
 var nodeOut = function(el, instance){
-  //console.log("TODO: write an updated nodeOut function if necessary")
+  ////console.log("TODO: write an updated nodeOut function if necessary")
   /*
   var thisNodeID = el.currentTarget.id;
 
@@ -936,11 +780,11 @@ var nodeOut = function(el, instance){
 
 
 var labelShow = function(conn){
-  //console.log("TODO: write an updated labelShow function if necessary")
+  ////console.log("TODO: write an updated labelShow function if necessary")
 }
 
 var labelHide = function(conn){
-  //console.log("TODO: write an updated labelHide function if necessary")
+  ////console.log("TODO: write an updated labelHide function if necessary")
 }
 
 
@@ -1012,7 +856,7 @@ var addProcess = function(instance){
 
     // this is the action that gets bound to the confirm button on the modal
     $('#confirm_button').unbind().click(function(e){
-      console.log("clicked ok on the modal")
+      //console.log("clicked ok on the modal")
 
       //TODO: check for blank items
 
@@ -1023,15 +867,15 @@ var addProcess = function(instance){
       output_name = $('#outputName').val()
       unit = $('#outputUnit').val()
       to_hash = process_name + 'process' + unit + 'GLO'
-      console.log(to_hash)
+      //console.log(to_hash)
       uuid = hex_md5(to_hash)
-      console.log(uuid)
+      //console.log(uuid)
 
       // send the info to the python side server to create the item in the model
       newProcess(uuid, process_name, output_name, unit)
 
       // create a new node in the js side version for display on screen, and initiate it
-      var thisNode = newNodeExternal(process_name,'transformation',uuid,250,250,instance);
+      var thisNode = newNodeExternal(process_name,'transformation',uuid,250,250,instance, outputlabel=output_name);
       initNode(thisNode,instance);
       
       // end with hiding the modal
@@ -1047,7 +891,10 @@ var addProcess = function(instance){
 // This is the helper function that creates a bootstrap pop up modal
 // title is the title, body is whatever goes in the box - this can (and should) be html
 var createModal = function(title, body){
-      var myModal = $('<div>').attr('id','myModal').addClass("modal fade").attr("tabindex","-1").attr("role","dialog").attr("aria-labelledby","myModal").attr("aria-hidden","true").html(`
+
+    var modal_id = jsPlumbUtil.uuid()
+
+      var myModal = $('<div>').attr('id','myModal').addClass("modal fade").attr("tabindex","-1").attr("role","dialog").attr("aria-labelledby", "myModal").attr("aria-hidden","true").html(`
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -1066,7 +913,7 @@ var createModal = function(title, body){
     `);
     // when the modal gets hidden it gets removed from the DOM
     myModal.on('hidden.bs.modal', function () {
-     $('#myModal').remove();
+     $('#modal_id').remove();
    });
 
     return myModal;

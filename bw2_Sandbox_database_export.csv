@@ -1,0 +1,1171 @@
+{SimaPro 8.2.0.0}
+{CSV Format version: 8.0.5}
+{CSV separator: Tab}
+{Decimal separator: .}
+{Date separator: /}
+{Short date format: dd/MM/yyyy}
+
+
+Process
+
+Category type
+processing
+
+Process identifier
+bw2_Sand07328736085
+
+Type
+
+
+Process name
+Cake mix preparation
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Cake mix	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Butter	kg	p_1_0	Undefined	0	0	0	
+Sugar	kg	p_2_0	Undefined	0	0	0	
+Flour	kg	p_3_0	Undefined	0	0	0	
+Eggs	kg	p_4_0	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+bw2_Sand55851701134
+
+Type
+
+
+Process name
+Flour milling
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Flour	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Wheat	kg	p_6_3	Undefined	0	0	0	
+Electricity	kWh	p_7_3	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+bw2_Sand51990094468
+
+Type
+
+
+Process name
+Egg farming
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Eggs	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Chickens	kg	p_5_4	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+bw2_Sand16963906961
+
+Type
+
+
+Process name
+Baking
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Cake	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Cake mix	kg	p_0_8	Undefined	0	0	0	
+Electricity	kWh	p_7_8	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+bw2_Sand76972660749
+
+Type
+
+
+Process name
+Eating
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Pleasure	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Cake	kg	p_8_9	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+bw2_Sand48274283190
+
+Type
+
+
+Process name
+Butter
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Butter	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Butter, from cow milk {GLO}| market for | Alloc Def, U	kg	1	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+bw2_Sand98979947307
+
+Type
+
+
+Process name
+Sugar
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Sugar	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Sugar, from sugar beet {GLO}| market for | Alloc Def, U	kg	1	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+bw2_Sand39238421431
+
+Type
+
+
+Process name
+Chickens
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Chickens	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Chicken for slaughtering, live weight {GLO}| market for | Alloc Def, U	kg	1	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+bw2_Sand44403200193
+
+Type
+
+
+Process name
+Wheat
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Wheat	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Wheat grain {GLO}| market for | Alloc Def, U	kg	1	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+bw2_Sand41647906716
+
+Type
+
+
+Process name
+Electricity
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Electricity	kWh	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Electricity, medium voltage {DE}| market for | Alloc Def, U	kWh	1	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+
+Project Input parameters
+p_1_0	1	Undefined	1	0	0	No	Input of Butter to create Cake mix
+p_2_0	1	Undefined	1	0	0	No	Input of Sugar to create Cake mix
+p_3_0	1	Undefined	1	0	0	No	Input of Flour to create Cake mix
+p_4_0	1	Undefined	1	0	0	No	Input of Eggs to create Cake mix
+p_6_3	1	Undefined	1	0	0	No	Input of Wheat to create Flour
+p_7_3	1	Undefined	1	0	0	No	Input of Electricity to create Flour
+p_5_4	1	Undefined	1	0	0	No	Input of Chickens to create Eggs
+p_0_8	1	Undefined	1	0	0	No	Input of Cake mix to create Cake
+p_7_8	1	Undefined	1	0	0	No	Input of Electricity to create Cake
+p_8_9	1	Undefined	1	0	0	No	Input of Cake to create Pleasure
+
+End
+
+Project Calculated parameters
+
+End

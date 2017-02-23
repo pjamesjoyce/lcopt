@@ -1,0 +1,163 @@
+{SimaPro 8.2.0.0}
+{processes}
+{Date: 13/02/2017}
+{Time: 11:37:00}
+{Project: bw2}
+{CSV Format version: 8.0.5}
+{CSV separator: Tab}
+{Decimal separator: .}
+{Date separator: /}
+{Short date format: dd/MM/yyyy}
+{Skip empty fields: No}
+{Convert expressions to constants: Yes}
+{Selection: Selection (1)}
+{Related objects (system descriptions, substances, units, etc.): Yes}
+{Include sub product stages and processes: Yes}
+{Open project: 'bw2'}
+{Library 'Ecoinvent 3 - allocation, default - unit'}
+
+Process
+
+Category type
+processing
+
+Process identifier
+Institut000027870100001
+
+Type
+
+
+Process name
+
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+MyTestProduct	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Electricity, medium voltage {GR}| market for | Alloc Def, U	kWh	100	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+End
+
+Quantities
+Mass	Yes
+Energy	Yes
+
+End
+
+
+Units
+kg	Mass	1	kg
+g	Mass	0.001	kg
+kWh	Energy	3.6	MJ
+MJ	Energy	1	MJ
+ton	Mass	1000	kg
+µg	Mass	0.000000001	kg
+mg	Mass	0.000001	kg
+GJ	Energy	1000	MJ
+J	Energy	0.000001	MJ
+kJ	Energy	0.001	MJ
+Mtn	Mass	1000000000	kg
+PJ	Energy	1000000000	MJ
+TJ	Energy	1000000	MJ
+kton	Mass	1000000	kg
+ng	Mass	1.0E-12	kg
+pg	Mass	1.0E-15	kg
+MWh	Energy	3600	MJ
+lb	Mass	0.4535924	kg
+Btu	Energy	0.001055696	MJ
+oz	Mass	0.02834952	kg
+tn.sh	Mass	907.1848	kg
+tn.lg	Mass	1016.047	kg
+kcal	Energy	0.0041855	MJ
+Wh	Energy	0.0036	MJ
+t	Mass	1000	kg
+
+End

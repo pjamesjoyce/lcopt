@@ -8,9 +8,6 @@
 <link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/sandbox.css') }}" />
 <!-- this is the md5 script (from http://pajhome.org.uk/crypt/md5) to create the correct IDs for the model-->
 <script src="{{ url_for('static', filename = 'js/md5.js') }}"></script>
-<!-- This is the underlying package for the typeahead in the input modal -->
-<script src="{{ url_for('static', filename = 'js/cdn_cache/typeahead.bundle.js') }}"></script>
-<link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/typeahead.css') }}" />
 {% endblock %}
 
 {% block content %}
@@ -125,6 +122,5 @@
   });
 
 </script>
-
 
 {% endblock %}

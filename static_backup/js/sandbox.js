@@ -1,31 +1,22 @@
 // NOTE - the sandbox_functions.js file has to be loaded prior to this one
 
 // Script goes here
-//console.log("Hello from sandbox.js")
+console.log("Hello from sandbox.js")
 sayHello()
 
 // This is the function that gets called by the template, set the arguments to cover all of the things that need to be passed
 
 var jsPlumbsetup = function (nodes, links,linklabels, outputlabels) {
-	//console.log(nodes)
-	//console.log(links)
+	console.log(nodes)
+	console.log(links)
 
     // setup some defaults for jsPlumb.
     // instance is the jsPlumb base object
     var instance = jsPlumb.getInstance({
         Endpoint: ["Dot", {radius: 2}],
         Connector:[ "Flowchart", { stub: [0, 0], midpoint: 0.25 } ],//"Straight",
-        Container: "#sandbox_container",
+        Container: "#sandbox_container"
     });
-
-    // bind some useful things to the instance for use later
-    instance.data ={}
-    instance.data.nodes = nodes
-    instance.data.links = links
-    instance.data.linklabels = linklabels
-    instance.data.outputlabels = outputlabels
-
-    //console.log(instance.data)
 
     // set up the various types of links
 
@@ -65,34 +56,20 @@ var jsPlumbsetup = function (nodes, links,linklabels, outputlabels) {
       //hoverPaintStyle: {strokeStyle: "blue", lineWidth: 1 },
     });
 
-    instance.bind("beforeDrop", function(obj){
-      //console.log(instance.data)
-      //console.log('About the create a connection');
-      //console.log(obj)
-      obj.connection.setData({'connection_type':'intermediate'});
-      return true;
-    })
-
 	// This function deals with connection events
 	instance.bind("connection", function (info) {
-    //console.log('creating a connection')
 
 		//sort out the label
 
 		data = info.connection.getData()
-
-    //console.log(data)
-
 		var sID = info.sourceId + "_" + info.targetId;
-
-    //console.log("sID = " + sID)
 
 		if(data['connection_type'] == 'intermediate'){
 			
 			var labelText = linklabels[sID];
 
 			if(typeof labelText == 'undefined'){
-		      //console.log('doesnt have a label already');
+		      console.log('doesnt have a label already');
 		      labelText = 'No Label'
 		  	}
 
@@ -116,7 +93,7 @@ var jsPlumbsetup = function (nodes, links,linklabels, outputlabels) {
 	      labelText = name + " ("+ amount +" "+ unit +")";
 	      info.connection.getOverlay("label").setLabel(labelText);
 	      info.connection.setData({'connection_type':'intermediate', 'connection_amount':amount})
-	      //console.log( info.connection.getData())*/
+	      console.log( info.connection.getData())*/
 
 	    //uncomment when labelShow and lableHide have been rewritten
 	    //info.connection.getOverlay("label").hide();
@@ -146,7 +123,7 @@ var jsPlumbsetup = function (nodes, links,linklabels, outputlabels) {
     };
 
 
-    ////console.log(links)
+    //console.log(links)
     // This function creates all of the links
     for (i=0;i<links.length;i++){
 
@@ -158,7 +135,7 @@ var jsPlumbsetup = function (nodes, links,linklabels, outputlabels) {
 
                });
 
-               ////console.log(connection);
+               //console.log(connection);
 
               connection.unbind("mouseover", function(conn){
 
@@ -174,13 +151,13 @@ var jsPlumbsetup = function (nodes, links,linklabels, outputlabels) {
     //Time to set up the buttons
     //First the saveModel button
     $('#saveModel').click(function(e){
-    	//console.log('saving the model');
+    	console.log('saving the model');
     	saveModel();
     });
 
     //This one is the add process button
     $('#addProcess').click(function(e){
-	  //console.log("Add a new process");
+	  console.log("Add a new process");
 	  addProcess(instance);
 	})
 

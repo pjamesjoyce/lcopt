@@ -19,7 +19,7 @@ def get_exchange_from_database(name, database):
         item = database['items'][key]
         if item['name'] == name:
             return (database.get('name'), item.get('code'))
-    return None
+    return False
 
 # partial function to get the item from the default database
 #get_exchange = partial(get_exchange_from_database, database=defaultDatabase)
@@ -72,7 +72,15 @@ def exchange_factory(input, type, amount, uncertainty, comment):
 
 # Create an item data structure
 
-def item_factory(name, type, unit='kg', exchanges=[], location='GLO', categories=[], **kwargs):
+def item_factory(name, type, unit='kg', exchanges=None, location='GLO', categories=None, **kwargs):
+
+    if exchanges is None:
+        exchanges = []
+
+    if categories is None:
+       categories = []
+        
+        
 
     to_hash = name + type+ unit + location
     code = hashlib.md5(to_hash.encode('utf-8')).hexdigest()

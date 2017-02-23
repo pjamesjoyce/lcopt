@@ -1,0 +1,115 @@
+name: lcopt
+dependencies:
+- appdirs=1.4.0=py35_0
+- click=6.7=py35_0
+- colorama=0.3.7=py35_0
+- cycler=0.10.0=py35_0
+- decorator=4.0.11=py35_0
+- docopt=0.6.2=py35_0
+- entrypoints=0.2.2=py35_0
+- flask=0.12=py35_0
+- future=0.16.0=py35_1
+- icu=57.1=vc14_0
+- ipykernel=4.5.2=py35_0
+- ipython=5.1.0=py35_0
+- ipython-notebook=4.0.4=py35_3
+- ipython_genutils=0.1.0=py35_0
+- ipywidgets=5.2.2=py35_1
+- itsdangerous=0.24=py35_0
+- jinja2=2.9.4=py35_0
+- jpeg=9b=vc14_0
+- jsonschema=2.5.1=py35_0
+- jupyter=1.0.0=py35_3
+- jupyter_client=4.4.0=py35_0
+- jupyter_console=5.0.0=py35_0
+- jupyter_core=4.2.1=py35_0
+- libpng=1.6.27=vc14_0
+- markupsafe=0.23=py35_2
+- matplotlib=1.5.3=np111py35_1
+- mistune=0.7.3=py35_0
+- mkl=2017.0.1=0
+- mkl-service=1.1.2=py35_3
+- nbconvert=4.2.0=py35_0
+- nbformat=4.2.0=py35_0
+- notebook=4.3.1=py35_1
+- numpy=1.11.3=py35_0
+- openssl=1.0.2j=vc14_0
+- path.py=10.0=py35_0
+- pickleshare=0.7.4=py35_0
+- pip=9.0.1=py35_1
+- prompt_toolkit=1.0.9=py35_0
+- psutil=5.0.1=py35_0
+- pygments=2.1.3=py35_0
+- pyparsing=2.1.4=py35_0
+- pyqt=5.6.0=py35_2
+- python=3.5.2=0
+- python-dateutil=2.6.0=py35_0
+- pytz=2016.10=py35_0
+- pyzmq=16.0.2=py35_0
+- qt=5.6.2=vc14_3
+- qtconsole=4.2.1=py35_2
+- requests=2.12.4=py35_0
+- scipy=0.18.1=np111py35_1
+- setuptools=27.2.0=py35_1
+- simplegeneric=0.8.1=py35_1
+- sip=4.18=py35_0
+- six=1.10.0=py35_0
+- tk=8.5.18=vc14_0
+- tornado=4.4.2=py35_0
+- traitlets=4.3.1=py35_0
+- unicodecsv=0.14.1=py35_0
+- unidecode=0.04.19=py35_0
+- vs2015_runtime=14.0.25123=0
+- wcwidth=0.1.7=py35_0
+- werkzeug=0.11.15=py35_0
+- wheel=0.29.0=py35_0
+- whoosh=2.7.4=py35_0
+- widgetsnbextension=1.2.6=py35_0
+- win_unicode_console=0.5=py35_0
+- wrapt=1.10.8=py35_0
+- xlrd=1.0.0=py35_0
+- xlsxwriter=0.9.6=py35_0
+- zlib=1.2.8=vc14_3
+- pip:
+  - alabaster==0.7.9
+  - argh==0.26.2
+  - asteval==0.9.8
+  - babel==2.3.4
+  - brightway2==2.0.2
+  - bw2analyzer==0.9.1
+  - bw2calc==1.5.3
+  - bw2data==2.3.2
+  - bw2io==0.5.7
+  - bw2parameters==0.5.2
+  - bw2speedups==2.1
+  - docutils==0.13.1
+  - eight==0.3.3
+  - fasteners==0.14.1
+  - imagesize==0.7.1
+  - ipython-genutils==0.1.0
+  - jupyter-client==4.4.0
+  - jupyter-console==5.0.0
+  - jupyter-core==4.2.1
+  - livereload==2.5.1
+  - lxml==3.7.2
+  - monotonic==1.2
+  - networkx==1.11
+  - nose==1.3.7
+  - pandas==0.19.1
+  - pathtools==0.1.2
+  - peewee==2.8.5
+  - plotly==1.12.12
+  - port-for==0.3.1
+  - prompt-toolkit==1.0.9
+  - pydot==1.2.3
+  - pyprind==2.9.9
+  - pyyaml==3.12
+  - snowballstemmer==1.2.1
+  - sphinx==1.5.2
+  - sphinx-autobuild==0.6.0
+  - stats-arrays==0.4.1
+  - voluptuous==0.9.3
+  - watchdog==0.8.3
+  - win-unicode-console==0.5
+prefix: C:\Users\pjjoyce\AppData\Local\Continuum\Miniconda3\envs\lcopt
+

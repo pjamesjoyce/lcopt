@@ -1,0 +1,9 @@
+Project Input parameters
+{% for param in project.input_parameters %}{{param.name}}	{{param.default|default('1', true)}}	Undefined	1	0	0	No	{{param.comment}}
+{% endfor %}
+End
+
+Project Calculated parameters
+{% for param in project.calculated_parameters %}{{param.name}}	{{param.formula}}	{{param.comment}}
+{% endfor %}
+End
