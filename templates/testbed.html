@@ -3,49 +3,40 @@
 {% block title %}Testing Area{% endblock%}
 
 {% block head_postload %}
-<script src="{{ url_for('static', filename = 'js/cdn_cache/jquery.min.js') }}"></script>
-<script src="{{ url_for('static', filename = 'js/cdn_cache/typeahead.bundle.js') }}"></script>
-<script src="{{ url_for('static', filename = 'js/cdn_cache/handlebars.min.js') }}"></script>
-<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
-<!--<script  type="text/javascript" src="http://twitter.github.com/typeahead.js/releases/latest/typeahead.bundle.js"></script>-->
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.min.js"></script>-->
-<script src="{{ url_for('static', filename = 'js/testing.js') }}"></script>
-<link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/testing.css') }}" />
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.4/d3.min.js"></script>
+<script src="{{ url_for('static', filename = 'js/cdn_cache/d3-pie.min.js') }}"></script>
+<script src="{{ url_for('static', filename = 'js/analysis.js') }}"></script>
+<script src="{{ url_for('static', filename = 'js/pie2.js') }}"></script>
+<script src="{{ url_for('static', filename = 'js/cdn_cache/d3.min.js') }}"></script>
+
+<link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/analysis.css') }}" />
+
 {% endblock%}
 
 {% block content %}
-    <div class="bs-example">
-		<h2>Input name</h2>
-        <input type="text" id="search_input" class=" tt-query" autocomplete="off" spellcheck="false">
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xs-10 col-xs-offset-1">
+    	
+    	
+    	<div class="row">
+	        <div id="pie" class = "col-xs-6">
+	        	<select id = "parameterSetChoice">
+	    			{% for item in args.result_sets %}<option value = {{loop.index}}>Parameter Set {{loop.index}}</option>{% endfor %}
+	    		</select>
+	        </div>
+            <div id = "force" class = "col-xs-6">
+	    </div>
+	    <div class="row">
+        <!--<div id = "force" class = "col-xs-12">-->
+        </div>
+        </div>
+        
+        
     </div>
-    <div class="col-xs-6 col-offset-3">
-    	<form class="form-horizontal">
-          <div class="form-group">
-            <label for="inputName" class="control-label col-xs-3">Name of input</label> 
-            <div class="col-xs-9">
-              <input class="form-control typeahead" name = "inputName", id="inputName">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="extLink" class="control-label col-xs-3">Link to external database</label> 
-            <div class="col-xs-9">
-              <input class="form-control disabled" name = "extLinkName", id="extLinkName" disabled>
-              <input class="form-control disabled" name = "extLink", id="extLink" disabled>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="unit" class = "control-label col-xs-3">Unit</label>
-            <div class="col-xs-6" id="unitDiv"></div>
-          </div>
-          <div class="form-group">
-            <label for="unlinked" class="control-label col-xs-3">Is burden free</label> 
-            <div class="col-xs-6">
-              <input type="checkbox" class="checkbox-inline" name = "unlinked", id="unlinked">
-            </div>
-            <div id="ext_data_button" class="col-xs-3">
-              
-            </div>
-          </div>
-        </form>
-    </div>
+  </div>
+</div>
+
 {% endblock %}

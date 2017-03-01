@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--<link rel='icon' href='/static/favicon.ico' type='image/x-icon'>-->
     <!--<link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">-->
-    <title>{% block title %}Default title{% endblock %}</title>
+    <title>LCOPT : {% block title %}{% endblock %}</title>
 
     <!-- Extra items for the header -->
     {% block head_preload %}{% endblock %}
@@ -72,8 +72,9 @@
         <div class="right">
           <ul class="menu">
             <!--<li class="{% block nav_class_home %}{% endblock %}"><a class="menu-block" href="/">Home</a></li>-->
-            <li class=""><a class="menu-block" href="/testing">Testing area</a></li>
             {% block quitbutton %}
+            <li class=""><a class="menu-block" href="/parameters">Parameter Sets</a></li>
+            <li class=""><a class="menu-block" href="/testing">Testing area</a></li>
             <li class="menu-highlight">
               <a class="menu-highlight"  href="/shutdown">Quit</a>
             </li>

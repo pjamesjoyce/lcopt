@@ -31,9 +31,24 @@ var jsPlumbsetup = function (nodes, links,linklabels, outputlabels) {
 
     instance.registerConnectionType("basic", {
       anchor:"Continuous",
-      paintStyle: { strokeStyle: "#777", lineWidth: 1, outlineColor: "transparent", outlineWidth: 14 },
+      //paintStyle: { strokeStyle: "#777", lineWidth: 1, outlineColor: "transparent", outlineWidth: 14 },
       detachable : false,
-      hoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 1 },
+      //hoverPaintStyle: {strokeStyle: "#1e8151", lineWidth: 1 },
+      //overlays: [
+      //    [ "Arrow", {
+      //        location: 1,
+      //       id: "arrow",
+      //        length: 7.5,
+      //        width:7.5,
+      //        foldback: 0.8
+      //    } ],
+          //["Custom", { label: "Hello", id:"type" }]
+      //],
+      //Connector:"Straight ",
+    });
+
+    instance.registerConnectionType("input", {
+      paintStyle: { strokeStyle: "#2e6f9a", lineWidth: 1, outlineColor: "transparent", outlineWidth: 14 },
       overlays: [
           [ "Arrow", {
               location: 1,
@@ -42,26 +57,39 @@ var jsPlumbsetup = function (nodes, links,linklabels, outputlabels) {
               width:7.5,
               foldback: 0.8
           } ],
-          //["Custom", { label: "Hello", id:"type" }]
       ],
-      //Connector:"Straight ",
-    });
-
-    instance.registerConnectionType("input", {
-      paintStyle: { strokeStyle: "#2e6f9a", lineWidth: 1, outlineColor: "transparent", outlineWidth: 14 },
       //hoverPaintStyle: {strokeStyle: "blue", lineWidth: 1 },
     });
 
-    instance.registerConnectionType("output", {
-      paintStyle: { strokeStyle: "#484c51", lineWidth: 1, outlineColor: "transparent", outlineWidth: 14 },
+    instance.registerConnectionType("biosphere", {
+      paintStyle: { strokeStyle: "#484c51", lineWidth: 10, outlineColor: "transparent", outlineWidth: 14 },
+      overlays: [
+          [ "Arrow", {
+              location: 0,
+              id: "arrow",
+              length: 7.5,
+              width:7.5,
+              foldback: 0.8,
+              direction:-1
+          } ],
+      ],
       //hoverPaintStyle: {strokeStyle: "blue", lineWidth: 1 },
     });
 
     instance.registerConnectionType("intermediate", {
       paintStyle: { strokeStyle: "#aaa", lineWidth: 1, outlineColor: "transparent", outlineWidth: 14 },
       overlays: [
-      	[ "Label", { label: "Establish connection", id: "label", cssClass: "aLabel" }],
-      ]
+          [ "Arrow", {
+              location: 1,
+              id: "arrow",
+              length: 7.5,
+              width:7.5,
+              foldback: 0.8
+          } ],
+      ],
+      //overlays: [
+      //	[ "Label", { label: "Establish connection", id: "label", cssClass: "aLabel" }],
+      //]
       //hoverPaintStyle: {strokeStyle: "blue", lineWidth: 1 },
     });
 
@@ -150,13 +178,29 @@ var jsPlumbsetup = function (nodes, links,linklabels, outputlabels) {
     // This function creates all of the links
     for (i=0;i<links.length;i++){
 
+              var this_source = links[i]['sourceID'].split(' ').join('_'),
+                  this_target = links[i]['targetID'].split(' ').join('_'),
+                  this_type = links[i]['type'];
+
+              console.log(this_type)
+
+              //console.log('from ' + this_source)
+              //console.log('to ' + this_target)
+
               var connection = instance.connect({
-                 source: links[i]['sourceID'].split(' ').join('_'),
-                 target: links[i]['targetID'].split(' ').join('_'),
-                 type:"basic " +links[i]['type'],
+
+
+
+                 source: this_source,//links[i]['sourceID'].split(' ').join('_'),
+                 target: this_target,//links[i]['targetID'].split(' ').join('_'),
+                 //type:"basic",
                  data:{'connection_type':links[i]['type'], 'isExisting':true},
 
                });
+
+              connection.setType(this_type + " basic")
+              console.log(connection.getType())
+              connection.addClass("connection_" + this_type)
 
                ////console.log(connection);
 

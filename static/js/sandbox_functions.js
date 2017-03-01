@@ -71,15 +71,15 @@ var newNodeExternal = function(name, type, id, x, y, instance, outputlabel = '')
   var d = $('<div>').attr('id', id).addClass('w ' + type);
   var title =  $('<div>').addClass('title').text(name);
   var buttons = $('<div>').addClass('buttons');
-  var connect =  $('<div>').addClass('ep').html('<i class="ep2 material-icons w3-medium" data-toggle="popover" data-placement= "left" data-trigger="hover" title="Connect" data-content="Drag to connect to another process">trending_flat</i>');
-  var input =  $('<div>').addClass('ip').html('<i class="material-icons w3-medium" data-toggle="popover" data-placement= "bottom" data-trigger="hover" title="Input" data-content="Add an input to this process">file_download</i>');
-  //var output =  $('<div>').addClass('op').html('<i class="material-icons w3-medium" data-toggle="popover" data-placement= "bottom" data-trigger="hover" title="Output" data-content="Add an output to this process">file_upload</i>');
-  //var del =  $('<div>').addClass('x').html('<i class="material-icons w3-medium" data-toggle="popover" data-placement= "right" data-trigger="hover" title="Remove" data-content="Remove this item">cancel</i>');
+  var connect =  $('<div>').addClass('ep').html('<i class="ep2 material-icons w3-small" data-toggle="popover" data-placement= "left" data-trigger="hover" title="Connect" data-content="Drag to connect to another process">trending_flat</i>');
+  var input =  $('<div>').addClass('ip').html('<i class="material-icons w3-small" data-toggle="popover" data-placement= "bottom" data-trigger="hover" title="Technosphere exchange" data-content="Add an input from the \'Technosphere\' (materials and energy) to this process">business</i>');
+  var output =  $('<div>').addClass('op').html('<i class="material-icons w3-small" data-toggle="popover" data-placement= "bottom" data-trigger="hover" title="Biosphere exchange" data-content="Add an emission (or resource flow) to/from the environment (biosphere) to this process">local_florist</i>');
+  var analyse =  $('<div>').addClass('analyse').html('<i class="material-icons w3-small" data-toggle="popover" data-placement= "right" data-trigger="hover" title="Analyse" data-content="Run LCA for this process">pie_chart</i>');
   //var edit = $('<div>').addClass('ed').html('<i class="material-icons w3-medium" data-toggle="popover" data-placement= "bottom" data-trigger="hover" title="Edit" data-content="Edit quantity">edit</i>');
 
 
   if(type == 'transformation'){
-    buttons.append(connect).append(input)//.append(output);
+    buttons.append(connect).append(input).append(output).append(analyse);
   }else{
     //buttons.append(edit);
   };
@@ -156,8 +156,11 @@ var initNode = function(el, instance) {
 
             //This is the delete function
             //TODO: Fix this for Flask implentation
-            $('.x').unbind().click(function(e){
+            $('.analyse').unbind().click(function(e){
               ////console.log('#' + $(this).parent().parent().attr('id'));
+              this_id = $(this).parent().parent().attr('id')
+              this_name = $(this).parent().parent().find('.title').text()
+              start_analysis(this_id, this_name)
 
               //console.log('TODO: Fix this for Flask implentation')
               
@@ -178,6 +181,7 @@ var initNode = function(el, instance) {
             $('.op').unbind().click(function(e){
 
                 //console.log('TODO: Fix this for Flask implentation')
+                addBiosphere(e, instance)
               
             }); 
             
@@ -423,6 +427,7 @@ var addInput = function(e, instance){
             var postData ={
               'action': 'inputLookup',
               'code': suggestion.code,
+              'format' : 'ecoinvent',
             }
             //console.log(postData)
             $.post('/process_post',
@@ -488,7 +493,7 @@ var addInput = function(e, instance){
 
         $button.on('click', function(){
           // search_ecoinvent_dialog now takes a callback function which gets run when the user clicks ok
-          search_ecoinvent_dialog(logResult)
+          search_external_dialog('Search ecoinvent database', logResult, 'searchEcoinvent')
 
         })
         $message.find('#ext_data_button').append($button)
@@ -520,6 +525,7 @@ var addInput = function(e, instance){
               'code':code,
               'ext_link_name' : inputModal.getData('ext_link_name'),
               'ext_link': inputModal.getData('code'),
+              'lcopt_type': 'input'
 
            }
 
@@ -550,6 +556,304 @@ var addInput = function(e, instance){
   };
 
 
+// This is the add biosphere function - a big copy of the addInput one - these could maybe be rationalised later...
+
+var addBiosphere = function(e, instance){
+
+    var target = $( e.target )
+    ////console.log(target)
+
+    var thisNodeID = target.parent().parent().parent().attr('id');
+    ////console.log("thisNodeID is...")
+    ////console.log(thisNodeID);
+    ////console.log(instance)
+    var thisConnections = instance.getConnections({ target: thisNodeID });
+
+    thisConnectionList = [];
+
+
+
+    for(i=0; i<thisConnections.length; i++){
+      var sId = thisConnections[i].sourceId;
+      thisConnectionList.push($('#'+ sId + " .title").text());
+    }
+
+    ////console.log(thisConnectionList);
+
+    var formTitle = 'Add biosphere exchange'
+    // this is the html that will go in the body of the modal
+    var formHtml = `
+                    <form class="form-horizontal">
+                      <div class="form-group">
+                        <label for="exchangeName" class="control-label col-xs-3">Name of biosphere exchange</label> 
+                        <div class="col-xs-9">
+                          <input class="form-control typeahead" name = "exchangeName", id="exchangeName">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="extLink" class="control-label col-xs-3">Link to biosphere database</label> 
+                        <div class="col-xs-9">
+                          <input class="form-control disabled" name = "extLinkName", id="extLinkName" disabled>
+                          <input class="form-control disabled" name = "extLink", id="extLink" disabled>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="unit" class = "control-label col-xs-3">Unit</label>
+                        <div class="col-xs-6" id="unitDiv"></div>
+                      </div>
+                      <div class="form-group">
+                        <div id="ext_data_button" class="col-xs-12"></div>
+                      </div>
+                    </form>
+                  `
+    
+
+    var inputModal = BootstrapDialog.show({
+      title:formTitle,
+      message:function(dialogRef){
+        var $message = $('<div></div>').append(formHtml);
+        // This populates the unit list from the UNIT_CHOICES variable
+        var unitMap = {};
+        var unitHtml = "<select name='unit' id='unit' class='selectpicker form-control col-xs-6'>"
+
+        for(i in UNIT_CHOICES){
+          unitHtml += "<optgroup label = '"+ i +"'>";
+          
+          for(j in UNIT_CHOICES[i]){
+            unitHtml += "<option value = '"+UNIT_CHOICES[i][j][0]+"'>"+UNIT_CHOICES[i][j][1]+"</option>"
+            unitMap[UNIT_CHOICES[i][j][1]] = [UNIT_CHOICES[i][j][0]]
+          };
+          unitHtml+="</optgroup>";
+        };
+        unitHtml+="</select>"
+        var $units = $(unitHtml)
+        
+
+        $message.find('#unitDiv').append($units)
+        $units.selectpicker()
+
+        /*This bit sets up the typeahead*/
+
+        function customTokenizer(datum) {
+          var nameTokens = Bloodhound.tokenizers.whitespace(datum.name);
+          //var ownerTokens = Bloodhound.tokenizers.whitespace(datum.owner);
+          //var languageTokens = Bloodhound.tokenizers.whitespace(datum.language);
+
+          return nameTokens//.concat(ownerTokens).concat(languageTokens);
+        }
+
+        function typeaheadCallback(postResponse){
+          if (postResponse.isLinked == true) {
+            //console.log(postResponse)
+            var unit = unitMap[postResponse.ext_link_unit]
+            $message.find('#extLinkName').val(postResponse.ext_link_string);
+            $message.find('#extLink').val(postResponse.ext_link)
+            $message.find('#unit').selectpicker('val', unit);
+            $message.find('#unit').addClass('disabled').prop( "disabled", true )
+            $message.find('#ext_search_button').addClass('disabled').prop( "disabled", true )
+            
+          }
+          else
+          {
+            //console.log(postResponse)
+            $message.find('#unit').selectpicker('val', postResponse.unlinked_unit);
+            $message.find('#unit').addClass('disabled').prop( "disabled", true )
+            
+          }
+        }
+
+         function createNewTemplate(){
+          current_input = $('#exchangeName').val()
+          $create_new = $('<div class="tt-footer"><p>Create new named exchange called <strong>'+current_input+'<strong></p></div>')
+          $create_new.click(function(){
+            $message.find('#ext_search_button').removeClass('disabled').prop( "disabled", false )
+            $message.find('#unit').removeClass('disabled').prop( "disabled", false )
+            
+            $('.typeahead').typeahead('close');
+          })
+          return $create_new
+          }
+
+
+
+        var inputs = new Bloodhound({
+            //local: [{name: "James item", code:1},{name: "Claire item", code:2}],
+            //local: [{"code": "acdf091633109d3b6b7744a602720412", "name": "Input of Unlinked input"}, {"code": "bc1d1b9e06255d25691d4bc25cbed054", "name": "Input of Quartz - linked"}, {"code": "440891b98348acaa325bb80b1e0080fb", "name": "Input of Energy, electricity"}],
+            //identify: function(obj) { return obj.code; },
+              datumTokenizer: customTokenizer,// Bloodhound.tokenizers.whitespace('name'),
+              queryTokenizer: Bloodhound.tokenizers.whitespace,
+              // The url points to a json file that contains an array of input names
+              //prefetch: './inputs.json',
+              prefetch: {
+                url: 'biosphere.json',
+                transform: function(list) {
+                    return $.map(list, function(item) {
+                        return {
+                            name: item.name,
+                            code: item.code,
+                            //etc:item.etc
+                        };
+                        
+                    });
+                },
+                cache:false,
+            },
+          });
+         //console.log(inputs)
+
+          // Initializing the typeahead with remote dataset
+          $message.find('.typeahead').typeahead({
+            minLength: 1,
+            highlight: true
+            },
+            {
+                name: 'inputs',
+                display:'name',
+                source: inputs,
+                templates:{
+                  header: '<div class="tt-header"><p>Reuse existing exchange...</p></div>',
+                  footer: createNewTemplate,
+                  notFound: createNewTemplate,
+            },
+            }
+          );
+
+          function eventHandler(obj, suggestion){
+            //console.log(suggestion)
+            var postData ={
+              'action': 'inputLookup',
+              'code': suggestion.code,
+              'format' : 'biosphere',
+            }
+            //console.log(postData)
+            $.post('/process_post',
+              postData, 
+              function(data, status, xhr){
+                  if(status == 'success'){
+                    typeaheadCallback(data)
+                  }
+                }, 
+                "json");
+          }
+          
+        $message.find('#exchangeName').bind('typeahead:selected', function(obj, suggestion) {  
+            //console.log('selected');
+            eventHandler(obj, suggestion);
+        });
+        $message.find('#exchangeName').bind('typeahead:autocomplete', function(obj, suggestion) {  
+            //console.log('autocomplete');
+            eventHandler(obj, suggestion);
+            $message.find('.tt-footer').addClass('hide')
+        });
+
+        $message.find('#exchangeName').keypress(function(e){
+          if(e.keyCode==13){
+            //console.log('enter')
+          }
+        });
+
+        $message.find('#exchangeName').keydown(function(e){
+          if(e.keyCode==8 || e.keyCode==46){
+            //console.log('delete/backspace')
+            $('#extLinkName').val('');
+          $('#extLink').val('')
+          $message.find('#ext_search_button').removeClass('disabled').prop( "disabled", false )
+          $message.find('#unit').removeClass('disabled').prop( "disabled", false )
+          }
+        });
+
+
+        var $button = $('<button type="button" id="ext_search_button" type="submit" class="pull-right btn btn-primary">Search biosphere database</button>')
+
+        // This is the callback function that gets run by the search box once it has a result
+        function logResult(name, code){
+
+          var unit_re = /\[([\w ]*)\]$/
+          var unit_name = unit_re.exec(name)[1]
+          var unit = unitMap[unit_name]
+          console.log(name)
+          console.log(code)
+
+
+
+          $message.find('#extLink').val(code);
+          $message.find('#extLinkName').val(name);
+          $message.find('#unit').selectpicker('val', unit);
+          $message.find('#unit').addClass("disabled");
+          $message.find('#unit').prop('disabled', true);
+          inputModal.setData('code', code);
+          inputModal.setData('ext_link_name', name);
+          inputModal.setData('unit',unit);
+        }
+
+        $button.on('click', function(){
+          // search_ecoinvent_dialog now takes a callback function which gets run when the user clicks ok
+          //search_ecoinvent_dialog(logResult)
+          search_external_dialog('Search for biosphere flow', logResult, 'searchBiosphere')
+
+        })
+        $message.find('#ext_data_button').append($button)
+        return $message
+      },
+      nl2br: false,
+      buttons:[{
+        label:'OK',
+        cssClass: 'btn-primary',
+        action:function(dialogRef){
+
+            var name = $('#exchangeName').val();
+            var type = 'product'
+            var unit = $('#unit').selectpicker('val');//inputModal.getData('unit')[0],
+            //console.log("unit at OK click " + unit)
+            var location = 'GLO';
+            var code = hex_md5(name+type+unit+location)
+            var suffix = $('[id^=' + code + ']').size()
+            var node_id = code + '__' + suffix
+            //console.log('creating node with id ' + node_id)
+
+            var postData = {
+              'action': 'addInput',
+              'targetId': thisNodeID,
+              'name': name,
+              'type': type,
+              'unit': unit,
+              'location': location,
+              'code':code,
+              'ext_link_name' : inputModal.getData('ext_link_name'),
+              'ext_link': inputModal.getData('code'),
+              'lcopt_type': 'biosphere',
+
+           }
+
+          console.log(postData);
+
+          $.post('/process_post', postData);
+          //close the dialog
+          dialogRef.close()
+
+          var position = $('#'+thisNodeID).position()
+          //console.log(position)
+
+          // create a new node in the js side version for display on screen, and initiate it
+          var thisNode = newNodeExternal(name,'biosphere',node_id,position.left + 25,position.top - 50,instance);
+          initNode(thisNode,instance);
+          saveState(thisNode);
+
+          //connect the new node
+          var thisConnection = instance.connect({
+            source: node_id,
+            target: thisNodeID,
+            type:"basic biosphere",
+            data:{'connection_type':'biosphere'}
+          })
+
+          thisConnection.addClass('connection_biosphere')
+        }
+      },]
+    });
+  };
+
+
 var echo = function(){
 
   postData = {
@@ -572,11 +876,11 @@ var carry_on = function(returnedData){
   //console.log('The server says\n' + returnedData['message']); 
 }
 
-var search_ecoinvent_dialog = function(callback){
+var search_external_dialog = function(title, callback, action){
 
   
     // this is the title of the modal
-    var formTitle = 'Search the ecoinvent database'
+    var formTitle = title
     // this is the html that will go in the body of the modal
     var formHtml = `
                     <form class="form-horizontal">
@@ -584,9 +888,12 @@ var search_ecoinvent_dialog = function(callback){
                         <label for="searchTerm" class="control-label col-xs-3">Search for:</label> 
                         <div class="col-xs-9">
                           <input class="form-control ecoinventSearchTrigger" name = "searchTerm", id="searchTerm">
+                          <input name="hidden_control_to_stop_submission" style="{display:none}" class = "hidden">
                         </div>
                       </div>
-                      <div class="form-group">
+                      `
+    if(action == 'searchEcoinvent'){
+      formHtml +=`<div class="form-group">
                         <label for="location" class="control-label col-xs-3">Location</label> 
                         <div class="col-xs-9">
                           <input class="form-control ecoinventSearchTrigger" name = "location", id="location">
@@ -602,8 +909,19 @@ var search_ecoinvent_dialog = function(callback){
                         </div>
                       </div>
                     </form>
-                    
-                    
+                    `
+    }else{
+      formHtml += `<div class="form-group">
+                        
+                        <div id = "button_goes_here" class="col-xs-12">
+                          
+                        </div>
+                      </div>
+                    </form>
+                    `
+    }
+                      
+    formHtml +=     `
                     <div>
                       <div>
                         <h3 id='ecoinventResultsTitle'></h3>
@@ -620,12 +938,18 @@ var search_ecoinvent_dialog = function(callback){
       message:function(){
         var $message = $('<div></div>').append(formHtml);
         var $buttonDiv = $message.find('#button_goes_here');
-        var $button = $('<button type="button" id="search_button" type="submit" class="pull-right btn btn-primary">Search</button>')
+        var $button = $('<button type="button" id="search_button" class="pull-right btn btn-primary">Search</button>')
         $button.on('click', function(){
           var search_term = $('#searchTerm').val()
           var location = $('#location').val()
           var markets_only = $('#marketsOnly').is(':checked');
-          search_ecoinvent(search_term, location, markets_only);
+          //var action = 'searchEcoinvent'
+
+          console.log(location)
+          console.log(markets_only)
+
+
+          search_external(search_term, location, markets_only, action);
         })
         $buttonDiv.append($button)
         //lets try this
@@ -660,10 +984,10 @@ var search_ecoinvent_dialog = function(callback){
     return ecoinventModal.open()
  };
 
-var search_ecoinvent = function(search_term, location, markets_only){
+var search_external = function(search_term, location, markets_only, action){
   //generate the data to send
   postData = {
-    'action':'searchEcoinvent',
+    'action': action,//'searchEcoinvent',
     'search_term': search_term,
     'location': location, 
     'markets_only': markets_only,
@@ -676,14 +1000,14 @@ var search_ecoinvent = function(search_term, location, markets_only){
       postData,
       function(data, status, xhr){
         if(status == 'success'){
-          process_ecoinvent_search_results(data);
+          process_search_results(data);
         }
       },
       'json'
     );
 }
 
-var process_ecoinvent_search_results = function(data){
+var process_search_results = function(data){
   ////console.log(data);
 
   results = data['result'];
@@ -693,7 +1017,16 @@ var process_ecoinvent_search_results = function(data){
   for(var key in results){
     if (results.hasOwnProperty(key)) {
       var item = results[key]
-      html += '<option value = "'+ key +'">'+item['name']+' {' + item['location'] + '} [' + item['unit'] +']</option>\n'
+      if (data['format'] == 'ecoinvent'){
+        html += '<option value = "'+ key +'">'+item['name']+' {' + item['location'] + '} [' + item['unit'] +']</option>\n'
+      }
+      else if(data['format'] == 'biosphere'){
+        if(item['type'] == 'emission'){
+          html += '<option value = "'+ key +'">'+item['name']+' (emission to ' + item['categories'] + ') [' + item['unit'] +']</option>\n'
+        }else{
+          html += '<option value = "'+ key +'">'+item['name']+' (' + item['categories'] + ') [' + item['unit'] +']</option>\n'
+        }
+      }
       ////console.log(results[key]['name'] + '\t' + results[key]['location']);
       result_count++
     }
@@ -918,3 +1251,10 @@ var createModal = function(title, body){
 
     return myModal;
 };
+
+
+function start_analysis(id, name){
+  console.log('starting analysis for ' + name)
+  console.log(id)
+  window.location.replace("/analyse?item=" + name);
+}

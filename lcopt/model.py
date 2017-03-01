@@ -2,6 +2,7 @@ from lcopt.io import *
 from lcopt.ipython_interactive import IFS
 from lcopt.interact import FlaskSandbox
 from lcopt.bw2_export import Bw2Exporter
+from lcopt.analysis import Bw2Analysis
 
 from functools import partial
 from collections import OrderedDict
@@ -131,10 +132,21 @@ class LcoptModel(object):
         self.parameter_map = {}
 
         self.sandbox_positions = {}
+
+        # set the default names of the external databases - these can be changed if needs be
+        self.ecoinventName = "Ecoinvent3_3_cutoff"
+        self.biosphereName = "biosphere3"
          
         if load != None:
             self.load(load)
                     
+
+        # Try and initialise the external databases if they're not there already
+        if self.ecoinventName not in [x['name'] for x in self.external_databases]:
+            self.import_external_db(self.ecoinventName)
+        if self.biosphereName not in [x['name'] for x in self.external_databases]:
+            self.import_external_db(self.biosphereName)
+
         # create partial version of io functions
         self.add_to_database = partial(add_to_specified_database, database = self.database)
         self.get_exchange = partial(get_exchange_from_database, database=self.database)
@@ -181,6 +193,11 @@ class LcoptModel(object):
             self.parameter_map = savedInstance.parameter_map
 
             self.sandbox_positions = savedInstance.sandbox_positions
+
+
+            self.ecoinventName = savedInstance.ecoinventName
+            self.biosphereName = savedInstance.biosphereName
+
         except Exception:
             pass
 
@@ -266,6 +283,8 @@ class LcoptModel(object):
                     p_from = cr_list[r]
                     p_to = cr_list[c]
                     coords = (r,c)
+
+                    from_item_type = self.database['items'][(self.database['name'], p_from)]['lcopt_type']
                     #print('{}\t| {} --> {}'.format(coords, self.get_name(p_from), self.get_name(p_to)))
 
                     if not 'p_{}_{}'.format(coords[0],coords[1]) in self.params:
@@ -273,7 +292,12 @@ class LcoptModel(object):
                             'function' : None,
                             'description' : 'Input of {} to create {}'.format(self.get_name(p_from), self.get_name(p_to)),
                             'coords':coords,
-                            'unit' : self.get_unit(p_from)
+                            'unit' : self.get_unit(p_from),
+                            'from': p_from,
+                            'from_name': self.get_name(p_from),
+                            'to': p_to,
+                            'to_name': self.get_name(p_to),
+                            'type' : from_item_type,
                         }
 
                     else:
@@ -425,9 +449,13 @@ class LcoptModel(object):
 
 
     @req_bw2data
-    def search_databases(self, search_term, location = None, markets_only=False):
+    def search_databases(self, search_term, location = None, markets_only=False, databases_to_search = None):
 
-        data = Dictionaries(self.database['items'], *[x['items'] for x in self.external_databases])
+        if databases_to_search is None:
+            #Search all of the databases available
+            data = Dictionaries(self.database['items'], *[x['items'] for x in self.external_databases])
+        else:
+            data = Dictionaries(*[x['items'] for x in self.external_databases if x['name'] in databases_to_search ])
 
         query = Query()
 
@@ -439,7 +467,7 @@ class LcoptModel(object):
             location_filter = Filter("location", "has", location)
             query.add(location_filter)
         
-        query.add(Filter("name", "has", search_term))
+        query.add(Filter("name", "ihas", search_term))
         
         result = query(data)
         
@@ -663,4 +691,10 @@ class LcoptModel(object):
 
     def export_to_bw2(self):
         my_exporter = Bw2Exporter(self)
-        return my_exporter.export_to_bw2()
+        name, bw2db = my_exporter.export_to_bw2()
+        return name, bw2db
+
+    def analyse(self, demand_item, amount = 1, method = ('IPCC 2013', 'climate change', 'GWP 100a'), top_processes = 10, gt_cutoff = 0.01):
+        my_analysis = Bw2Analysis(self)
+        self.result_set = my_analysis.run_analyses(demand_item, amount, method, top_processes, gt_cutoff)
+

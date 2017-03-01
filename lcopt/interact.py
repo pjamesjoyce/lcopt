@@ -1,8 +1,10 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect
 import webbrowser
 import json
 from ast import literal_eval
 from lcopt.io import exchange_factory
+import mpld3
+from collections import OrderedDict
 
 class FlaskSandbox():
     
@@ -18,9 +20,11 @@ class FlaskSandbox():
             'newProcess':self.newProcess,
             'echo':self.echo,
             'searchEcoinvent':self.searchEcoinvent,
+            'searchBiosphere':self.searchBiosphere,
             'newConnection': self.newConnection,
             'addInput':self.addInput,
             'inputLookup':self.inputLookup,
+            'parse_parameters': self.parameter_parsing
         }
         
         #print (self.modelInstance.newVariable)
@@ -47,38 +51,52 @@ class FlaskSandbox():
         matrix = m.matrix
         
         sandbox_positions = m.sandbox_positions
-        
-        products = list(filter(lambda x:db[x]['type'] == 'product', db))
-        #print([(db[x]['name'], x[1]) for x in products])
-        product_codes = [x[1] for x in products]
-        processes = list(filter(lambda x:db[x]['type'] == 'process', db))
-        process_codes = [x[1] for x in processes]
-        process_name_map = dict(zip(process_codes, [db[(m.database['name'],x[1])]['name'] for x in processes]))
-        
+
+
+        products = OrderedDict((k,v) for k, v in db.items() if v['type'] == 'product')
+        product_codes = [k[1] for k in products.keys()]
+
+
+        processes = OrderedDict((k,v) for k, v in db.items() if v['type'] == 'process')
+        process_codes = [k[1] for k in processes.keys()]
+        process_name_map = {k[1]:v['name'] for k, v in processes.items()}
+
+
         #note this maps from output code to process
-        process_output_map = {self.output_code(x): x[1] for x in processes}
+        process_output_map = {self.output_code(x): x[1] for x in processes.keys()}
         self.reverse_process_output_map = {value:key for key, value in process_output_map.items()}
-                
-        intermediates = [self.output_code(x) for x in processes]
-        intermediate_map = dict(zip(intermediates, [db[(m.database['name'],x)]['name'] for x in intermediates]))
-        
-        process_output_name_map = dict(zip(process_codes, [db[(m.database['name'],x)]['name'] for x in intermediates]))
-        
-        inputs = [x for x in product_codes if x not in intermediates]
-        input_map = dict(zip(inputs, [db[(m.database['name'],x)]['name'] for x in inputs]))
+
+
+        intermediates = {k:v for k, v in products.items() if v['lcopt_type'] == 'intermediate'}
+        intermediate_codes = [k[1] for k in intermediates.keys()]
+        intermediate_map = {k[1]: v['name'] for k, v in intermediates.items()}
+
+        #process_output_name_map = {process_code: output_name for x in processes.keys()}
+        process_output_name_map = {x[1]: intermediate_map[self.reverse_process_output_map[x[1]]] for x in processes.keys()}
+
+
+        inputs = OrderedDict((k,v) for k, v in products.items() if v['lcopt_type'] == 'input')
+        input_codes = [k[1] for k in inputs.keys()]
+        input_map = {k[1]: v['name'] for k, v in inputs.items()}
         self.reverse_input_map = {value:key for key, value in input_map.items()}
-        
-        label_map = {**input_map, **process_output_name_map}
+
+
+        biosphere = OrderedDict((k,v) for k, v in products.items() if v['lcopt_type'] == 'biosphere')
+        biosphere_codes = [k[1] for k in biosphere.keys()]
+        biosphere_map = {k[1]: v['name'] for k, v in biosphere.items()}
+        self.reverse_biosphere_map = {value:key for key, value in biosphere_map.items()}
+
+
+        label_map = {**input_map, **process_output_name_map, **biosphere_map}
+
+        #print('label_map = {}\n'.format(label_map))
         
         self.outputlabels = [{'process_id': x, 'output_name':process_output_name_map[x]} for x in process_codes]
-        #print (self.outputlabels)
         
-        link_indices = [process_output_map[x] if x in intermediates else x for x in product_codes]
+        link_indices = [process_output_map[x] if x in intermediate_codes else x for x in product_codes]
                
-        #print(link_indices)
         
         # compute the nodes
-        # TODO: figure out how to duplicate nodes with multiple uses (e.g. energy, electricity)
         i = 1
         self.nodes = []
         for t in process_codes:
@@ -86,26 +104,38 @@ class FlaskSandbox():
             i+=1
         
         i=1
-        for p in inputs:
+        for p in input_codes:
+            
             self.nodes.append({'name':input_map[p],'type':'input','id':p+"__0",'initX':i*50+150,'initY':i*50})
+            i+=1
+
+        i=1
+        for p in biosphere_codes:
+            
+            self.nodes.append({'name':biosphere_map[p],'type':'biosphere','id':p+"__0",'initX':i*50+150,'initY':i*50})
             i+=1
             
         # compute links
         self.links=[]
         
         input_duplicates = []
+        biosphere_duplicates =[]
         
         #check there is a matrix (new models won't have one until parameter_scan() is run)
-        if matrix != None:
+        if matrix is not None:
             for c, column in enumerate(matrix.T):
                 for r, i in enumerate(column):
                     if i>0:
                         p_from = link_indices[r]
                         p_to = link_indices[c]
-                        if p_from in inputs:
+                        if p_from in input_codes:
                             suffix = "__" + str(input_duplicates.count(p_from))
                             input_duplicates.append(p_from)
                             p_type = 'input'
+                        elif p_from in biosphere_codes:
+                            suffix = "__" + str(biosphere_duplicates.count(p_from))
+                            biosphere_duplicates.append(p_from)
+                            p_type = 'biosphere'
                         else:
                             suffix = ""
                             p_type = 'intermediate'
@@ -120,6 +150,16 @@ class FlaskSandbox():
                 suffix = "__" + str(count)
                 self.nodes.append({'name':input_map[p],'type':'input','id':p+suffix,'initX':i*50+150,'initY':i*50})
                 i+=1
+                
+
+        while len(biosphere_duplicates)>0:
+            p = biosphere_duplicates.pop()
+            count = biosphere_duplicates.count(p)
+            if count>0:
+                suffix = "__" + str(count)
+                self.nodes.append({'name':biosphere_map[p],'type':'biosphere','id':p+suffix,'initX':i*50+150,'initY':i*50})
+                i+=1
+                
             
         #try and reset the locations
         
@@ -154,7 +194,7 @@ class FlaskSandbox():
         name = postData['process_name']
         unit = postData['unit']
         output_name  = postData['output_name']
-        exchanges = [{'name':output_name, 'type':'production', 'unit':unit}]
+        exchanges = [{'name':output_name, 'type':'production', 'unit':unit, 'lcopt_type':'intermediate'}]
         location ='GLO'
         m.create_process(name, exchanges, location, unit)
         self.modelInstance.parameter_scan()
@@ -164,12 +204,12 @@ class FlaskSandbox():
     
     def newConnection(self, postData):
 
-        print(postData)
+        #print(postData)
         db = self.modelInstance.database
         self.get_sandbox_variables()
 
         source = postData['sourceId']
-        print(self.reverse_process_output_map[source])
+        #print(self.reverse_process_output_map[source])
 
         target = postData['targetId']
         label = postData['label']
@@ -188,7 +228,7 @@ class FlaskSandbox():
         return "OK"
     
     def addInput(self, postData):
-        print(postData)
+        #print(postData)
         my_targetId = postData['targetId']
         
         my_name = postData['name']
@@ -203,13 +243,21 @@ class FlaskSandbox():
         if exchange_to_link == False:
         
             #Create the new product
+            kwargs ={}
+
             if 'ext_link' in postData.keys():
                 my_ext_link = literal_eval(postData['ext_link'])
-                exchange_to_link = m.create_product (name = my_name, location =my_location , unit=my_unit, ext_link = my_ext_link)
-                print('created linked product')
-            else:
-                exchange_to_link = m.create_product (name = my_name, location =my_location , unit=my_unit)
-                print('created unlinked product')
+                kwargs['ext_link'] = my_ext_link
+
+                #exchange_to_link = m.create_product (name = my_name, location =my_location , unit=my_unit, ext_link = my_ext_link)
+                #print('created linked product')
+            #else:
+            if 'lcopt_type' in postData.keys():
+                lcopt_type = postData['lcopt_type']
+                kwargs['lcopt_type'] = lcopt_type
+
+            exchange_to_link = m.create_product (name = my_name, location =my_location , unit=my_unit, **kwargs)
+                #print('created unlinked product')
 
         #link the product
         #this_exchange = m.get_exchange(my_name)
@@ -237,7 +285,13 @@ class FlaskSandbox():
             ext_link = myInput['ext_link']
             ext_db = [x['items'] for x in m.external_databases if x['name'] == ext_link[0]][0]
             full_link = ext_db[ext_link]
-            full_link_string = "{} {{{}}} [{}]".format(full_link['name'], full_link['location'], full_link['unit'])
+            if postData['format'] == 'ecoinvent':
+                full_link_string = "{} {{{}}} [{}]".format(full_link['name'], full_link['location'], full_link['unit'])
+            elif postData['format'] == 'biosphere':
+                if full_link['type'] == 'emission':
+                    full_link_string = '{} (emission to {}) [{}]'.format(full_link['name'], ", ".join(full_link['categories']), full_link['unit'])
+                else:
+                    full_link_string = '{} ({}) [{}]'.format(full_link['name'], ", ".join(full_link['categories']), full_link['unit'])
             
             return_data['isLinked']=True
             return_data['ext_link']=str(ext_link)
@@ -260,12 +314,55 @@ class FlaskSandbox():
         markets_only = postData['markets_only'] in ['True', 'true', 'on']
         m = self.modelInstance
         #print(type(markets_only))
-        result = m.search_databases(search_term, location,  markets_only)
+        #print(location)
+        if location == "":
+            #print ('no location')
+            location = None
+            
+        result = m.search_databases(search_term, location,  markets_only, databases_to_search = [m.ecoinventName])
         
         json_dict = {str(k):v for k, v in dict(result).items()}
         
-        data = {'message':'hello from ecoinvent', 'search_term':search_term, 'result':json_dict}
+        data = {'message':'hello from ecoinvent', 'search_term':search_term, 'result':json_dict, 'format': 'ecoinvent'}
         return json.dumps(data)
+
+    def searchBiosphere(self, postData):
+        
+        search_term = postData['search_term']
+        
+        m = self.modelInstance
+            
+        result = m.search_databases(search_term, databases_to_search = [m.biosphereName])
+        
+        json_dict = {str(k):v for k, v in dict(result).items()}
+        
+        data = {'message':'hello from biosphere3', 'search_term':search_term, 'result':json_dict, 'format': 'biosphere'}
+        #print (json_dict)
+        return json.dumps(data)
+
+    def parameter_parsing(self, postData):
+            
+            myjson = json.loads(postData['data'])
+            #print(myjson[0])
+            
+            for line in myjson:
+                line_id = line['id']
+                for k in line.keys():
+                    if k[:13] == 'ParameterSet_':
+                        if k in self.modelInstance.parameter_sets.keys():
+                            self.modelInstance.parameter_sets[k][line_id] = float(line[k])
+                        else:
+                            self.modelInstance.parameter_sets[k] = OrderedDict()
+                            self.modelInstance.parameter_sets[k][line_id] = float(line[k])
+                        
+                
+            
+            self.modelInstance.save()       
+
+            print('parameters saved')    
+            
+            return 'OK'
+            #return redirect("/")
     
     def run(self):
         
@@ -282,7 +379,12 @@ class FlaskSandbox():
         
         @app.route('/process_post', methods=['POST'])
         def process_post():
-            f = request.form
+            try:
+                f = request.form
+            except:
+                f = request.get_json()
+
+            #print(f)
             
             action = self.postActions[f['action']]
             return action(f)
@@ -303,10 +405,108 @@ class FlaskSandbox():
             to_json = [{'name':k, 'code': v} for k,v in self.reverse_input_map.items()]
             input_json = json.dumps(to_json)
             return input_json
+
+        @app.route('/biosphere.json')
+        def biosphere_as_json():
+            """creates a json file of the reverse biosphere map to send from the server"""
+            self.get_sandbox_variables()
+            # to_json = [x for x in self.reverse_input_map.keys()]
+            #to_json = reverse_input_map
+            to_json = [{'name':k, 'code': v} for k,v in self.reverse_biosphere_map.items()]
+            biosphere_json = json.dumps(to_json)
+            return biosphere_json
         
         @app.route('/testing')
         def testbed():
-            return render_template('testbed.html')
+            #import time
+            #time.sleep(5)
+            args = {'model':{'name': self.modelInstance.name}}
+            args['result_sets'] = self.modelInstance.result_set
+           
+            return render_template('testbed.html', args=args)
+        
+        @app.route('/results.json')
+        def results_as_json():
+            
+            send_to_json = ['json', 
+                            'contributionAnalysis', 
+                            'model_edges', 
+                            'model_nodes', 
+                            'full_edges', 
+                            'pie_data', 
+                            'model_nodes_split', 
+                            'model_edges_split', 
+                            'full_nodes']
+            
+            json_dataset = []
+            
+            for ds in self.modelInstance.result_set:
+                filtered_ds = {}
+                for k, v in ds.items():
+                    if k in send_to_json:
+                        filtered_ds[k]=v
+                json_dataset.append(filtered_ds)
+            
+            return json.dumps(json_dataset)
+
+        # TODO: Make these responsive
+        @app.route('/analyse')
+        def analyse_preload():
+            
+            args = {'model':{'name': self.modelInstance.name}}
+            item = request.args.get('item')
+            args['item'] = item
+            
+            #self.modelInstance.analyse(item)
+            return render_template('analysis_preload.html', args = args)
+        
+        @app.route('/analysis')
+        def analysis():
+            
+            item = request.args.get('item')
+            self.modelInstance.analyse(item)
+            
+            args = {'model':{'name': self.modelInstance.name}}
+            
+            args['item'] = item
+            args['result_sets'] = self.modelInstance.result_set
+            
+            
+            #return render_template('analysis.html', args = args)
+            return render_template('testbed.html', args = args)
+            
+
+        @app.route('/network.json')
+        def network_as_json():
+            parameter_set = request.args.get('ps')
+            return self.modelInstance.result_set[int(parameter_set)]['json']
+
+        @app.route('/parameters')
+        def parameter_setup():
+                        
+            parameters = []
+            p = self.modelInstance.params
+            for k in p.keys():
+                if p[k]['function'] == None:
+                    
+                    values = [ps[k] if k in ps.keys() else '' for ps_name, ps in self.modelInstance.parameter_sets.items()]
+                    parameters.append({'id':k, 'name': p[k]['description'], 'existing_values': values, 'unit':p[k]['unit']})
+                    
+                else:
+                    print("{} is determined by a function".format(p[k]['description']))
+
+            for e in self.modelInstance.ext_params:
+                values = [ps[e['name']] if e['name'] in ps.keys() else '' for ps_name, ps in self.modelInstance.parameter_sets.items()]
+                          
+                parameters.append({'id':'{}'.format(e['name']), 'type':'external', 'name': e['description'], 'existing_values': values, 'default': e['default'], 'unit':'?'})
+            
+            
+            args = {'title':'Parameter set'}
+            args['parameters'] = parameters
+            args['ps_names'] = [x for x in self.modelInstance.parameter_sets.keys()]
+            
+            return render_template('parameter_set_table.html',
+                                 args = args)
 
         url = 'http://127.0.0.1:5000'
         webbrowser.open_new(url)
