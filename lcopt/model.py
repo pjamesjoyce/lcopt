@@ -20,6 +20,8 @@ from random import randint
 
 from jinja2 import Environment, PackageLoader
 
+import os
+
 #From bw2 - edited to reinsert capitalisation of units
 
 UNITS_NORMALIZATION = {
@@ -136,16 +138,21 @@ class LcoptModel(object):
         # set the default names of the external databases - these can be changed if needs be
         self.ecoinventName = "Ecoinvent3_3_cutoff"
         self.biosphereName = "biosphere3"
+        self.ecoinventFilename = "ecoinvent3_3"
+        self.biosphereFilename = "biosphere3"
          
         if load != None:
             self.load(load)
                     
+        asset_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'assets')
+        ecoinventPath = os.path.join(asset_path, self.ecoinventFilename)
+        biospherePath = os.path.join(asset_path, self.biosphereFilename)
 
         # Try and initialise the external databases if they're not there already
         if self.ecoinventName not in [x['name'] for x in self.external_databases]:
-            self.import_external_db(self.ecoinventName)
+            self.import_external_db(ecoinventPath)
         if self.biosphereName not in [x['name'] for x in self.external_databases]:
-            self.import_external_db(self.biosphereName)
+            self.import_external_db(biospherePath)
 
         # create partial version of io functions
         self.add_to_database = partial(add_to_specified_database, database = self.database)
@@ -694,7 +701,7 @@ class LcoptModel(object):
         name, bw2db = my_exporter.export_to_bw2()
         return name, bw2db
 
-    def analyse(self, demand_item, amount = 1, method = ('IPCC 2013', 'climate change', 'GWP 100a'), top_processes = 10, gt_cutoff = 0.01):
+    def analyse(self, demand_item, demand_item_code, amount = 1, method = ('IPCC 2013', 'climate change', 'GWP 100a'), top_processes = 10, gt_cutoff = 0.01):
         my_analysis = Bw2Analysis(self)
-        self.result_set = my_analysis.run_analyses(demand_item, amount, method, top_processes, gt_cutoff)
+        self.result_set = my_analysis.run_analyses(demand_item, demand_item_code, amount, method, top_processes, gt_cutoff)
 

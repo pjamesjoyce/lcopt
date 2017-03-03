@@ -55,7 +55,7 @@ class Bw2Analysis():
                     #print("\t\t {}".format(e.amount))
                     e.save()
         
-    def run_analyses(self, demand_item, amount = 1, method = ('IPCC 2013', 'climate change', 'GWP 100a'), top_processes = 10, gt_cutoff = 0.01, pie_cutoff =0.05):
+    def run_analyses(self, demand_item, demand_item_code,  amount = 1, method = ('IPCC 2013', 'climate change', 'GWP 100a'), top_processes = 10, gt_cutoff = 0.01, pie_cutoff =0.05):
         
         ready = self.setup_bw2()
         name = self.bw2_database_name
@@ -88,7 +88,10 @@ class Bw2Analysis():
                     return my_results[0]
             
             #get the product to assess
-            product_demand = get_product(demand_item)
+            #product_demand = get_product(demand_item)
+            #try this with get
+            print ('trying to get {}'.format(demand_item_code))
+            product_demand = new_db.get(demand_item_code)
             
             if product_demand != False:
                 
@@ -97,11 +100,11 @@ class Bw2Analysis():
                 print('Running analysis for {} {} of {}, using {}'.format(amount, product_demand['unit'], product_demand, method))
 
                 result_sets = []
-                parameter_sets = self.exporter.evaluated_parameter_sets
+                parameter_sets = self.modelInstance.evaluated_parameter_sets
 
                 #for each parameter set in the model run the analysis
 
-                for n, parameter_set in enumerate(parameter_sets):
+                for n, (parameter_set_name, parameter_set) in enumerate(parameter_sets.items()):
                     
                     result_set = {}
                     

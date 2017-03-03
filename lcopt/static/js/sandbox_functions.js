@@ -1256,5 +1256,5 @@ var createModal = function(title, body){
 function start_analysis(id, name){
   console.log('starting analysis for ' + name)
   console.log(id)
-  window.location.replace("/analyse?item=" + name);
+  window.location.replace("/analyse?item=" + name + "&item_code=" + id);
 }

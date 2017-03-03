@@ -11,6 +11,10 @@
 <!-- This is the underlying package for the typeahead in the input modal -->
 <script src="{{ url_for('static', filename = 'js/cdn_cache/typeahead.bundle.js') }}"></script>
 <link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/typeahead.css') }}" />
+
+<script src="{{ url_for('static', filename = 'js/status.js') }}"></script>
+<link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/status.css') }}" />
+
 {% endblock %}
 
 {% block content %}
@@ -79,7 +83,8 @@
 		</div>
 		<div class="col-xs-1 controls">
 			<div>
-				<button type="button" name="button" class="btn btn-xs btn-custom processButton" id="echoButton"><div><i class="material-icons">search</i></div>Search ecoinvent</button>
+				<div id="status_box_outer_small" class="status_box container-fluid"></div>
+				<!--<button type="button" name="button" class="btn btn-xs btn-custom processButton" id="echoButton"><div><i class="material-icons">search</i></div>Search ecoinvent</button>-->
 			</div>
 		</div>
 	</div>

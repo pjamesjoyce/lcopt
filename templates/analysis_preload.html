@@ -5,7 +5,7 @@
 {% block head_postload %}
 <script type="text/javascript">
   $(document).ready(function(){
-    window.location.replace("/analysis?item={{args.item}}");
+    window.location.replace("/analysis?item={{args.item}}&item_code={{args.item_code}}");
   })
 </script>
 <style type="text/css">
@@ -26,6 +26,7 @@
         <h1>Running analysis for {{args.item}} </h1>
         <img class="padded" src="{{ url_for('static', filename = 'img/loading.svg') }}">
         <p>Running LCA for {{args.item}}, this may take a while...</p>
+        <p class="text-muted">{{args.item_code}}</p>
     </div>
   </div>
 </div>

@@ -5,6 +5,9 @@ from ast import literal_eval
 from lcopt.io import exchange_factory
 import mpld3
 from collections import OrderedDict
+from itertools import groupby
+
+from lcopt.bw2_export import Bw2Exporter
 
 class FlaskSandbox():
     
@@ -24,7 +27,9 @@ class FlaskSandbox():
             'newConnection': self.newConnection,
             'addInput':self.addInput,
             'inputLookup':self.inputLookup,
-            'parse_parameters': self.parameter_parsing
+            'parse_parameters': self.parameter_parsing,
+            'create_function': self.create_function,
+            'add_parameter': self.add_parameter,
         }
         
         #print (self.modelInstance.newVariable)
@@ -340,6 +345,91 @@ class FlaskSandbox():
         #print (json_dict)
         return json.dumps(data)
 
+    def create_function(self, postData):
+
+        print(postData)
+        new_function = postData['my_function']
+        parameter = self.modelInstance.params[postData['for']]
+        parameter['function'] = new_function
+
+        return "OK"
+
+    def parameter_sorting(self):
+        parameters = self.modelInstance.params
+
+
+        # create a default parameter set if there isn't one yet
+        if len(self.modelInstance.parameter_sets) == 0:
+            print ('No parameter sets - creating a default set')
+            self.modelInstance.parameter_sets['ParameterSet_1'] = {}
+            for param in parameters:
+                self.modelInstance.parameter_sets['ParameterSet_1'][param] = 0
+
+
+        exporter = Bw2Exporter(self.modelInstance)
+        exporter.evaluate_parameter_sets()
+        evaluated_parameters = self.modelInstance.evaluated_parameter_sets
+        
+
+        subsectionTitles = {
+            'input':"Inputs from the 'technosphere'",
+            'intermediate':"Inputs from other processes",
+            'biosphere': "Direct emissions to the environment"
+        }
+        
+        to_name = lambda x: parameters[x]['to_name']
+        input_order = lambda x: parameters[x]['coords'][1]
+        type_of = lambda x : parameters[x]['type']
+
+        sorted_keys = sorted(parameters, key = input_order)
+
+        sorted_parameters = []
+
+        for target, items in groupby(sorted_keys, to_name):
+            #print(target)
+            
+            section = {'name': target, 'my_items':[]}
+
+            sorted_exchanges = sorted(items, key = type_of)
+
+            #print sorted_exchanges
+            for type, exchanges in groupby(sorted_exchanges, type_of):
+                #print('\t{}'.format(type))
+                subsection = {'name':subsectionTitles[type], 'my_items':[]}
+                for exchange in exchanges:
+
+                    if parameters[exchange].get('function'):
+                        print ('{} determined by a function'.format(exchange))
+                        values = ['{} = {:.3g}'.format(parameters[exchange]['function'], e_ps[exchange]) for e_ps_name, e_ps in evaluated_parameters.items()]
+                        isFunction = True
+                    else:
+                        values = [ps[exchange] if exchange in ps.keys() else '' for ps_name, ps in self.modelInstance.parameter_sets.items()]
+                        isFunction = False
+
+                    #print('\t\t{} ({}) {}'.format(parameters[exchange]['from_name'], exchange, values))
+
+                    subsection['my_items'].append({'id':exchange, 'name': parameters[exchange]['from_name'], 'existing_values': values, 'unit':parameters[exchange]['unit'], 'isFunction':isFunction})
+                
+                
+                
+                section['my_items'].append(subsection)
+            
+            db_code = (self.modelInstance.database['name'], parameters[exchange]['to'])
+            #print(db_code)
+            
+            unit = self.modelInstance.database['items'][db_code]['unit']
+            section['name'] = "{}\t(1 {})".format(target, unit)
+            sorted_parameters.append(section)
+
+        ext_section ={'name':'Global Parameters', 'my_items':[{'name':'User created', 'my_items':[]}]}
+        for e_p in self.modelInstance.ext_params:
+            values = [ps[e_p['name']] if e_p['name'] in ps.keys() else e_p['default'] for ps_name, ps in self.modelInstance.parameter_sets.items()]
+            ext_section['my_items'][0]['my_items'].append({'id':e_p['name'], 'name': e_p['description'], 'existing_values': values, 'unit':'', 'isFunction':False})
+
+        sorted_parameters.append(ext_section)
+
+        return sorted_parameters
+
     def parameter_parsing(self, postData):
             
             myjson = json.loads(postData['data'])
@@ -347,13 +437,17 @@ class FlaskSandbox():
             
             for line in myjson:
                 line_id = line['id']
-                for k in line.keys():
-                    if k[:13] == 'ParameterSet_':
-                        if k in self.modelInstance.parameter_sets.keys():
-                            self.modelInstance.parameter_sets[k][line_id] = float(line[k])
-                        else:
-                            self.modelInstance.parameter_sets[k] = OrderedDict()
-                            self.modelInstance.parameter_sets[k][line_id] = float(line[k])
+                if line['Name'] != '':
+                    for k in line.keys():
+                        if k[:13] == 'ParameterSet_':
+                            if line[k] == '':
+                                line[k] = 0
+                                
+                            if k in self.modelInstance.parameter_sets.keys():
+                                self.modelInstance.parameter_sets[k][line_id] = float(line[k])
+                            else:
+                                self.modelInstance.parameter_sets[k] = OrderedDict()
+                                self.modelInstance.parameter_sets[k][line_id] = float(line[k])
                         
                 
             
@@ -363,7 +457,15 @@ class FlaskSandbox():
             
             return 'OK'
             #return redirect("/")
-    
+
+    def add_parameter(self, postData):
+
+        self.modelInstance.add_parameter(postData['param_id'], postData['param_description'], float(postData['param_default']))
+        print ('Added {} (default {}) added to global parameters'.format(postData['param_id'], postData['param_default']))
+
+        return "OK"
+            
+        
     def run(self):
         
         app = Flask(__name__)
@@ -421,10 +523,17 @@ class FlaskSandbox():
             #import time
             #time.sleep(5)
             args = {'model':{'name': self.modelInstance.name}}
-            args['result_sets'] = self.modelInstance.result_set
+            #args['result_sets'] = self.modelInstance.result_set
            
             return render_template('testbed.html', args=args)
         
+        @app.route('/functions')
+        def function_editor():
+            
+            args = {'model':{'name': self.modelInstance.name}}
+            
+            return render_template('create_functions.html', args=args)
+
         @app.route('/results.json')
         def results_as_json():
             
@@ -449,13 +558,53 @@ class FlaskSandbox():
             
             return json.dumps(json_dataset)
 
+        @app.route('/parameters.json')
+        def parameter_json():
+            sorted_parameters = self.parameter_sorting()
+            return json.dumps(sorted_parameters)
+
+        @app.route('/status.json')
+        def status():
+
+            db = self.modelInstance.database['items']
+            products = OrderedDict((k,v) for k, v in db.items() if v['type'] == 'product')
+            inputs = OrderedDict((k,v) for k, v in products.items() if v['lcopt_type'] == 'input')
+            ext_linked_inputs = OrderedDict((k,v) for k, v in inputs.items() if v.get('ext_link'))
+            biosphere = OrderedDict((k,v) for k, v in products.items() if v['lcopt_type'] == 'biosphere')
+
+            has_model = len(db) != 0
+            model_has_impacts = len(ext_linked_inputs) + len(biosphere) != 0
+            model_has_parameters = len (self.modelInstance.parameter_sets) != 0
+            model_is_runnable = all([has_model, model_has_impacts, model_has_parameters])
+            model_has_functions = len([x for k, x in self.modelInstance.params.items() if x['function'] is not None]) != 0
+            model_is_fully_formed = all([has_model, model_has_impacts, model_has_parameters, model_has_functions])
+
+
+            status_object = {
+                'has_model':has_model,
+                'model_has_impacts':model_has_impacts,
+                'model_has_parameters':model_has_parameters,
+                'model_has_functions':model_has_functions,
+                'model_is_runnable':model_is_runnable,
+                'model_is_fully_formed':model_is_fully_formed,
+            }
+
+            return json.dumps(status_object)
+
+
         # TODO: Make these responsive
         @app.route('/analyse')
         def analyse_preload():
             
             args = {'model':{'name': self.modelInstance.name}}
             item = request.args.get('item')
+            item_code = request.args.get('item_code')
+            print(request.args)
+
             args['item'] = item
+            args['item_code'] = item_code
+
+            print('PRELOAD {}'.format(args['item_code']))
             
             #self.modelInstance.analyse(item)
             return render_template('analysis_preload.html', args = args)
@@ -463,8 +612,10 @@ class FlaskSandbox():
         @app.route('/analysis')
         def analysis():
             
+            item_code = request.args.get('item_code')
             item = request.args.get('item')
-            self.modelInstance.analyse(item)
+
+            self.modelInstance.analyse(item, item_code)
             
             args = {'model':{'name': self.modelInstance.name}}
             
@@ -472,43 +623,29 @@ class FlaskSandbox():
             args['result_sets'] = self.modelInstance.result_set
             
             
-            #return render_template('analysis.html', args = args)
-            return render_template('testbed.html', args = args)
+            return render_template('analysis.html', args = args)
+            #return render_template('testbed.html', args = args)
             
 
         @app.route('/network.json')
         def network_as_json():
             parameter_set = request.args.get('ps')
             return self.modelInstance.result_set[int(parameter_set)]['json']
-
+        
         @app.route('/parameters')
-        def parameter_setup():
-                        
-            parameters = []
-            p = self.modelInstance.params
-            for k in p.keys():
-                if p[k]['function'] == None:
-                    
-                    values = [ps[k] if k in ps.keys() else '' for ps_name, ps in self.modelInstance.parameter_sets.items()]
-                    parameters.append({'id':k, 'name': p[k]['description'], 'existing_values': values, 'unit':p[k]['unit']})
-                    
-                else:
-                    print("{} is determined by a function".format(p[k]['description']))
-
-            for e in self.modelInstance.ext_params:
-                values = [ps[e['name']] if e['name'] in ps.keys() else '' for ps_name, ps in self.modelInstance.parameter_sets.items()]
-                          
-                parameters.append({'id':'{}'.format(e['name']), 'type':'external', 'name': e['description'], 'existing_values': values, 'default': e['default'], 'unit':'?'})
+        def sorted_parameter_setup():
             
-            
+            sorted_parameters = self.parameter_sorting()
+                
             args = {'title':'Parameter set'}
-            args['parameters'] = parameters
+            args['sorted_parameters'] = sorted_parameters
             args['ps_names'] = [x for x in self.modelInstance.parameter_sets.keys()]
             
-            return render_template('parameter_set_table.html',
+            return render_template('parameter_set_table_sorted.html',
                                  args = args)
 
-        url = 'http://127.0.0.1:5000'
+
+        url = 'http://127.0.0.1:5000/'
         webbrowser.open_new(url)
         print ("running from the module")
         app.run()

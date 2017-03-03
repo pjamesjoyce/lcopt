@@ -44,15 +44,17 @@ $(document).ready(function(){
 	  
 	  // Turn all existing rows into a loopable array
 	  $rows.each(function () {
-	    var $td = $(this).find('td');
-	    var h = {};
-	    
-	    // Use the headers from earlier to name our hash keys
-	    headers.forEach(function (header, i) {
-	      h[header] = $td.eq(i).text();   
-	    });
-	    
-	    data.push(h);
+	  	if ($(this).hasClass('data_row')){
+		    var $td = $(this).find('td');
+		    var h = {};
+		    
+		    // Use the headers from earlier to name our hash keys
+		    headers.forEach(function (header, i) {
+		      h[header] = $td.eq(i).text();   
+		    });
+		    
+		    data.push(h);
+		}
 	  });
 	  
 	  // Output the result
@@ -78,7 +80,7 @@ $(document).ready(function(){
    	
    	$.post('/process_post', postData);
 
-   	window.location.replace("/");
+   	window.location.replace("/parameters");
 
 	});
 
@@ -89,18 +91,25 @@ $(document).ready(function(){
     iter = 0;
 
 	$('#btnAddCol').click(function () {
-	     myTable.find('tr').each(function(){
-	         var trow = $(this);
-	         if(trow.index() === 0){
-	         	count = trow.find('.ps_name').length
-	             trow.append('<th class="ps_name">ParameterSet_'+(count+1)+'</th>');
-	         }else{
+
+		var count = myTable.find('.ps_name').length
+
+		myTable.find('.table_header').append('<th class="ps_name">ParameterSet_'+(count+1)+'</th>');
+
+	     myTable.find('.data_row,.function_row').each(function(){
+	         	var trow = $(this);
+	       
 	         	last_item = trow.find('td:last')
 	         	
-	            trow.append('<td contenteditable="true" class="new_item">'+ last_item.text() +'</td>');
-	         }
+	            trow.append('<td contenteditable="true" class="new_item right_align">'+ last_item.text() +'</td>');
+	         
 	     });
-	     iter += 1;
+
+
+	     myTable.find('.table_section,.table_subsection').each(function(){
+	     	$(this).attr('colspan', count+4)
+	     })
+	     
 	});
 
 })//end of document.ready

@@ -2,6 +2,7 @@ from lcopt.io import exchange_factory
 from copy import deepcopy
 from asteval import Interpreter
 from itertools import groupby
+from lcopt.parameter_interpreter import ParameterInterpreter
 
 class Bw2Exporter():
     
@@ -9,69 +10,17 @@ class Bw2Exporter():
         self.modelInstance = modelInstance
 
         # set up the parameter hook dictionary
-        self.evaluate_parametersets()
+        self.evaluate_parameter_sets()
         self.create_parameter_map()
         
-    def evaluate_parametersets(self):
+    def evaluate_parameter_sets(self):
         """ 
         This takes the parameter sets of the model instance and evaluates any formulas using the parameter values to create a 
         fixed, full set of parameters for each parameter set in the model
         """
+        parameter_interpreter = ParameterInterpreter(self.modelInstance)
+        parameter_interpreter.evaluate_parameter_sets()
         
-        evaluated_parameter_sets = []
-    
-        aeval = Interpreter()
-        
-        parameter_sets = self.modelInstance.parameter_sets
-        parameters = self.modelInstance.params
-        ext_params = self.modelInstance.ext_params
-
-        has_function = lambda x: parameters[x]['function'] is not None
-        sorted_keys = sorted(parameters, key = has_function)
-
-        ext_param_list = [x['name'] for x in ext_params]
-
-        for ps_name, ps in parameter_sets.items():
-            this_ps = {}
-            
-            #print (ps_name)
-            #print()
-            #print('External parameters')
-            for p in ext_param_list:
-                aeval.symtable[p] = ps[p]
-                #print(p, ps[p])
-                this_ps[p]=ps[p]
-
-            for key, group in groupby(sorted_keys, has_function):
-
-                if key == False:
-                    #print()
-                    #print('Fixed parameters')
-                    for item in group:
-                        try:
-                            aeval.symtable[item] = ps[item]
-                        except KeyError:
-                            ps[item] = 0
-                            print ('{} not found in {}, setting to zero'.format(item, ps_name))
-                            aeval.symtable[item] = ps[item]
-
-                        #print(item, ps[item])
-                        this_ps[item]=ps[item]
-                else:
-                    #print()
-                    #print('Calculated Parameters')
-                    for item in group:
-
-                        amount = aeval(self.modelInstance.params[item]['function'])
-                        aeval.symtable[item] = amount
-                        #print(item, amount)
-                        this_ps[item]=amount
-            #print()
-            #print()
-            evaluated_parameter_sets.append(this_ps)
-        
-        self.evaluated_parameter_sets = evaluated_parameter_sets
-        #return evaluated_parameter_sets
 
     def create_parameter_map(self):
         """

@@ -1,0 +1,40 @@
+.new_item{
+	font-style: italic; 
+}
+.hide_text{
+	/*color: #F4F4F4;*/
+	color: #bbb;
+}
+.hide_text_header{
+	color: #ccc;
+}
+
+.right_align{
+	text-align: right;
+}
+
+.table_section{
+	background-color: #ddd;
+	font-weight: bold;
+}
+
+.table_subsection{
+	background-color: #eee; 
+	font-weight: bold;
+	font-style: italic;
+}
+
+.table_header{
+	background-color: #ccc; 
+	font-weight: bold;
+	color:#000;
+}
+
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+  background-color: #ccc;
+}
+
+.function_row{
+	font-style: italic;
+	color: #bbb;
+}
