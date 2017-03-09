@@ -30,6 +30,7 @@ class FlaskSandbox():
             'parse_parameters': self.parameter_parsing,
             'create_function': self.create_function,
             'add_parameter': self.add_parameter,
+            'simaPro_export': self.simaPro_export,
         }
         
         #print (self.modelInstance.newVariable)
@@ -464,6 +465,13 @@ class FlaskSandbox():
         print ('Added {} (default {}) added to global parameters'.format(postData['param_id'], postData['param_default']))
 
         return "OK"
+
+    def simaPro_export(self, postData):
+
+        self.modelInstance.database_to_SimaPro_csv()
+        self.modelInstance.generate_parameter_set_excel_file()
+
+        return "OK"
             
         
     def run(self):
@@ -520,10 +528,9 @@ class FlaskSandbox():
         
         @app.route('/testing')
         def testbed():
-            #import time
-            #time.sleep(5)
+
             args = {'model':{'name': self.modelInstance.name}}
-            #args['result_sets'] = self.modelInstance.result_set
+            args['result_sets'] = self.modelInstance.result_set
            
             return render_template('testbed.html', args=args)
         
@@ -536,27 +543,8 @@ class FlaskSandbox():
 
         @app.route('/results.json')
         def results_as_json():
-            
-            send_to_json = ['json', 
-                            'contributionAnalysis', 
-                            'model_edges', 
-                            'model_nodes', 
-                            'full_edges', 
-                            'pie_data', 
-                            'model_nodes_split', 
-                            'model_edges_split', 
-                            'full_nodes']
-            
-            json_dataset = []
-            
-            for ds in self.modelInstance.result_set:
-                filtered_ds = {}
-                for k, v in ds.items():
-                    if k in send_to_json:
-                        filtered_ds[k]=v
-                json_dataset.append(filtered_ds)
-            
-            return json.dumps(json_dataset)
+                        
+            return json.dumps(self.modelInstance.result_set)
 
         @app.route('/parameters.json')
         def parameter_json():

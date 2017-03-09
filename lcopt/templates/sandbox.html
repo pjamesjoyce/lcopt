@@ -72,6 +72,7 @@
 			<div>
 				<button type="button" name="button" class="btn btn-xs btn-custom processButton" id="addProcess"><div><i class="material-icons">add</i></div>Add process</button>
 				<button type="button" name="button" class="btn btn-xs btn-custom processButton" id="saveModel"><div><i class="material-icons">save</i></div>Save model</button>
+				<button type="button" name="button" class="btn btn-xs btn-custom processButton" id="simaPro_export"><div><i class="material-icons">launch</i></div><span class="bit_smaller">SimaPro Export</span></button>
 			</div>
 			<div>
 				<p>Maybe put some extra buttons here</p>
@@ -88,6 +89,14 @@
 			</div>
 		</div>
 	</div>
+</div>
+
+<!-- dialog -->
+<div id="dialog" title="Export complete">
+  <p>The model has been exported as a SimaPro csv file and an excel file containing the parameter sets</p>
+  <p>The files are in your current working directory</p>
+  <p>The csv file is called "{{args.model.name}}_database_export.csv"</p>
+  <p>The excel file is called "ParameterSet_{{args.model.name}}_input_file.xlsx"</p>
 </div>
 
 <!-- jsPlumb sandbox script -->

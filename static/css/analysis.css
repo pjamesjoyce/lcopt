@@ -23,3 +23,31 @@ polyline{
 	stroke-width: 2px;
 	fill: none;
 }
+
+.right_align{
+  text-align: right;
+}
+
+.row_title{
+  font-weight: bold;
+}
+
+.table>thead>tr>th{
+  text-align: center;
+  vertical-align: middle;
+}
+
+.table{
+  font-size: 10px;
+}
+.table>tbody>tr>td{
+  vertical-align: middle;
+}
+.unit{
+  font-size: 8px;
+  color:#999;
+}
+
+.legend_item{
+  font-size: 8px;
+}

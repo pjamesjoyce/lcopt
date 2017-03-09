@@ -91,11 +91,14 @@ Materials/fuels
 Electricity/heat
 
 Emissions to air
-
+{% for emission in process.air_emissions %}{{emission.formatted_name}}	{{emission.subcompartment}}	{{emission.unit}}	{{emission.amount}}	Undefined	0	0	0	{{emission.comment}}
+{% endfor %}
 Emissions to water
-
+{% for emission in process.water_emissions %}{{emission.formatted_name}}	{{emission.subcompartment}}	{{emission.unit}}	{{emission.amount}}	Undefined	0	0	0	{{emission.comment}}
+{% endfor %}
 Emissions to soil
-
+{% for emission in process.soil_emissions %}{{emission.formatted_name}}	{{emission.subcompartment}}	{{emission.unit}}	{{emission.amount}}	Undefined	0	0	0	{{emission.comment}}
+{% endfor %}
 Final waste flows
 
 Non material emissions

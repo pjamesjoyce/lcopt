@@ -1,6 +1,8 @@
+var bound_data
+
 $(document).ready(function(){
 
-//console.log ('hello world')
+////console.log ('hello world')
 
 // set up some global variables
 var pieDimensions = {
@@ -13,7 +15,9 @@ var pieDimensions = {
 	labelRadius:125,
 };
 
-var color = d3.scaleOrdinal(d3.schemeCategory20c)
+
+
+var color = d3.scaleOrdinal(d3.schemeCategory20)
 
 var arc = d3.arc()
 	.outerRadius(pieDimensions.outerRadius)
@@ -35,15 +39,53 @@ var svg = d3.select("#pie")
 		.attr("class", "svg_container")
 		.attr("transform", "translate(" + pieDimensions.width/2 + "," + pieDimensions.height/2 +")"); // Moving the center point. 1/2 the width and 1/2 the height
 
+
+
 //set up the pie chart for the first time
 d3.json("results.json", function(error, data) {
     if (error) throw error;
-    //console.log('hello from json')
-    //console.log(data[0]['pie_data'])
+    bound_data = data
+    //draw_pie(data)
+    draw_pie()
+    setup_bar()
+    draw_tree()
+    setup_stack_bar()
 
+})
+
+
+
+//function draw_pie(data){
+function draw_pie(){
+    ////console.log('hello from json')
+    var data = bound_data
     var ps = $('#parameterSetChoice').val() - 1
+    var m = $('#methodChoice').val() - 1
 
-    var pie_data = data[ps]['pie_data']
+    console.log(data)
+
+    var pre_pie_data = data['results'][ps][m]['foreground_results']
+    var total_score = data['results'][ps][m]['score']
+    var pie_cutoff = data['settings']['pie_cutoff']
+    ////console.log(pre_pie_data)
+    var pie_data = []
+    
+    var remaining_processes = 0
+
+    for (p in pre_pie_data){
+    	if (pre_pie_data[p]/total_score > pie_cutoff){
+    		percent = pre_pie_data[p]/total_score*100
+    		pie_data.push({value:pre_pie_data[p], label:p, percent_label : percent.toFixed(1) + '%'})
+    	}else{
+    		remaining_processes += pre_pie_data[p]
+    	}
+    }
+    //console.log(remaining_processes)
+    percent = remaining_processes/total_score*100
+    //console.log(percent)
+    pie_data.push({value:remaining_processes, label:"Remaining processes", percent_label : percent.toFixed(1) + '%'})	
+
+    //console.log(pie_data)
 
     var pie = d3.pie()
 		.value(function(d) { return d.value; }).sort(null)(pie_data);
@@ -78,7 +120,7 @@ d3.json("results.json", function(error, data) {
 	        x = Math.cos(midAngle) * pieDimensions.labelRadius;
 	        sign = (x > 0) ? 1 : -1
 	        labelX = x + (5 * sign)
-	        ////console.log(labelX)
+	        //////console.log(labelX)
 	        return labelX;
 	    })
 	    .attr("y",  function (d, i) {
@@ -139,7 +181,7 @@ d3.json("results.json", function(error, data) {
 
 
 
-});// end of json
+};// end of json
 
 // this is the midangle function used by the labels
 function midAngle(d){
@@ -152,18 +194,43 @@ function midAngle(d){
 
 function change2() {
 
-	d3.json("results.json", function(error, data) {
+	//d3.json("results.json", function(error, data) {
 
+		
+		////console.log(ps)
+		var data = bound_data
 		var ps = $('#parameterSetChoice').val() - 1
-		//console.log(ps)
+	    var m = $('#methodChoice').val() - 1
 
-		var pie_data = data[ps]['pie_data']
-		//console.log(pie_data)
+	    console.log(ps, m)
+
+	    var pre_pie_data = data['results'][ps][m]['foreground_results']
+	    var total_score = data['results'][ps][m]['score']
+	    var pie_cutoff = data['settings']['pie_cutoff']
+	    var pie_data = []
+	    
+	    var remaining_processes = 0
+
+	    for (p in pre_pie_data){
+	    	if (pre_pie_data[p]/total_score > pie_cutoff){
+	    		percent = pre_pie_data[p]/total_score*100
+	    		pie_data.push({value:pre_pie_data[p], label:p, percent_label : percent.toFixed(1) + '%'})
+	    	}else{
+	    		remaining_processes += pre_pie_data[p]
+	    	}
+	    }
+	    //console.log(remaining_processes)
+	    percent = remaining_processes/total_score*100
+	    //console.log(percent)
+	    pie_data.push({value:remaining_processes, label:"Remaining processes", percent_label : percent.toFixed(1) + '%'})	
+
+	    //console.log(pie_data)
+		////console.log(pie_data)
 
 		var pie = d3.pie()
 			.value(function(d) { return d.value; }).sort(null)(pie_data)
 			;
-		//console.log(pie)
+		////console.log(pie)
 		// DATA JOIN
 		// Join new data with old elements, if any.
 		var g = svg.selectAll(".arc")
@@ -236,7 +303,7 @@ function change2() {
 		        x = Math.cos(midAngle) * pieDimensions.labelRadius;
 		        sign = (x > 0) ? 1 : -1
 		        labelX = x + (5 * sign)
-		        ////console.log(labelX)
+		        //////console.log(labelX)
 		        return labelX;
 		    })
 		    .attr("y",  function (d, i) {
@@ -294,14 +361,14 @@ function change2() {
 		//REMOVE
 		g.exit().remove();
 
-	})//end of json
+	//})//end of json
 }// end of change2
 
 // these are the functions for the arc tweens in the transition
 
 function arcTween(a) {
   var i = d3.interpolate(this._current, a);
-  //console.log(i(0))
+  ////console.log(i(0))
   this._current = i(0);
   return function(t) {
     return arc(i(t));
@@ -325,7 +392,7 @@ function labelTweenX(a){
         x = Math.cos(midAngle) * pieDimensions.labelRadius;
         sign = (x > 0) ? 1 : -1
         labelX = x + (5 * sign)
-        ////console.log(labelX)
+        //////console.log(labelX)
         return labelX;
 	}
 }//end of labelTweenX
@@ -381,10 +448,17 @@ function polylineTweenPoints(a){
 
 $('#parameterSetChoice').change(function(){
 	change2()
-	create_force_layout()
+	draw_tree()
+	//create_force_layout()
 })
-
+$('#methodChoice').change(function(){
+	change2()
+	update_bar()
+	draw_tree()
+	update_stack_bar()
+	//create_force_layout()
+})
 //create the initial force layout
-create_force_layout()
+//create_force_layout()
 
 })// end of document.ready

@@ -5,6 +5,7 @@ console.log('hello from analysis.js')
 function create_force_layout(){
 
 var ps = $('#parameterSetChoice').val() - 1
+var m = $('#methodChoice').val() - 1
 
 // declare the svg container as svg, get width and height
 d3.select('#force').select('svg').remove()
@@ -30,7 +31,8 @@ d3.json("results.json", function(error, data) {
   // if theres an error reading the data, say so
   if (error) throw error;
 
-  graph = JSON.parse(data[ps]['json'])
+  graph = data[ps][m]['graph']
+  console.log(graph)
 
   // create the links as their own group with the class 'links'
   var link = svg.append("g")

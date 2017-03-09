@@ -370,3 +370,11 @@
   fill: #999;
   stroke-width:3px;
 }
+
+.no-close .ui-dialog-titlebar-close {
+  display: none;
+}
+
+.bit_smaller{
+  font-size: 0.8em;
+}

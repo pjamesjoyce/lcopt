@@ -18,6 +18,14 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-xs-10 col-xs-offset-1">
+
+        <div class="row">
+            <div class="col-xs-10">
+                <p>
+                    
+                </p>
+            </div>
+        </div>
     	
     	
     	<div class="row">
@@ -25,6 +33,11 @@
 	        	<select id = "parameterSetChoice">
 	    			{% for item in args.result_sets %}<option value = {{loop.index}}>Parameter Set {{loop.index}}</option>{% endfor %}
 	    		</select>
+                <select id = "methodChoice">
+                    <option value = 0>Carbon Footprint</option>
+                    <option value = 1>Toxicity</option>
+
+                </select>
 	        </div>
             <div id = "force" class = "col-xs-6">
 	    </div>

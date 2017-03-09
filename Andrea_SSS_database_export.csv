@@ -1,0 +1,2348 @@
+{SimaPro 8.2.0.0}
+{CSV Format version: 8.0.5}
+{CSV separator: Tab}
+{Decimal separator: .}
+{Date separator: /}
+{Short date format: dd/MM/yyyy}
+
+
+Process
+
+Category type
+processing
+
+Process identifier
+Andrea_S28277072586
+
+Type
+
+
+Process name
+Use Phase
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Functional Unit	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+AA blocks	kg	p_1_0	Undefined	0	0	0	
+Carbonated Blocks	kg	p_9_0	Undefined	0	0	0	
+Concrete blocks	kg	p_12_0	Undefined	0	0	0	
+Low grade aggregates	kg	p_16_0	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+Andrea_S46553953418
+
+Type
+
+
+Process name
+AA Process
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+AA blocks	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Alkali Activator	kg	p_2_1	Undefined	0	0	0	
+Aluminium powder	kg	p_3_1	Undefined	0	0	0	
+SS Slag	kg	p_4_1	Undefined	0	0	0	
+Electricity [BE]	kWh	p_7_1	Undefined	0	0	0	
+Aggregates	kg	p_8_1	Undefined	0	0	0	
+Boric Oxide	kg	p_13_1	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+Andrea_S80284645031
+
+Type
+
+
+Process name
+AA Mixing
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Alkali Activator	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+NaOH	kg	p_5_2	Undefined	0	0	0	
+Na silicate	kg	p_6_2	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+Andrea_S37158800730
+
+Type
+
+
+Process name
+Carbonation Process
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Carbonated Blocks	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+SS Slag	kg	p_4_9	Undefined	0	0	0	
+Electricity [BE]	kWh	p_7_9	Undefined	0	0	0	
+Water	kg	p_10_9	Undefined	0	0	0	
+CO2 input	kg	p_11_9	Undefined	0	0	0	
+Boric Oxide	kg	p_13_9	Undefined	0	0	0	
+CO2 absorbed	kg	p_17_9	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+Andrea_S61178900518
+
+Type
+
+
+Process name
+Concrete Process
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Concrete blocks	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Aggregates	kg	p_8_12	Undefined	0	0	0	
+Aluminium powder	kg	p_3_12	Undefined	0	0	0	
+Electricity [BE]	kWh	p_7_12	Undefined	0	0	0	
+Water	kg	p_10_12	Undefined	0	0	0	
+Portland cement	kg	p_14_12	Undefined	0	0	0	
+Limestone	kg	p_15_12	Undefined	0	0	0	
+Portland cement [CH]	kg	p_18_12	Undefined	0	0	0	
+Portland cement [RoW]	kg	p_19_12	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+Andrea_S17807293949
+
+Type
+
+
+Process name
+Current Scenario
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Low grade aggregates	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+SS Slag	kg	p_4_16	Undefined	0	0	0	
+Boric Oxide	kg	p_13_16	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+Andrea_S35595501933
+
+Type
+
+
+Process name
+Aluminium powder
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Aluminium powder	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Aluminium, primary, ingot {IAI Area, EU27 & EFTA}| market for | Alloc Def, U	kg	1	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+Andrea_S85162652988
+
+Type
+
+
+Process name
+SS Slag
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+SS Slag	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+Andrea_S27480631258
+
+Type
+
+
+Process name
+NaOH
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+NaOH	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Sodium hydroxide, without water, in 50% solution state {GLO}| market for | Alloc Def, U	kg	1	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+Andrea_S63318727307
+
+Type
+
+
+Process name
+Na silicate
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Na silicate	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Sodium silicate, without water, in 48% solution state {GLO}| market for | Alloc Def, U	kg	1	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+Andrea_S10689364334
+
+Type
+
+
+Process name
+Electricity [BE]
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Electricity [BE]	kWh	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Electricity, medium voltage {BE}| market for | Alloc Def, U	kWh	1	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+Andrea_S80269271565
+
+Type
+
+
+Process name
+Aggregates
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Aggregates	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Sand {GLO}| market for | Alloc Def, U	kg	1	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+Andrea_S64574782537
+
+Type
+
+
+Process name
+Water
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Water	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Tap water {Europe without Switzerland}| market for | Alloc Def, U	kg	1	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+Andrea_S07967653106
+
+Type
+
+
+Process name
+CO2 input
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+CO2 input	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Carbon dioxide, liquid {RER}| market for | Alloc Def, U	kg	1	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+Andrea_S93334760073
+
+Type
+
+
+Process name
+Boric Oxide
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Boric Oxide	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Boric oxide {GLO}| market for | Alloc Def, U	kg	1	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+Andrea_S24000034467
+
+Type
+
+
+Process name
+Portland cement
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Portland cement	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Cement, portland {Europe without Switzerland}| market for | Alloc Def, U	kg	1	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+Andrea_S00991753856
+
+Type
+
+
+Process name
+Limestone
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Limestone	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Limestone, crushed, washed {RoW}| limestone production, crushed, washed | Alloc Def, U	kg	1	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+Andrea_S41840101600
+
+Type
+
+
+Process name
+CO2 absorbed
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+CO2 absorbed	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+
+Electricity/heat
+
+Emissions to air
+Carbon dioxide, fossil		kg	1	Undefined	0	0	0	emission of Carbon dioxide, fossil to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+Andrea_S74823860635
+
+Type
+
+
+Process name
+Portland cement [CH]
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Portland cement [CH]	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Cement, portland {CH}| market for | Alloc Def, U	kg	1	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+Andrea_S89670914540
+
+Type
+
+
+Process name
+Portland cement [RoW]
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+Portland cement [RoW]	kg	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+Cement, portland {RoW}| market for | Alloc Def, U	kg	1	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+
+Project Input parameters
+p_1_0	1	Undefined	1	0	0	No	Input of AA blocks to create Functional Unit
+p_9_0	1	Undefined	1	0	0	No	Input of Carbonated Blocks to create Functional Unit
+p_12_0	1	Undefined	1	0	0	No	Input of Concrete blocks to create Functional Unit
+p_16_0	1	Undefined	1	0	0	No	Input of Low grade aggregates to create Functional Unit
+p_2_1	1	Undefined	1	0	0	No	Input of Alkali Activator to create AA blocks
+p_3_1	1	Undefined	1	0	0	No	Input of Aluminium powder to create AA blocks
+p_4_1	1	Undefined	1	0	0	No	Input of SS Slag to create AA blocks
+p_7_1	1	Undefined	1	0	0	No	Input of Electricity [BE] to create AA blocks
+p_8_1	1	Undefined	1	0	0	No	Input of Aggregates to create AA blocks
+p_5_2	1	Undefined	1	0	0	No	Input of NaOH to create Alkali Activator
+p_6_2	1	Undefined	1	0	0	No	Input of Na silicate to create Alkali Activator
+p_4_9	1	Undefined	1	0	0	No	Input of SS Slag to create Carbonated Blocks
+p_7_9	1	Undefined	1	0	0	No	Input of Electricity [BE] to create Carbonated Blocks
+p_10_9	1	Undefined	1	0	0	No	Input of Water to create Carbonated Blocks
+p_11_9	1	Undefined	1	0	0	No	Input of CO2 input to create Carbonated Blocks
+p_17_9	1	Undefined	1	0	0	No	Input of CO2 absorbed to create Carbonated Blocks
+p_8_12	1	Undefined	1	0	0	No	Input of Aggregates to create Concrete blocks
+p_3_12	1	Undefined	1	0	0	No	Input of Aluminium powder to create Concrete blocks
+p_7_12	1	Undefined	1	0	0	No	Input of Electricity [BE] to create Concrete blocks
+p_10_12	1	Undefined	1	0	0	No	Input of Water to create Concrete blocks
+p_14_12	1	Undefined	1	0	0	No	Input of Portland cement to create Concrete blocks
+p_15_12	1	Undefined	1	0	0	No	Input of Limestone to create Concrete blocks
+p_18_12	1	Undefined	1	0	0	No	Input of Portland cement [CH] to create Concrete blocks
+p_19_12	1	Undefined	1	0	0	No	Input of Portland cement [RoW] to create Concrete blocks
+p_4_16	1	Undefined	1	0	0	No	Input of SS Slag to create Low grade aggregates
+BO_ratio	0.02	Undefined	1	0	0	No	Boric oxide required to neutralise slag (2%)
+Density	2.22	Undefined	1	0	0	No	Density of blocks (g/cm3)
+FU_weight	111.0	Undefined	1	0	0	No	Weight of Functional unit
+
+End
+
+Project Calculated parameters
+p_13_1	p_4_1 * BO_ratio	Input of Boric Oxide to create AA blocks
+p_13_9	p_4_9 * BO_ratio	Input of Boric Oxide to create Carbonated Blocks
+p_13_16	p_4_16 * BO_ratio	Input of Boric Oxide to create Low grade aggregates
+
+End

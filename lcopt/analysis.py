@@ -3,6 +3,8 @@ from lcopt.bw2_export import Bw2Exporter
 import brightway2 as bw2
 import bw2analyzer
 
+from bw2analyzer.tagged import recurse_tagged_database, aggregate_tagged_graph
+
 import matplotlib.pyplot as plt
 
 
@@ -54,12 +56,66 @@ class Bw2Analysis():
                     e['amount'] = parameter_set[e['parameter_hook']]
                     #print("\t\t {}".format(e.amount))
                     e.save()
-        
-    def run_analyses(self, demand_item, demand_item_code,  amount = 1, method = ('IPCC 2013', 'climate change', 'GWP 100a'), top_processes = 10, gt_cutoff = 0.01, pie_cutoff =0.05):
+    
+    def multi_recurse(self, d):
+    
+        max_levels = 100
+
+        this_d = d
+
+        for i in range(max_levels):
+            prev_d = this_d
+            this_d = self.recurse(prev_d)
+            if this_d == prev_d:
+                #print('breaking after {} levels'.format(i+1))
+                break
+
+        return this_d
+
+
+
+    def recurse(self, d):
+
+        to_return = {}
+        cum_impact = 0
+
+        for k, v in d.items():
+            if k == 'technosphere':
+                #print('technosphere')
+                for e in v:
+                    #print (e['activity'])
+                    cum_impact += e['impact']
+                    if 'cum_impact' in e.keys():
+                        cum_impact += e['cum_impact']
+
+                    if k in to_return.keys():
+                        to_return[k].append(self.recurse(e))
+                    else:
+                        to_return[k]=[self.recurse(e)]
+                        
+            elif k == 'biosphere':
+                to_return[k] = v
+                if len(v) != 0:
+                    for b in v:
+                        cum_impact += b['impact']
+                        
+            elif k == 'activity':
+                #print (k,v)
+                to_return[k] = str(v)
+            #elif k == 'impact':
+             #   print('impact of {} = {}'.format(d['activity'], v))
+
+            else:
+                to_return[k] = v
+        #print('cum_impact of {} = {}'.format(d['activity'], cum_impact))
+        to_return['cum_impact'] = cum_impact
+            
+        return to_return
+    
+    def run_analyses(self, demand_item, demand_item_code,  amount = 1, methods = [('IPCC 2013', 'climate change', 'GWP 100a')], top_processes = 10, gt_cutoff = 0.01, pie_cutoff =0.05):
         
         ready = self.setup_bw2()
         name = self.bw2_database_name
-        
         
         if ready:
             if name in bw2.databases:
@@ -72,24 +128,6 @@ class Bw2Analysis():
             new_db.write(self.bw2_database)
             new_db.process()
             
-            def get_product(search_term):
-                my_results = new_db.search(search_term)
-                if len(my_results) == 0:
-                    print('No item found to analyse called {}... aborting'.format(search_term))
-                    return False
-                elif len(my_results) > 1:
-                    print('Multiple items found containing {}'.format(search_term))
-                    print (my_results)
-                    print ()
-                    print('Going with the first one in the list - {}'.format(my_results[0]))
-                    print ()
-                    return my_results[0]
-                else:
-                    return my_results[0]
-            
-            #get the product to assess
-            #product_demand = get_product(demand_item)
-            #try this with get
             print ('trying to get {}'.format(demand_item_code))
             product_demand = new_db.get(demand_item_code)
             
@@ -97,8 +135,18 @@ class Bw2Analysis():
                 
                 fu = {product_demand:amount}
                 
-                print('Running analysis for {} {} of {}, using {}'.format(amount, product_demand['unit'], product_demand, method))
-
+               
+                result_dict = {
+                    'settings':{
+                        'pie_cutoff': pie_cutoff,
+                        'methods': [str(method) for method in methods],
+                        'method_names' : [method[1] for method in methods],
+                        'method_units' : [bw2.methods[method]['unit'] for method in methods],
+                        'item': demand_item,
+                        'item_code': demand_item_code,
+                        'amount': amount,
+                        }
+                    }
                 result_sets = []
                 parameter_sets = self.modelInstance.evaluated_parameter_sets
 
@@ -106,216 +154,65 @@ class Bw2Analysis():
 
                 for n, (parameter_set_name, parameter_set) in enumerate(parameter_sets.items()):
                     
-                    result_set = {}
-                    
                     # update the parameter_set values
                     print ('\nAnalysis {}\n'.format(n+1))
                     
                     self.update_exchange_amounts(new_db, parameter_set)
                     
+                    
+                    initial_method = methods[0]
                     # run the LCA
-                    lca = bw2.LCA(fu, method)
-                    lca.lci()
+                    lca = bw2.LCA(fu, initial_method)
+                    lca.lci(factorize = True)
                     lca.lcia()
                     
-                    result_set['lca']=lca
-                    
-                    # run the contribution analysis
-                    ca = bw2analyzer.ContributionAnalysis().annotated_top_processes(lca)
-                    result_set['contributionAnalysis'] = ca
-                    
-                    # create the contribution pie chart
-                    
-                    # this deals with low scores - if the total is less than one, the pie chart treats them as %
-                    scalar = 1
-                    if lca.score < 1:
-                        scalar = 1/lca.score
-                        #print (scalar)
+                    ps_results = []
+
+                    for method in methods:
+                        lca.switch_method(method)
+                        lca.redo_lcia(fu)
+                        unit = bw2.methods[method]['unit']
                         
-                    topprocesses = [ca[n][0]*scalar for n, x in enumerate(ca) if n<=top_processes]
-                    topprocesses_names = [ca[n][2] for n, x in enumerate(ca) if n<=top_processes]
-                    covered = sum(topprocesses)/scalar
-                    #print(covered)
-                    remainder = lca.score - covered
-                    topprocesses.append(remainder*scalar)
-                    topprocesses_names.append('remaining processes')
-                    
-                    """
-                    # Not bothering with the plots - better to recreate them from the data in d3
-                    fig1, ax1 = plt.subplots()
-                    ax1.pie(topprocesses, labels=topprocesses_names, autopct = '%1.1f%%', startangle=90)
-                    
-                    ax1.axis('equal')
-                    
-                    result_set['pie_chart'] = fig1
-                    """
+                        score = lca.score
+                        print('Analysis for {} {} of {}, using {}'.format(amount, product_demand['unit'], product_demand['name'], method))
+                        print ('{:.3g} {}'.format(score, unit))
+                        
+                        method_dict = {o[0]: o[1] for o in bw2.Method(method).load()}
+                        default_tag = "other"
 
-                    max_processes = 4
-            
-                
-                    pie_data = [{'label':x[2], 'value': x[0], 'percent_label' : "{:.1f}%".format(x[0]/lca.score*100)} for x in ca if x[0]/lca.score >=pie_cutoff]
-                    pie_coverage = sum([x[0] for x in ca if x[0]/lca.score >=pie_cutoff ])
-                    pie_remainder = lca.score - pie_coverage
-                    pie_data.append({'label':'remaining processes', 'value':pie_remainder, 'percent_label' : "{:.1f}%".format(pie_remainder/lca.score*100) })
-                    result_set['pie_data'] = pie_data
-                    print (pie_data)
-                    
-                    # Graph traversal
-
-                    gt = bw2.GraphTraversal()
-                    gt_result = gt.calculate(fu ,method, cutoff=gt_cutoff)
-
-                    edges = gt_result['edges']
-                    nodes = gt_result['nodes']
-                    G = nx.DiGraph()
-
-                    def get_node_data(node, model, lca):
-                        activities, products, biosphere = lca.reverse_dict()
-
-                        if node == -1:
-                            return {'name':'Final demand'}
-                        else:
-                            db_id = activities[node]
-                            try:
-                                data = model.external_databases[0]['items'][db_id]
-                            except:
-                                data = model.database['items'][db_id]
-                        return data
-
-                    node_constructor = []
-                    for node_key, node_data in nodes.items():
-
-                        node_data_copy = deepcopy(node_data)
-                        node_data_copy.update(get_node_data(node_key, self.modelInstance, lca))
-
-                        node_constructor.append((node_key, node_data_copy))
-
-                    non_eco = [x for x in node_constructor if 'database' not in x[1].keys()]
-
-                    G.add_nodes_from(non_eco)
-
-                    edge_list = [(x['from'], x['to'],x) for x in edges]
-                    non_eco_edges = [(x['from'], x['to'],x) for x in edges if x['from'] in G.nodes() and x['to'] in G.nodes()]
-
-                    #G.add_edges_from(non_eco_edges)
-
-                    #start_pos = {x[0]:[0.1,n/100] for n, x in enumerate(node_constructor)}
-                    #start_pos[-1] = [0.5,0.5]
-                    #fixed = {-1:[0.5,0.5]}
-
-                    #pos = nx.spring_layout(G, pos = start_pos, fixed = fixed, weight = 'amount')
-
-                    #labels = {x[0]:x[1]['name'] for x in G.nodes(data=True)}
-                    #node_sizes = [(x[1]['cum']/lca.score)*300 for x in G.nodes(data=True)]
-
-
-                    """
-                    # Not bothering with the plots - better to recreate them from the data in d3
-                    fig2, ax2 = plt.subplots()
-
-                    ax2.axis('off')
-
-                    nx.draw_networkx(G, pos, labels = labels, font_size=6, node_size=node_sizes, ax= ax2)
-
-                    result_set['network'] = fig2
-                    """
-                    
-                    result_set['full_nodes'] = node_constructor
-                    result_set['model_nodes'] = non_eco
-                    result_set['full_edges'] = edge_list
-                    result_set['model_edges'] = non_eco_edges
-                    
-                    # Split the multiply linked nodes and create the json files
-                    
-                    sorted_edges = sorted(non_eco_edges, key=lambda x: x[0])
-
-                    nodes_to_duplicate = {}
-                    new_edges = []
-
-                    for key, group in groupby(sorted_edges, lambda x: x[0]):
-                        lengroup = deepcopy(group)
-                        length = sum(1 for x in lengroup)
-
-                        if length==1:
-                            for thing in group:
-                                new_edges.append(thing)
-                                #print('{} ({}) only links to one thing {} ({})'.format(key, key, thing[1], thing[1]))
-                                #print()
-                        else:
-                            nodes_to_duplicate[key] = length
-
-                            #print('{} ({})links to the following'.format(key, key))
-                            for n, thing in enumerate(group):
-                                #print ("\t{} ({})" .format(thing[1], thing[1]))
-                                new_thing = ("{}__{}".format(thing[0], n),thing[1], thing[2])
-                                new_edges.append(new_thing)
-                                #print(new_edges)
-                            #print (" ")
-                    new_nodes = []
-
-                    for n in non_eco:
-                        if n[0] in nodes_to_duplicate.keys():
-                            #print('{} is duplicated {} times'.format(n[0], nodes_to_duplicate[n[0]]))
-                            for i in range(nodes_to_duplicate[n[0]]):
-                                new_nodes.append(('{}__{}'.format(n[0], i), n[1]))
-                                #print ('{}__{}'.format(n[0], i))
-                        else:
-                            new_nodes.append(n)
+                        label = "lcopt_type"
+                        type_graph = [recurse_tagged_database(key, amount, method_dict, lca, label, default_tag)
+                                 for key, amount in fu.items()]
+                        type_result = aggregate_tagged_graph(type_graph)
+                        
+                        #for k,v in type_result.items():
+                        #    print('{}\t\t{}'.format(k,v))
+                        
+                        label = "name"
+                        foreground_graph = [recurse_tagged_database(key, amount, method_dict, lca, label, default_tag)
+                                 for key, amount in fu.items()]
+                        foreground_result = aggregate_tagged_graph(foreground_graph)
+                        
+                        #for k,v in foreground_result.items():
+                        #    print('{}\t\t{}'.format(k,v))
                             
-                    node_names = {}
+                        recursed_graph = self.multi_recurse(type_graph[0])
+                        
+                        result_set = {
+                            'method':str(method),
+                            'unit' : unit,
+                            'score':score,
+                            'foreground_results':foreground_result,
+                            'graph': recursed_graph,
+                        }
+                        
+                        ps_results.append(result_set)
+                        
+                    result_sets.append(ps_results)
 
-                    for i, n in enumerate(new_nodes):
-                        node_names[n[1]['name']] = i
+                result_dict['results'] = result_sets
                     
-                    
-                    #G2 = nx.DiGraph()
-                    
-                    #G2.add_nodes_from(new_nodes)
-                    #G2.add_edges_from(new_edges)
-                    
-                    #start_pos2 = {x[0]:[0.1,n/100] for n, x in enumerate(new_nodes)}
-                    #start_pos2[-1] = [0.5,0.5]
-                    #fixed2 = {-1:[0.5,0.5]}
-
-                    #pos2 = nx.spring_layout(G2, pos = start_pos2, fixed = fixed2, weight = 'amount')
-
-                    #labels2 = {x[0]:x[1]['name'] for x in G2.nodes(data=True)}
-                    #node_sizes2 = [(x[1]['cum']/lca.score)*300 for x in G2.nodes(data=True)]
-
-
-                    #fig3, ax3 = plt.subplots()
-
-                    #ax3.axis('off')
-
-                    #nx.draw_networkx(G2, pos2, labels = labels2, font_size=6, node_size=node_sizes2, ax= ax3)
-
-                    #result_set['network_split'] = fig3
-                    
-                    # Create the json string for the split network
-                    
-                    json_nodes = [{'id': x[0], 'data':x[1], 'group':node_names[x[1]['name']], 'radius' : x[1]['cum']/lca.score*10} for x in new_nodes]
-                    json_links = [{"source": x[0], "target": x[1], "value": (x[2]['impact']/lca.score)*6} for x in new_edges]
-
-                    to_json = {'nodes':json_nodes, 'links':json_links}
-
-                    json_data = json.dumps(to_json)
-                    
-                    result_set['json'] = json_data
-                    result_set['model_nodes_split'] = new_nodes
-                    result_set['model_edges_split'] = new_edges
-                    
-                    # append the results to the dataset
-                    
-                    result_sets.append(result_set)
-                    
-                    
+                return result_dict
+                        
+                        
                 
-                print('Analysis complete, results have the following keys:')
-                for k in result_sets[0].keys():
-                    print ('\t{}'.format(k))
-                    
-                return result_sets
-                    
-            
-            
-        

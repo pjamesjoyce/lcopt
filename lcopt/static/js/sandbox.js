@@ -234,6 +234,26 @@ var jsPlumbsetup = function (nodes, links,linklabels, outputlabels) {
 	$('#echoButton').click(function(e){
 		search_ecoinvent_dialog()
 	})
+
+  
+  $( "#dialog" ).dialog({
+    dialogClass: "no-close",
+    autoOpen: false,
+    modal: true,
+    buttons: {
+      Ok: function() {
+        $( this ).dialog( "close" );
+      }
+    }
+  });
+   
+
+  $('#simaPro_export').click(function(e){
+    console.log('exporting to simaPro')
+    $.post('/process_post', {action:'simaPro_export'})
+    console.log('dialog?')
+    $( "#dialog" ).dialog( "open" );
+  })
 	
 } // end of jsPlumbSetup
 

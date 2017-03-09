@@ -140,6 +140,15 @@ class LcoptModel(object):
         self.biosphereName = "biosphere3"
         self.ecoinventFilename = "ecoinvent3_3"
         self.biosphereFilename = "biosphere3"
+
+        # default settings for bw2 analysis
+        self.analysis_settings = {
+                                'amount' : 1,
+                                'methods' : [('IPCC 2013', 'climate change', 'GWP 100a'), ('USEtox', 'human toxicity', 'total')],
+                                'top_processes': 10,
+                                'gt_cutoff' : 0.01,
+                                'pie_cutoff' : 0.05,
+                            }
          
         if load != None:
             self.load(load)
@@ -204,6 +213,8 @@ class LcoptModel(object):
 
             self.ecoinventName = savedInstance.ecoinventName
             self.biosphereName = savedInstance.biosphereName
+
+            self.analysis_settings =savedInstance.analysis_settings
 
         except Exception:
             pass
@@ -348,23 +359,43 @@ class LcoptModel(object):
 
 
     def generate_parameter_set_excel_file(self):
+        
+        parameter_sets = self.parameter_sets
+
         p_set = []
         p_set_name = "ParameterSet_{}_input_file.xlsx".format(self.name)
         p = self.params
         for k in p.keys():
             if p[k]['function'] == None:
-                p_set.append({'id':k, 'name': p[k]['description'], 'value': '', 'unit':p[k]['unit']})
+                base_dict = {'id':k, 'name': p[k]['description'], 'unit':p[k]['unit']}
+
+                for s in parameter_sets.keys():
+                    base_dict[s] = parameter_sets[s][k]
+
+                p_set.append(base_dict)
             else:
                 print("{} is determined by a function".format(p[k]['description']))
 
         for e in self.ext_params:
-            p_set.append({'id':'{}'.format(e['name']), 'type':'external', 'name': e['description'], 'value': e['default'], 'unit':''})
+            base_dict = {'id':'{}'.format(e['name']), 'type':'external', 'name': e['description'], 'unit':''}
+
+            for s in parameter_sets.keys():
+                    base_dict[s] = parameter_sets[s][e['name']]
+
+            p_set.append(base_dict)
 
         df = pd.DataFrame(p_set)
 
         writer = pd.ExcelWriter(p_set_name, engine='xlsxwriter')
 
-        df.to_excel(writer, sheet_name=self.name, columns = ['name', 'unit', 'id', 'value'],index= False, merge_cells = False)
+        ps_columns = [k for k in parameter_sets.keys()]
+        print (ps_columns)
+        my_columns = ['name', 'unit', 'id']
+        
+        my_columns.extend(ps_columns)
+        print (my_columns)
+
+        df.to_excel(writer, sheet_name=self.name, columns =  my_columns, index= False, merge_cells = False)
        
         return p_set_name
         
@@ -582,21 +613,42 @@ class LcoptModel(object):
                 if 'ext_link' in this_item.keys():
                     
                     ext_link = this_item['ext_link']
+
+                    
                     db_filter = lambda x:x['name'] == ext_link[0]
                     extdb = list(filter(db_filter, self.external_databases))[0]['items']
                     ext_item = extdb[ext_link]
-                    ref_prod = ext_item['reference product']
-                    name = ext_item['name'].replace(" " + ref_prod, "")
-                    location = ext_item['location']
-                    system_model = "Alloc Def"
-                    process_type = "U"
-                    unit = unnormalise_unit(ext_item['unit'])
+                    if ext_link[0] != self.biosphereName:
+                        ref_prod = ext_item['reference product']
+                        name = ext_item['name'].replace(" " + ref_prod, "")
+                        location = ext_item['location']
+                        system_model = "Alloc Def"
+                        process_type = "U"
+                        unit = unnormalise_unit(ext_item['unit'])
 
-                    simaPro_name = "{} {{{}}}| {} | {}, {}".format(ref_prod.capitalize(), location, name, system_model, process_type)
+                        simaPro_name = "{} {{{}}}| {} | {}, {}".format(ref_prod.capitalize(), location, name, system_model, process_type)
 
-                    print ('{} has an external link to {}'.format(this_name, simaPro_name))
-                    
-                    current['exchanges'] = [{'formatted_name':simaPro_name, 'unit':unit, 'amount':1}]
+                        #print ('{} has an external link to {}'.format(this_name, simaPro_name))
+                        
+                        current['exchanges'] = [{'formatted_name':simaPro_name, 'unit':unit, 'amount':1}]
+                    else:
+                        #print('{} has a biosphere exchange - need to sort this out'.format(this_name))
+                        #print(ext_item)
+                        unit = unnormalise_unit(ext_item['unit'])
+                        formatted_name = ext_item['name']
+
+                        if 'air' in ext_item['categories']:
+                            current['air_emissions'] = [{'formatted_name':formatted_name, 'subcompartment':'', 'unit':unit, 'amount':1, 'comment': 'emission of {} to air'.format(formatted_name)}]
+
+                        elif 'water' in ext_item['categories']:
+                            current['water_emissions'] = [{'formatted_name':formatted_name, 'subcompartment':'', 'unit':unit, 'amount':1, 'comment': 'emission of {} to water'.format(formatted_name)}]
+
+                        elif 'soil' in ext_item['categories']:
+                            current['soil_emissions'] = [{'formatted_name':formatted_name, 'subcompartment':'', 'unit':unit, 'amount':1, 'comment': 'emission of {} to soil'.format(formatted_name)}]
+
+                        else:
+                            print('{} has a biosphere exchange that isnt to air water or soil')
+                            print(ext_item)
                     
                     
                 else:
@@ -620,6 +672,8 @@ class LcoptModel(object):
             project_input_params.append({'name':p['name'], 'comment':p['description'], 'default':p['default']})
         
         csv_args['project']['input_parameters']=project_input_params
+
+        #print (csv_args)
 
         env = Environment(
             loader=PackageLoader('lcopt', 'templates'),
@@ -701,7 +755,7 @@ class LcoptModel(object):
         name, bw2db = my_exporter.export_to_bw2()
         return name, bw2db
 
-    def analyse(self, demand_item, demand_item_code, amount = 1, method = ('IPCC 2013', 'climate change', 'GWP 100a'), top_processes = 10, gt_cutoff = 0.01):
+    def analyse(self, demand_item, demand_item_code):
         my_analysis = Bw2Analysis(self)
-        self.result_set = my_analysis.run_analyses(demand_item, demand_item_code, amount, method, top_processes, gt_cutoff)
+        self.result_set = my_analysis.run_analyses(demand_item, demand_item_code,  **self.analysis_settings)
 

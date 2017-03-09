@@ -11,7 +11,7 @@ class ParameterInterpreter():
 
         self.params = self.modelInstance.params
         self.global_params = {item['name']: item for item in self.modelInstance.ext_params}
-        print (self.global_params)
+        #print (self.global_params)
         
         self.parameter_sets = self.modelInstance.parameter_sets
         
@@ -84,7 +84,7 @@ class ParameterInterpreter():
         
         for ps_name, ps in self.parameter_sets.items():
             
-            print(ps_name)
+            #print(ps_name)
             
             this_ps = {}
             aeval = Interpreter()
@@ -109,7 +109,7 @@ class ParameterInterpreter():
             
             evaluated_parameter_sets[ps_name]=this_ps
             
-        print(evaluated_parameter_sets)
+        #print(evaluated_parameter_sets)
         
         self.modelInstance.evaluated_parameter_sets = evaluated_parameter_sets
         
