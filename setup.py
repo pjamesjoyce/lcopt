@@ -29,7 +29,7 @@ def package_files(directory):
 
 setup(
     name='lcopt',
-    version="0.1",
+    version="0.2.0",
     packages=packages,
     author="P. James Joyce",
     author_email="pjamesjoyce@gmail.com",

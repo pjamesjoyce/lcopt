@@ -61,7 +61,7 @@ function setup_stack_bar(){
 //here's the update function
 function update_stack_bar(){
 	//read the data
-	console.log('update_stack_bar')
+	//console.log('update_stack_bar')
 
 
 	// process the bound data into the required form
@@ -89,7 +89,7 @@ function update_stack_bar(){
 		//console.log(this_stack_bar_data)
 		this_bar = {
 			data: this_stack_bar_data,
-			name: 'Parameter set ' + (i+1),
+			name: bound_data.results[i][m].ps_name,
 		}
 		stack_bar_data.push(this_bar)
 	}
@@ -106,7 +106,7 @@ function update_stack_bar(){
 				running_total += bound_data.results[i][j].foreground_results[impact_item]
 			}
 		}
-		console.log(impact_item, running_total)
+		//console.log(impact_item, running_total)
 		if (running_total != 0){
 			to_include.push(impact_item)
 		}
@@ -248,8 +248,7 @@ function update_stack_bar(){
 	stack_svg.select('.stack_yAxis')
 		.call(d3.axisLeft(stack_yScale));
 
-	sections_count = bars.selectAll('.section').size()
-	console.log(sections_count)
+	
 
 /*	var legend = stack_svg.select('.legend').selectAll('.legend_item')
 			.data(item_names);

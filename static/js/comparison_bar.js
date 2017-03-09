@@ -54,7 +54,7 @@ function update_bar(){
 	for (i=0; i < bound_data.results.length; i++){
 		this_bar = {
 			value: bound_data.results[i][m]['score'],
-			label: 'Parameter set ' + (i+1),
+			label: bound_data.results[i][m]['ps_name'],
 		}
 		bar_data.push(this_bar)
 	}
