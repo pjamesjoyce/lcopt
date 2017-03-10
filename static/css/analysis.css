@@ -51,3 +51,16 @@ polyline{
 .legend_item{
   font-size: 8px;
 }
+
+.total_row{
+  background-color: #eee;
+  font-weight: bold;
+}
+
+.zero_result{
+  color: #222;
+}
+
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+  background-color: #ccc;
+}

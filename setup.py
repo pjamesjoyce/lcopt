@@ -26,6 +26,11 @@ def package_files(directory):
             paths.append(os.path.join('..', path, filename))
     return paths
 
+my_package_files = []
+my_package_files.extend(package_files(os.path.join('lcopt', 'assets')))
+my_package_files.extend(package_files(os.path.join('lcopt', 'static')))
+my_package_files.extend(package_files(os.path.join('lcopt', 'templates')))
+print(my_package_files)
 
 setup(
     name='lcopt',
@@ -34,7 +39,7 @@ setup(
     author="P. James Joyce",
     author_email="pjamesjoyce@gmail.com",
     license=open('LICENSE.txt').read(),
-    #package_data={'ocelot': package_files(os.path.join('ocelot', 'data'))},
+    package_data={'lcopt': my_package_files},
     #entry_points = {
     #    'console_scripts': [
     #        'ocelot-cli = ocelot.bin.ocelot_cli:main',
@@ -42,6 +47,7 @@ setup(
     #},
     #install_requires=[
     #],
+    include_package_data=True, 
     url="https://github.com/pjamesjoyce/lcopt/",
     long_description=open('README.md').read(),
     description='Life cycle optimisation module',

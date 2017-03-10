@@ -7,9 +7,6 @@ from bw2analyzer.tagged import recurse_tagged_database, aggregate_tagged_graph
 
 import matplotlib.pyplot as plt
 
-
-import networkx as nx
-
 from copy import deepcopy
 from itertools import groupby
 

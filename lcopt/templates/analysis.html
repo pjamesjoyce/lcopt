@@ -108,7 +108,18 @@
                             {% endif %}
 
                         {% endfor %}
+
+                        <tr class = "total_row">
+                            <td>TOTAL</td>
+                            {% for j in range(no_methods) %}
+                                {% for i in range(colspan) %}
+                                    
+                                        <td class="right_align">{{"%0.2g" | format(args.result_sets.results[i][j].score)}}</td>
+                                    {% endfor %}
+                                {% endfor %}
+                        </tr>
                     </tbody>
+                    
                 </table>
                 </div>
               </div>

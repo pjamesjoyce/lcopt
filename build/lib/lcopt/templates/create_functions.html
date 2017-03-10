@@ -1,0 +1,111 @@
+{% extends 'base.html'%}
+
+{% block title %}Create functions{% endblock%}
+
+{% block head_postload %}
+
+<script src="{{ url_for('static', filename = 'js/cdn_cache/selectize_duplicates_JJ.js') }}"></script>
+<script src="{{ url_for('static', filename = 'js/function_box.js') }}"></script>
+
+<link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/function_box.css') }}" />
+<link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/cdn_cache/selectize.css') }}" />
+
+
+{% endblock%}
+
+{% block content %}
+
+<div class="container-fluid">
+<div class="col-xs-10 col-xs-offset-1">
+  <div class="row">
+    <div class="col-xs-10 col-xs-offset-1">
+        <p>
+          You can create functions to take the place of input parameters here. Make sure you press <kbd>tab</kbd> every time you enter a section of the function. This includes operators and numbers.
+        </p>
+        <p>
+          <a class="btn btn-xs btn-custom"data-toggle="collapse" href="#moreInfo" aria-expanded="false" aria-controls="moreInfo">More info...</a>
+        </p>
+        <div class="collapse" id="moreInfo">
+          <div class="well">
+            <p> 
+                Operators : <span class="item_operator">&nbsp;*&nbsp;</span>, 
+                <span class="item_operator">&nbsp;/&nbsp;</span>, 
+                <span class="item_operator">&nbsp;+&nbsp;</span>, 
+                <span class="item_operator">&nbsp;-&nbsp;</span>, 
+                <span class="item_operator">&nbsp;)&nbsp;</span>, 
+                <span class="item_operator">&nbsp;(&nbsp;</span>
+            </p>
+            <p> 
+                Numbers : <span class="item_number">&nbsp;1&nbsp;</span>, 
+                <span class="item_number">&nbsp;123&nbsp;</span>, 
+                <span class="item_number">&nbsp;0.75&nbsp;</span>
+            </p>
+            <p> 
+                Inputs from other processes : 
+                <span class="item_intermediate">&nbsp;Input of X to Y&nbsp;</span>
+            </p>
+            <p> 
+                Inputs from the 'technopshere' : 
+                <span class="item_input">&nbsp;Input of X to Y&nbsp;</span>
+            </p>
+            <p> 
+                Emissions to the environment : 
+                <span class="item_biosphere">&nbsp;Emission of X from Y&nbsp;</span>
+            </p>
+            <p> 
+                Global parameters : 
+                <span class="item_global">&nbsp;Global parameter&nbsp;</span>
+            </p>
+           
+           
+          </div>
+        </div>
+    </div>
+
+    	
+	<div class="row"> 
+        <div class="col-xs-8">
+
+
+            <form class="form-horizontal">
+                <div class="form-group">
+
+                    <label class="control-label col-xs-5" for="parameter-select">Parameter to be set by function:</label>
+                    <div class="col-xs-7">
+                        <select type="text" name="parameter-select" id="parameter-select"></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-xs-5" for="select-to" id = "function_label">Function:</label>
+                    <div class="col-xs-7">
+        	           <input type="text" name="select-to" id="select-to">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-xs-5" for="input_value" id = "parsed_function_label">Created function:</label>
+                    <div class="col-xs-7">
+                        <input class="form-control disabled" name = "input_value", id="input_value" disabled>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-xs-5" for="description" id = "description_label">Description (optional):</label>
+                    <div class="col-xs-7">
+                       <input class="form-control" type="text" name="description" id="description">
+                    </div>
+                </div>
+                </form>
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <button class="btn btn-info form-control pull-right" id = "save_function">Save</button>
+                    </div>
+                </div>
+            
+        </div>
+    </div>
+                
+    </div>
+  </div>
+  </div>
+</div>
+
+{% endblock %}

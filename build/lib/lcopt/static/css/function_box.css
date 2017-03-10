@@ -1,0 +1,35 @@
+.name{
+	color:#ddd;
+}
+.hide_me{
+	display: none;
+}
+
+.optgroup-header{
+	font-weight: bold;
+	font-size: 0.7em;
+}
+
+.item_biosphere{
+	background-color: #EFFFF7;
+
+
+}
+.item_operator{
+	background-color: aliceblue;
+}
+
+.item_intermediate{
+	background-color: #FEFFEF;
+}
+
+.item_input{
+	background-color: #FAEFFF;
+}
+.item_number{
+	background-color: #ddd
+}
+
+.item_global{
+	background-color: #FEF9F9;
+}

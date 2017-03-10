@@ -1,0 +1,38 @@
+
+#status_box_outer{
+	border : 1px solid #aaa;
+	width:250px;
+}
+
+#status_box_outer_small{
+	border : 1px solid #aaa;
+	width:100px;	
+}
+
+.is_true{
+	color: green;
+}
+
+.is_false{
+	color:red;
+}
+
+.status_item{
+	border-left : 1px solid #aaa;
+}
+
+.status_box_item{
+	border-bottom: 1px solid #aaa;
+}
+/*
+
+.status_item{
+	width: 50px;
+}
+.status_title{
+	width: 150px;
+}
+.status_title_small{
+	width: 150px;
+}
+*/

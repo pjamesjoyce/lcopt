@@ -3,7 +3,6 @@ import webbrowser
 import json
 from ast import literal_eval
 from lcopt.io import exchange_factory
-import mpld3
 from collections import OrderedDict
 from itertools import groupby
 

@@ -1,0 +1,34 @@
+{% extends 'base.html'%}
+
+{% block title %}Analysis of {{args.item}} {% endblock%}
+
+{% block head_postload %}
+<script type="text/javascript">
+  $(document).ready(function(){
+    window.location.replace("/analysis?item={{args.item}}&item_code={{args.item_code}}");
+  })
+</script>
+<style type="text/css">
+  .loading{
+    text-align: center;
+  }
+  .padded{
+    padding-top: 50px;
+    padding-bottom: 50px;
+  }
+</style>
+{% endblock%}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="loading col-xs-10 col-xs-offset-1">
+        <h1>Running analysis for {{args.item}} </h1>
+        <img class="padded" src="{{ url_for('static', filename = 'img/loading.svg') }}">
+        <p>Running LCA for {{args.item}}, this may take a while...</p>
+        <p class="text-muted">{{args.item_code}}</p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

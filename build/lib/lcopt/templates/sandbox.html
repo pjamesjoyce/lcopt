@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+
+{% block title %} Sandbox
+{% endblock %}
+
+{% block head_postload %}
+<link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/sandbox.css') }}" />
+<!-- this is the md5 script (from http://pajhome.org.uk/crypt/md5) to create the correct IDs for the model-->
+<script src="{{ url_for('static', filename = 'js/md5.js') }}"></script>
+<!-- This is the underlying package for the typeahead in the input modal -->
+<script src="{{ url_for('static', filename = 'js/cdn_cache/typeahead.bundle.js') }}"></script>
+<link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/typeahead.css') }}" />
+
+<script src="{{ url_for('static', filename = 'js/status.js') }}"></script>
+<link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/status.css') }}" />
+
+{% endblock %}
+
+{% block content %}
+
+
+
+
+<div class="container-fluid">
+	<div class="row">
+	  <div class="sandboxTitle col-xs-10 col-xs-offset-1">
+		<h2>Flow sheet for {{args.model.name}}</h2>
+		<hr>
+		<p>
+		  You can create or edit the flow sheet for {{args.model.name}} in the box below &nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-xs btn-custom"data-toggle="collapse" href="#moreInfo" aria-expanded="false" aria-controls="moreInfo">More info...</a>
+		</p>
+		<div class="collapse" id="moreInfo">
+		  <div class="well">
+			<p>
+			  <strong>Add processes </strong>(actions in the life cycle where material is transformed) to the flow sheet using the 'add process' button on the left
+			</p>
+			<p>
+			  <strong>Edit</strong> the name of a process by clicking on the name (press Enter when done)
+			</p>
+			<p>
+			  <strong>Drag</strong> the edges of items to move them around
+			</p>
+			<p>
+			  <strong>Hover</strong> over an item to see the actions you reveal the action icons
+			</p>
+			<p>
+			  <strong>Connect</strong> processes in the flow sheet by dragging from the 'connect' icon (<i class="material-icons w3-medium">trending_flat</i>) to the next process in the flow sheet
+			</p>
+			<p>
+			  <strong>Add inputs</strong> to processes by clicking on the 'input' icon (<i class="material-icons w3-medium">file_download</i>)
+			</p>
+			<p>
+			  <strong>Add output</strong> to processes by clicking on the 'output' icon (<i class="material-icons w3-medium">file_upload</i>)
+			</p>
+			<p>
+			  <strong>Edit quantities</strong> of an input or output by clicking on the 'edit' icon (<i class="material-icons w3-medium">edit</i>)
+			</p>
+			<p>
+			  <strong>Remove</strong> items by clicking on the 'delete' icon (<i class="material-icons w3-medium">cancel</i>)
+			</p>
+			<p>
+			  You can <strong>show or hide the arrow labels</strong> using the buttons on the left hand side
+			</p>
+
+		  </div>
+		</div>
+	  </div>
+	</div>
+	<div class="row">
+		<div class="col-xs-1 controls">
+			<div>
+				<button type="button" name="button" class="btn btn-xs btn-custom processButton" id="addProcess"><div><i class="material-icons">add</i></div>Add process</button>
+				<button type="button" name="button" class="btn btn-xs btn-custom processButton" id="saveModel"><div><i class="material-icons">save</i></div>Save model</button>
+				<button type="button" name="button" class="btn btn-xs btn-custom processButton" id="simaPro_export"><div><i class="material-icons">launch</i></div><span class="bit_smaller">SimaPro Export</span></button>
+			</div>
+			<div>
+				<p>Maybe put some extra buttons here</p>
+			</div>
+		</div>
+		<div class="sandbox col-xs-10">
+			<!-- this is where that sandbox application sits -->
+			<div id="sandbox_container"></div>
+		</div>
+		<div class="col-xs-1 controls">
+			<div>
+				<div id="status_box_outer_small" class="status_box container-fluid"></div>
+				<!--<button type="button" name="button" class="btn btn-xs btn-custom processButton" id="echoButton"><div><i class="material-icons">search</i></div>Search ecoinvent</button>-->
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- dialog -->
+<div id="dialog" title="Export complete">
+  <p>The model has been exported as a SimaPro csv file and an excel file containing the parameter sets</p>
+  <p>The files are in your current working directory</p>
+  <p>The csv file is called "{{args.model.name}}_database_export.csv"</p>
+  <p>The excel file is called "ParameterSet_{{args.model.name}}_input_file.xlsx"</p>
+</div>
+
+<!-- jsPlumb sandbox script -->
+<script src="{{ url_for('static', filename = 'js/sandbox_functions.js') }}"></script>
+<script src="{{ url_for('static', filename = 'js/sandbox.js') }}"></script>
+
+<script type="text/javascript">
+
+  jsPlumb.ready(function () {
+
+   // set up variables that need to be passed from template to script
+    var nodes = [];
+
+    {% for node in args.nodes %}
+    nodes.push({'name':'{{node.name}}','type':'{{node.type}}','id':'{{node.id}}','initX':{{node.initX}},'initY':{{node.initY}}})
+    {% endfor %}
+    
+    
+
+    // choices for type are input, output, intermediate
+    // need to consider whether amount is still necessary - could use defaults?...
+    var links = [];
+    var linklabels = {};
+
+    {% for link in args.links %}
+    links.push({'sourceID':'{{link.sourceID}}', 'targetID':'{{link.targetID}}', 'type':'{{link.type}}', 'amount':{{link.amount}}});
+    linklabels['{{link.sourceID}}_{{link.targetID}}'] = '{{link.label}}';
+    {% endfor%}
+
+    var outputlabels = {};
+
+    {% for outputlabel in args.outputlabels %}
+    outputlabels['{{outputlabel.process_id}}'] = '{{outputlabel.output_name}}';
+    {% endfor%}
+
+
+
+    jsPlumbsetup(nodes, links, linklabels, outputlabels);
+
+  });
+
+</script>
+
+
+{% endblock %}
