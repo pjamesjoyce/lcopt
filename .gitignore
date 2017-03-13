@@ -1,5 +1,8 @@
 *.ipynb
 *.pickle
+*.csv
+*.json
+*.xlsx
 .ipynb_checkpoints/
 notebooks/
 notebooks_preBW2/
