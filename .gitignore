@@ -7,3 +7,9 @@
 .ipynb_checkpoints/
 notebooks/
 notebooks_preBW2/
+static_backup/
+static/
+templates_backup/
+templates/
+pip_requrements.txt
+requirements.txt
