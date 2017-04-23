@@ -49,8 +49,10 @@ setup(
     #],
     include_package_data=True, 
     url="https://github.com/pjamesjoyce/lcopt/",
+    download_url="https://github.com/pjamesjoyce/lcopt/archive/0.1.tar.gz",
     long_description=open('README.md').read(),
     description='Life cycle optimisation module',
+    keywords=['LCA'],
     classifiers=[
         'Intended Audience :: End Users/Desktop',
         'Intended Audience :: Developers',
