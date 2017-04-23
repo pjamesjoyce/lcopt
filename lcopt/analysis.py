@@ -108,6 +108,44 @@ class Bw2Analysis():
         to_return['cum_impact'] = cum_impact
             
         return to_return
+
+    def drop_level_recurse(self, d):
+
+        to_return = {}
+        
+        if d['tag']=='intermediate':
+            #print('this needs to be dropped')
+            #print ('Dropping {}'.format(d['activity']))
+            for key in d.keys():
+                if key != 'technosphere':
+                    if key == 'activity':
+                        d[key] = str(d['technosphere'][0][key])
+                    #print(key, d[key], d['technosphere'][0][key])
+                    d[key] = d['technosphere'][0][key]
+            if 'technosphere' in d['technosphere'][0].keys():
+                d['technosphere'] = d['technosphere'][0]['technosphere']
+
+                    
+        
+        for k, v in d.items():
+            #print (k)
+            if k == 'technosphere':
+                #print('technosphere')
+                for e in v:
+                    
+                    if k in to_return.keys():
+                        to_return[k].append(self.drop_level_recurse(e))
+                    else:
+                        to_return[k]=[self.drop_level_recurse(e)]
+
+            elif k == 'activity':
+                #print (k,v)
+                to_return[k] = str(v)
+
+            else:
+                to_return[k] = v
+            
+        return to_return
     
     def run_analyses(self, demand_item, demand_item_code,  amount = 1, methods = [('IPCC 2013', 'climate change', 'GWP 100a')], top_processes = 10, gt_cutoff = 0.01, pie_cutoff =0.05):
         
@@ -125,7 +163,7 @@ class Bw2Analysis():
             new_db.write(self.bw2_database)
             new_db.process()
             
-            print ('trying to get {}'.format(demand_item_code))
+            #print ('trying to get {}'.format(demand_item_code))
             product_demand = new_db.get(demand_item_code)
             
             if product_demand != False:
@@ -172,8 +210,8 @@ class Bw2Analysis():
                         unit = bw2.methods[method]['unit']
                         
                         score = lca.score
-                        print('Analysis for {} {} of {}, using {}'.format(amount, product_demand['unit'], product_demand['name'], method))
-                        print ('{:.3g} {}'.format(score, unit))
+                        #print('Analysis for {} {} of {}, using {}'.format(amount, product_demand['unit'], product_demand['name'], method))
+                        #print ('{:.3g} {}'.format(score, unit))
                         
                         method_dict = {o[0]: o[1] for o in bw2.Method(method).load()}
                         default_tag = "other"
@@ -194,7 +232,8 @@ class Bw2Analysis():
                         #for k,v in foreground_result.items():
                         #    print('{}\t\t{}'.format(k,v))
                             
-                        recursed_graph = self.multi_recurse(type_graph[0])
+                        recursed_graph = self.multi_recurse(deepcopy(type_graph[0]))
+                        dropped_graph = self.drop_level_recurse(deepcopy(type_graph[0]))
                         
                         result_set = {
                             'ps_name': parameter_set_name,
@@ -203,6 +242,8 @@ class Bw2Analysis():
                             'score':score,
                             'foreground_results':foreground_result,
                             'graph': recursed_graph,
+                            'dropped_graph' : dropped_graph,
+                            'original_graph' : str(type_graph[0])
                         }
                         
                         ps_results.append(result_set)
