@@ -34,7 +34,7 @@ print(my_package_files)
 
 setup(
     name='lcopt',
-    version="0.2.0",
+    version="0.2.1",
     packages=packages,
     author="P. James Joyce",
     author_email="pjamesjoyce@gmail.com",

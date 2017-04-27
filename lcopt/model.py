@@ -1,5 +1,5 @@
 from lcopt.io import *
-from lcopt.ipython_interactive import IFS
+#from lcopt.ipython_interactive import IFS
 from lcopt.interact import FlaskSandbox
 from lcopt.bw2_export import Bw2Exporter
 from lcopt.analysis import Bw2Analysis
@@ -185,11 +185,13 @@ class LcoptModel(object):
     
     def save(self):
         """save the instance as a pickle"""
-        pickle.dump(self, open("{}.pickle".format(self.name), "wb"))
+        pickle.dump(self, open("{}.lcopt".format(self.name), "wb"))
         
     def load(self, filename):
         """load data from another instance - allows older versions to be loaded into the newer version of the class"""
-        savedInstance = pickle.load(open("{}.pickle".format(filename), "rb"))
+        if filename[-6:] != ".lcopt":
+            filename += ".lcopt"
+        savedInstance = pickle.load(open("{}".format(filename), "rb"))
         
         try:
             # name the instance
@@ -339,8 +341,8 @@ class LcoptModel(object):
         else:
             print('{} already exists - choose a different name'.format(param_name))
 
-    def edit_function(self):
-        function_editor = IFS(self)
+    #def edit_function(self):
+    #    function_editor = IFS(self)
         
     def create_parameter_set(self):
         p_set = OrderedDict()

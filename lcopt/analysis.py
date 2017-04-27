@@ -1,5 +1,7 @@
 from lcopt.bw2_export import Bw2Exporter
 
+from lcopt.utils import DEFAULT_DB_NAME
+
 import brightway2 as bw2
 import bw2analyzer
 
@@ -30,14 +32,15 @@ class Bw2Analysis():
             print ('Switched to existing bw2 project - {}'.format(self.bw2_project_name))
             return True
             
-        elif 'setup_TO_COPY' in bw2.projects:
-            bw2.projects.set_current('setup_TO_COPY')
+        elif DEFAULT_DB_NAME in bw2.projects:
+            bw2.projects.set_current(DEFAULT_DB_NAME)
             bw2.projects.copy_project(self.bw2_project_name, switch = True)
             print ('Created new bw2 project - {}'.format(self.bw2_project_name))
             return True
         
         else:
-            print ("bw2 project setup failed, please create the 'setup_TO_COPY' project in advance with the biosphere and necessary external databases (e.g. 'Ecoinvent_3_3_cutoff') ")
+            print ("bw2 project setup failed, please create the 'LCOPT_Setup' project in advance with the biosphere and necessary external databases (e.g. 'Ecoinvent_3_3_cutoff') ")
+            print ("To do this, run lcopt_bw_setup in lcopt.utils")
             return False
         
     def update_exchange_amounts(self, database, parameter_set):
