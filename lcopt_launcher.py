@@ -45,8 +45,9 @@ if __name__ == "__main__":
 
 	root.geometry('{}x{}+{}+{}'.format(initial_width, initial_height, initial_x, initial_y))
 
-	img = PhotoImage(file = r'C:\Users\pjjoyce\Dropbox\04. REDMUD IP LCA Project\04. Modelling\lcopt\static\img\lcoptIcon2.gif')
-	root.tk.call('wm', 'iconphoto', root._w, img)
+	#TODO: Maybe figure out how to use a custom icon - not urgent 
+	#img = PhotoImage(file = r'C:\Users\pjjoyce\Dropbox\04. REDMUD IP LCA Project\04. Modelling\lcopt\static\img\lcoptIcon2.gif')
+	#root.tk.call('wm', 'iconphoto', root._w, img)
 	
 
 	mainframe = ttk.Frame(root, padding="20 20 20 20")#padding="3 3 12 12")
