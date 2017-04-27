@@ -9,10 +9,10 @@ if __name__ == "__main__":
 		print("create")
 		root.withdraw()
 		model_name = simpledialog.askstring("New", "Enter a name for your model")
-
-		from lcopt import LcoptModel
-		model = LcoptModel(model_name)
-		model.launch_interact()
+		if model_name:
+			from lcopt import LcoptModel
+			model = LcoptModel(model_name)
+			model.launch_interact()
 		
 		root.destroy()
 
