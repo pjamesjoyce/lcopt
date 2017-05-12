@@ -1,5 +1,7 @@
 # lcopt
-Life cycle optimisation module
+Life cycle options appraisal module
+
+[![Build Status](https://travis-ci.org/pjamesjoyce/lcopt.svg?branch=master)](https://travis-ci.org/pjamesjoyce/lcopt)
 
 # Installation
 

@@ -3,5 +3,5 @@
 /*.csv
 *.json
 *.xlsx
-# static/
-# templates/
+/static/
+/templates/
