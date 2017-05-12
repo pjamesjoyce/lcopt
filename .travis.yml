@@ -16,7 +16,8 @@ install:
   # Replace dep1 dep2 ... with your dependencies
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION
   - source activate test-environment
-  - "pip install -r travis-requirements.txt"
+  - pip install .
+  - pip install -r travis-requirements.txt
 
 # command to run tests
-script: "python setup.py develop && pytest"
+script: pytest
