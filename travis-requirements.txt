@@ -1,3 +1,4 @@
 pandas>=0.19.2
 Werkzeug>=0.12.1
 pytest
+coveralls
