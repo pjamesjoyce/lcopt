@@ -4,9 +4,9 @@ Life cycle optimisation module
 # Installation
 
 For lcopt to work you should have the latest version of [brightway2](https://brightwaylca.org/) by Chris Mutel installed.
-This will make sure all of lcopts dependencies are satisfied.
+This will make most of lcopts dependencies are satisfied.
+
 The instructions for installing brightway below are current as of April 2017, but check [here](https://docs.brightwaylca.org/installation.html) for the latest ones.
-If you already have brightway installed, you can skip to the final step.
 
 The best option is to use conda to create a separate environment, to avoid conflicts.
 
@@ -35,7 +35,21 @@ On windows there's an extra dependency
 conda install -y -q pywin32
 ```
 
-Once brightway2 is ready fo go,  install lcopt via pip:
+Once brightway2 is ready to go, theres two more steps before installing lcopt itself...
+
+Install pandas
+
+```
+conda install -y -q pandas
+```
+
+Update werkzeug (this is a python 3.6 thing...)
+
+```
+pip install -U werkzeug
+```
+
+Finallu, install lcopt via pip:
 
 ```
 pip install lcopt

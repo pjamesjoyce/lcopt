@@ -1,9 +1,9 @@
 *.ipynb
 *.pickle
+*.lcopt
 /*.csv
 *.json
 *.xlsx
-/*.yml
 .ipynb_checkpoints/
 notebooks/
 notebooks_preBW2/
@@ -12,4 +12,3 @@ static/
 templates_backup/
 templates/
 pip_requrements.txt
-requirements.txt
