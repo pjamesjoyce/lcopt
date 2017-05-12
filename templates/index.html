@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>HTML5 Editable Table</title>
+  
+  
+  <link rel='stylesheet prefetch' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css'>
+<link rel='stylesheet prefetch' href='http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css'>
+
+<style type="text/css">
+	
+	.table-editable {
+	  position: relative;
+	}
+
+</style>
+
+  
+</head>
+
+<body>
+  <div class="container">
+  <h1>Create Parameter Set</h1>
+  
+  <div id="table" class="table-editable">
+    <table class="table">
+      <tr>
+        <th>id</th>
+        <th>Name</th>
+        <th>Value</th>
+        <th>Unit</th>
+      </tr>
+      {% for item in items %}
+      <tr>
+        <td>{{item.id}}</td>
+        <td>{{item.name}}</td>
+        <td contenteditable="true">{{item.value}}</td>
+        <td>{{item.unit}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  
+  <button id="export-btn" class="btn btn-primary">Export Data</button>
+  <p id="export"></p>
+</div>
+
+<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+<script src='http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js'></script>
+<script src='http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore.js'></script>
+
+    <script>
+    	var $TABLE = $('#table');
+		var $BTN = $('#export-btn');
+		var $EXPORT = $('#export');
+
+		// A few jQuery helpers for exporting only
+		jQuery.fn.pop = [].pop;
+		jQuery.fn.shift = [].shift;
+
+		// Post to the provided URL with the specified parameters.
+		function post(path, parameters) {
+		    var form = $('<form></form>');
+
+		    form.attr("method", "post");
+		    form.attr("action", path);
+
+		    $.each(parameters, function(key, value) {
+		        var field = $('<input></input>');
+
+		        field.attr("type", "hidden");
+		        field.attr("name", key);
+		        field.attr("value", value);
+
+		        form.append(field);
+		    });
+
+		    // The form needs to be a part of the document in
+		    // order for us to be able to submit it.
+		    $(document.body).append(form);
+		    form.submit();
+		}
+
+		$BTN.click(function () {
+		  var $rows = $TABLE.find('tr:not(:hidden)');
+		  var headers = [];
+		  var data = [];
+		  
+		  // Get the headers (add special header logic here)
+		  $($rows.shift()).find('th:not(:empty)').each(function () {
+		    headers.push($(this).text().toLowerCase());
+		  });
+		  
+		  // Turn all existing rows into a loopable array
+		  $rows.each(function () {
+		    var $td = $(this).find('td');
+		    var h = {};
+		    
+		    // Use the headers from earlier to name our hash keys
+		    headers.forEach(function (header, i) {
+		      h[header] = $td.eq(i).text();   
+		    });
+		    
+		    data.push(h);
+		  });
+		  
+		  // Output the result
+		  $EXPORT.text(JSON.stringify(data));
+		  //$.post("/",
+		  //     JSON.stringify(data),
+		  //      function(data,status){
+		  //          alert("Data: " + data + "\nStatus: " + status);
+		  //      });
+		//	});
+		var url = "/"
+		$.ajax(url, {
+		    data : JSON.stringify(data),
+		    contentType : 'application/json',
+		    type : 'POST',
+		    success: function(data) { alert('data: ' + data); }
+			});
+		});
+    </script>
+
+<script type="text/javascript">
+	window.onbeforeunload = function (e) {
+    e = e || window.event;
+
+    // For IE and Firefox prior to version 4
+    if (e) {
+        e.returnValue = 'Any string';
+    }
+
+    // For Safari
+    return 'Any string';
+};
+</script>
+
+</body>
+</html>

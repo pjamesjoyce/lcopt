@@ -1,0 +1,28 @@
+Units
+kg	Mass	1	kg
+g	Mass	0.001	kg
+kWh	Energy	3.6	MJ
+MJ	Energy	1	MJ
+ton	Mass	1000	kg
+µg	Mass	0.000000001	kg
+mg	Mass	0.000001	kg
+GJ	Energy	1000	MJ
+J	Energy	0.000001	MJ
+kJ	Energy	0.001	MJ
+Mtn	Mass	1000000000	kg
+PJ	Energy	1000000000	MJ
+TJ	Energy	1000000	MJ
+kton	Mass	1000000	kg
+ng	Mass	1.0E-12	kg
+pg	Mass	1.0E-15	kg
+MWh	Energy	3600	MJ
+lb	Mass	0.4535924	kg
+Btu	Energy	0.001055696	MJ
+oz	Mass	0.02834952	kg
+tn.sh	Mass	907.1848	kg
+tn.lg	Mass	1016.047	kg
+kcal	Energy	0.0041855	MJ
+Wh	Energy	0.0036	MJ
+t	Mass	1000	kg
+
+End

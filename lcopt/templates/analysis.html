@@ -1,0 +1,148 @@
+{% extends 'base.html'%}
+
+{% block title %}Analysis{% endblock%}
+
+{% block head_postload %}
+
+<script src="{{ url_for('static', filename = 'js/cdn_cache/d3.min.js') }}"></script>
+<script src="{{ url_for('static', filename = 'js/cdn_cache/d3-legend.min.js') }}"></script>
+
+<!--<script src="{{ url_for('static', filename = 'js/analysis.js') }}"></script>-->
+<script src="{{ url_for('static', filename = 'js/pie2.js') }}"></script>
+<script src="{{ url_for('static', filename = 'js/comparison_bar.js') }}"></script>
+
+<script src = "{{ url_for('static', filename = 'js/treetest2.js') }}"></script>
+<script src = "{{ url_for('static', filename = 'js/stacked_bar.js') }}"></script>
+
+
+
+<link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/analysis.css') }}" />
+
+<link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/treetest.css') }}" />
+
+{% endblock%}
+
+{% block content %}
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xs-10 col-xs-offset-1">
+
+        <div class="row">
+            <div class="col-xs-10">
+                <select id = "parameterSetChoice">
+                    {% for item in args.result_sets.settings.ps_names %}<option value = {{loop.index}}>{{item}}</option>{% endfor %}
+                </select>
+                <select id = "methodChoice">
+                    {% for item in args.result_sets.settings.method_names %}<option value = {{loop.index}}>{{item | capitalize}}</option>{% endfor %}
+                </select>
+            </div>
+        </div>
+        
+        
+        <div class="row">
+            <div id="bar" class = "col-xs-6">
+                
+            </div>
+
+            <div id = "stackedbar" class = "col-xs-6">
+
+            </div>
+        </div>
+
+        
+        {% set colspan =  (args.result_sets.results | length)  %}
+        {% set no_methods =  (args.result_sets.settings.methods | length)  %}
+        
+
+        <div class="row">
+            <!--<div class="col-xs-10 col-xs-offset-1">-->
+            <div class="col-xs-12">
+             <div id="table" class="">
+                <table id="myTable" class="table table-bordered table-condensed table-hover">
+                  <thead>
+                      <tr class ="table_header">
+                        <th rowspan="2">Process</th>
+                        {% for i in range(no_methods) %}
+                        <th colspan="{{colspan}}">{{args.result_sets.settings.method_names[i] | capitalize}} </br><span class = "unit">{{args.result_sets.settings.method_units[i]}}</span></th>
+                        {% endfor %}
+                      </tr>
+                      <tr class ="table_header">
+                        
+                        {% for i in range(no_methods) %}
+                            {% for j in args.result_sets.settings.ps_names %}
+                                <th>{{j}}</th>
+                            {% endfor %}
+                        {% endfor %}
+                      </tr>
+                    </thead>
+
+                    <tbody>
+
+                        
+                        {% for f in args.result_sets.results[0][0].foreground_results %}
+                            <!-- calculate the row total, to see if its zero -->
+                            {% set running_total = [0] %}
+
+                            {% for i in range(colspan) %}
+                                {% for j in range(no_methods) %}
+                                    {% if running_total.append(running_total.pop() + args.result_sets.results[i][j].foreground_results[f]) %}{% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                            <!-- done -->
+
+                            
+                            {% if running_total[0] != 0 %}  
+
+                             <tr>
+                                <td class="row_title">{{f}}</td>
+                                {% for j in range(no_methods) %}
+                                {% for i in range(colspan) %}
+                                    
+                                        <td class="right_align">{{"%0.2g" | format(args.result_sets.results[i][j].foreground_results[f])}}</td>
+                                    {% endfor %}
+                                {% endfor %}
+                            </tr>
+                            
+
+                            {% endif %}
+
+                        {% endfor %}
+
+                        <tr class = "total_row">
+                            <td>TOTAL</td>
+                            {% for j in range(no_methods) %}
+                                {% for i in range(colspan) %}
+                                    
+                                        <td class="right_align">{{"%0.2g" | format(args.result_sets.results[i][j].score)}}</td>
+                                    {% endfor %}
+                                {% endfor %}
+                        </tr>
+                    </tbody>
+                    
+                </table>
+                </div>
+              </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <svg id='simaProTree'></svg>
+            </div>
+        </div>
+
+        <div class="row">
+            <div id="pie" class = "col-xs-6">
+                
+            </div>
+
+            <div id = "blank" class = "col-xs-6">
+                <svg id = "legendtest"></svg>
+            </div>
+        </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

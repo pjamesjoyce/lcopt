@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block head_postload %}
+<script src="{{ url_for('static', filename = 'js/table-edit.js') }}"></script>
+
+<style type="text/css">
+	.new_item{
+		font-style: italic; 
+	}
+</style>
+{% endblock %}
+
+{% block content%}
+
+<div class="container">
+  <h1>Create Parameter Set</h1>
+  
+  <div id="table" class="table-editable">
+    <table id="myTable" class="table">
+      <tr>
+        <th>id</th>
+        <th>Name</th>
+        <th>Unit</th>
+        {% for n in args.ps_names %}<th class="ps_name">{{n}}</th>{% endfor %}
+        
+      </tr>
+      {% for item in args.parameters %}
+      <tr>
+        <td>{{item.id}}</td>
+        <td>{{item.name}}</td>
+        <td>{{item.unit}}</td>
+
+        {% for v in item.existing_values %}
+        <td contenteditable="true">{{v}}</td>
+        {% endfor %}
+        
+        
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  
+  <button id="export-btn" class="btn btn-primary">Save</button>
+  <button id="btnAddCol" class="btn btn-info">Add another parameter set</button>
+  <a href="/"><button id="btnCancel" class="btn btn-cancel">Cancel</button></a>
+  <p id="export"></p>
+</div>
+
+{% endblock %}

@@ -1,0 +1,29 @@
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 3px;
+}
+
+.node .other{
+	stroke:red;
+}
+
+.node .intermediate{
+	stroke:green;
+}
+.node .biosphere{
+	stroke: grey;
+}
+
+.node text { font: 9px sans-serif; }
+
+.node--internal text {
+  text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 2px;
+}
+

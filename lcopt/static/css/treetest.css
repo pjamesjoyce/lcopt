@@ -1,0 +1,54 @@
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 3px;
+}
+
+.node rect {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 0.25px;
+}
+
+.node .other{
+	stroke:red;
+}
+
+.node .intermediate{
+	stroke:green;
+	fill: lightgreen;
+}
+.node .biosphere{
+	stroke: grey;
+	fill:lightgrey;
+}
+
+.node .input{
+	stroke: steelblue;
+	fill:aliceblue;
+}
+
+.node text { font: 9px sans-serif; }
+
+.node--internal text {
+  text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
+}
+
+.link {
+  fill: none;
+  stroke: red;
+  /*stroke-width: 2px;*/
+}
+
+.impactFalse{
+	 stroke-dasharray:5,5;
+	 stroke: #ccc;
+}
+
+.foreignDiv{
+	height:100px;
+	width:100px;
+	background-color: red;
+}
+
+

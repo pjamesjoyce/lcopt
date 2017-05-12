@@ -1,0 +1,118 @@
+Process
+
+Category type
+processing
+
+Process identifier
+{{process.id}}
+
+Type
+
+
+Process name
+{{process.name}}
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+{{process.output_name}}	{{process.unit}}	1	100	not defined	01. Testing	{{process.comment}}
+
+Avoided products
+
+Resources
+
+Materials/fuels
+{% for exchange in process.exchanges %}{{exchange.formatted_name}}	{{exchange.unit}}	{{exchange.amount}}	Undefined	0	0	0	{{exchange.comment}}
+{% endfor %}
+Electricity/heat
+
+Emissions to air
+{% for emission in process.air_emissions %}{{emission.formatted_name}}	{{emission.subcompartment}}	{{emission.unit}}	{{emission.amount}}	Undefined	0	0	0	{{emission.comment}}
+{% endfor %}
+Emissions to water
+{% for emission in process.water_emissions %}{{emission.formatted_name}}	{{emission.subcompartment}}	{{emission.unit}}	{{emission.amount}}	Undefined	0	0	0	{{emission.comment}}
+{% endfor %}
+Emissions to soil
+{% for emission in process.soil_emissions %}{{emission.formatted_name}}	{{emission.subcompartment}}	{{emission.unit}}	{{emission.amount}}	Undefined	0	0	0	{{emission.comment}}
+{% endfor %}
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+{% for param in process.input_parameters %}{{param.name}}	1	Undefined	1	0	0	No	{{param.comment}}
+{% endfor %}
+Calculated parameters
+{% for param in process.calculated_parameters %}{{param.name}}	{{param.formula}}	{{param.comment}}
+{% endfor %}
+End

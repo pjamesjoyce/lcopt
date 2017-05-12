@@ -1,0 +1,372 @@
+/* PAGE ITEMS */
+
+.ecoinventSelect{
+  min-height: 350px
+  max-height: 500px;
+  overflow: auto;
+}
+
+
+.ui-dialog {font-size:10px;}
+
+#sandbox_container{
+ /*margin-left: 50px;
+  margin-right: 50px;*/
+  border: 1px solid #aaa;
+  min-height:500px;
+  width: 100%;
+
+}
+
+.alt-container{
+  padding-bottom: 15px;
+}
+.controls{
+    text-align: center;
+}
+
+.processButton{
+  margin-bottom: 15px;
+  width:85px;
+}
+.labelButtons{
+  font-size: 0.75em;
+  text-align: center;
+  border: 1px solid #aaa;
+  background-color: #e1e3e4;
+  padding: 5px;
+  padding-bottom: 10px;
+  border-radius: 4px;
+}
+
+.btn-custom{
+  border: 1px solid #aaa;
+  background-color: #e1e3e4;
+}
+
+.showLabels,.hideLabels{
+  font-size: 0.8em;
+  border: 1px solid #484c51;
+  background-color: #5B6066;
+  color:white;
+}
+.demo {
+    /* for IE10+ touch devices */
+    touch-action:none;
+}
+
+
+/* SANDBOX ITEMS */
+
+.titleInput{
+  color:#333;
+  cursor: move;
+}
+
+.w{
+  padding: 4px;
+  position: absolute;
+  z-index: 4;
+  box-shadow: 2px 2px 19px #e0e0e0;
+  -o-box-shadow: 2px 2px 19px #e0e0e0;
+  -webkit-box-shadow: 2px 2px 19px #e0e0e0;
+  -moz-box-shadow: 2px 2px 19px #e0e0e0;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  opacity: 0.8;
+  cursor: move;
+  -webkit-transition: background-color 0.25s ease-in;
+  -moz-transition: background-color 0.25s ease-in;
+  transition: background-color 0.25s ease-in;
+  font-size: 10px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.w > .buttons {
+  display:none;
+}
+.w:hover .buttons, .parent.w .buttons {
+  display: block;
+}
+
+
+.transformation {
+    padding: 4px;
+    min-width: 120px;
+    min-height: 45px;
+    border: 2px solid #aaa;
+    background-color: #e1e3e4;
+    font-size: 10px;
+}
+
+.transformation:hover {
+    background-color: #43b47d;
+    color: white;
+    box-shadow:  0px 0px 50px #888888;
+    border-color: #ececec;
+
+}
+
+.input {
+    min-width: 65px;
+    min-height: 25px;
+    border: 1px solid #2e6f9a;
+    background-color: #6390BF;
+    color:white;
+}
+
+.input:hover {
+  background-color: #43b47d;
+  color: white;
+  box-shadow:  0px 0px 50px #888888;
+  border-color: #ececec;
+}
+
+.biosphere {
+    min-width: 65px;
+    /*width: 75px;*/
+    min-height: 25px;
+    border: 1px solid #484c51;
+    background-color: #5B6066;
+    color:white;
+}
+
+.biosphere:hover {
+  background-color: #43b47d;
+  color: white;
+  box-shadow:  0px 0px 50px #888888;
+  border-color: #ececec;
+}
+
+/*input {
+    background-color: #5c96bc;
+    color: white;
+    border:1px solid transparent;
+
+}*/
+
+.inspect{
+  background-color: #1e8151;
+  color: white;
+  border-color: #ececec;
+  -webkit-transition: background-color 0.25s ease-in;
+  -moz-transition: background-color 0.25s ease-in;
+  transition: background-color 0.25s ease-in;
+  -webkit-transition: color 0.25s ease-in;
+  -moz-transition: color 0.25s ease-in;
+  transition: color 0.25s ease-in;
+  -webkit-transition: border-color 0.25s ease-in;
+  -moz-transition: border-color 0.25s ease-in;
+  transition: border-color 0.25s ease-in;
+}
+
+.inspectConnect.aLabel{
+  background-color: #1e8151;
+  color: white;
+  -webkit-transition: background-color 0.25s ease-in;
+  -moz-transition: background-color 0.25s ease-in;
+  transition: background-color 0.25s ease-in;
+}
+
+/*.inspectConnect path{
+  stroke: #1e8151;
+  fill:#1e8151;
+*/
+}
+.inspectConnect .jsplumb-connector-outline{
+  stroke: transparent;
+}
+
+.aLabel {
+    -webkit-transition: background-color 0.25s ease-in;
+    -moz-transition: background-color 0.25s ease-in;
+    transition: background-color 0.25s ease-in;
+}
+
+.aLabel.jsplumb-hover, .jsplumb-source-hover, .jsplumb-target-hover {
+    background-color: #1e8151;
+    color: white;
+
+}
+
+.aLabel {
+    background-color: white;
+    opacity: 0.8;
+    padding-top: 0.3em;
+    padding-bottom: 0.3em;
+    padding-left: 1em;
+    padding-right: 1em;
+    border-radius: 0.25em;
+    border: 1px solid #346789;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.ep {
+    position: absolute;
+    width:25%;
+    left:0%;
+
+    cursor: pointer;
+    color:black;
+
+
+    -webkit-transition: -webkit-box-shadow 0.25s ease-in;
+    -moz-transition: -moz-box-shadow 0.25s ease-in;
+    transition: box-shadow 0.25s ease-in;
+}
+
+.ep:hover {
+    /*box-shadow: 0 0 6px black;*/
+}
+
+.ip {
+    position: absolute;
+    width:25%;
+    left:25%;
+
+    color:black;
+    cursor: pointer;
+
+    -webkit-transition: -webkit-box-shadow 0.25s ease-in;
+    -moz-transition: -moz-box-shadow 0.25s ease-in;
+    transition: box-shadow 0.25s ease-in;
+}
+
+.ip:hover {
+    /*box-shadow: 0 0 6px black;*/
+}
+
+.op {
+    position: absolute;
+    width:25%;
+    left:50%;
+
+    cursor: pointer;
+    color:black;
+
+    -webkit-transition: -webkit-box-shadow 0.25s ease-in;
+    -moz-transition: -moz-box-shadow 0.25s ease-in;
+    transition: box-shadow 0.25s ease-in;
+}
+
+.op:hover {
+  /*  box-shadow: 0 0 6px black;*/
+}
+
+
+.ed {
+    position: absolute;
+    width:25%;
+    left:50%;
+
+    cursor: pointer;
+    color:black;
+
+    -webkit-transition: -webkit-box-shadow 0.25s ease-in;
+    -moz-transition: -moz-box-shadow 0.25s ease-in;
+    transition: box-shadow 0.25s ease-in;
+}
+
+.analyse {
+    position: absolute;
+    width:25%;
+    left:75%;
+
+    cursor: pointer;
+    color:black;
+
+    -webkit-transition: -webkit-box-shadow 0.25s ease-in;
+    -moz-transition: -moz-box-shadow 0.25s ease-in;
+    transition: box-shadow 0.25s ease-in;
+}
+
+.analyse:hover {
+    /*box-shadow: 0 0 6px black;*/
+}
+
+
+
+.statemachine-demo .jsplumb-endpoint {
+    z-index: 3;
+}
+
+#opened {
+    left: 10em;
+    top: 5em;
+}
+
+
+.dragHover {
+    border: 2px solid orange;
+}
+
+.jsplumb-endpoint { cursor:pointer; }
+
+.demo_container{
+  height:750px;
+}
+
+
+.title{
+  cursor: move;
+}
+
+
+
+.buttons{
+
+
+}
+
+.enter{
+  z-index: 5;
+  position: absolute;
+  width: 300px;
+  height:300px;
+  background-color: rgba(255,255,255,0.95);
+  box-shadow: 2px 2px 19px #e0e0e0;
+  -o-box-shadow: 2px 2px 19px #e0e0e0;
+  -webkit-box-shadow: 2px 2px 19px #e0e0e0;
+  -moz-box-shadow: 2px 2px 19px #e0e0e0;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  border: 1px solid darkgrey;
+  padding:1em;
+}
+
+
+.popover-title {
+    font-size: 11px;
+}
+.popover-content {
+    font-size: 10px;
+}
+
+.no-results{
+  cursor:pointer;
+}
+
+.highlight{
+
+}
+
+
+.connection_biosphere path {
+  stroke: #aaa;
+  fill: #aaa;
+  stroke-width:0.5px;
+}
+
+.connection_input path {
+  stroke: #aaa;
+  fill: #aaa;
+  stroke-width:0.5px;
+}
+
+.connection_intermediate path {
+  stroke: #999;
+  fill: #999;
+  stroke-width:3px;
+}

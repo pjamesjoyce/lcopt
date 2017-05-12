@@ -1,14 +1,7 @@
 *.ipynb
-*.pickle
 *.lcopt
 /*.csv
 *.json
 *.xlsx
-.ipynb_checkpoints/
-notebooks/
-notebooks_preBW2/
-static_backup/
-static/
-templates_backup/
-templates/
-pip_requrements.txt
+# static/
+# templates/

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>HTML5 Editable Table</title>
+  
+  
+  <link rel='stylesheet prefetch' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css'>
+<link rel='stylesheet prefetch' href='http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css'>
+
+<style type="text/css">
+	
+	.table-editable {
+	  position: relative;
+	}
+	.table-editable .glyphicon {
+	  font-size: 20px;
+	}
+
+	.table-remove {
+	  color: #700;
+	  cursor: pointer;
+	}
+	.table-remove:hover {
+	  color: #f00;
+	}
+
+	.table-up, .table-down {
+	  color: #007;
+	  cursor: pointer;
+	}
+	.table-up:hover, .table-down:hover {
+	  color: #00f;
+	}
+
+	.table-add {
+	  color: #070;
+	  cursor: pointer;
+	  position: absolute;
+	  top: 8px;
+	  right: 0;
+	}
+	.table-add:hover {
+	  color: #0b0;
+	}
+
+
+</style>
+
+  
+</head>
+
+<body>
+  <div class="container">
+  <h1>HTML5 Editable Table</h1>
+  
+  <div id="table" class="table-editable">
+    <span class="table-add glyphicon glyphicon-plus"></span>
+    <table class="table">
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+        <th></th>
+        <th></th>
+      </tr>
+      {% for item in items %}
+      <tr>
+        <td>{{item.name}}</td>
+        <td contenteditable="true">{{item.value}}</td>
+        <td>
+          <span class="table-remove glyphicon glyphicon-remove"></span>
+        </td>
+        <td>
+          <span class="table-up glyphicon glyphicon-arrow-up"></span>
+          <span class="table-down glyphicon glyphicon-arrow-down"></span>
+        </td>
+      </tr>
+      {% endfor %}
+      <!-- This is our clonable table line -->
+      <tr class="hide">
+        <td contenteditable="true">Untitled</td>
+        <td contenteditable="true">undefined</td>
+        <td>
+          <span class="table-remove glyphicon glyphicon-remove"></span>
+        </td>
+        <td>
+          <span class="table-up glyphicon glyphicon-arrow-up"></span>
+          <span class="table-down glyphicon glyphicon-arrow-down"></span>
+        </td>
+      </tr>
+    </table>
+  </div>
+  
+  <button id="export-btn" class="btn btn-primary">Export Data</button>
+  <p id="export"></p>
+</div>
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+<script src='http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js'></script>
+<script src='http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore.js'></script>
+
+    <script>
+    	var $TABLE = $('#table');
+		var $BTN = $('#export-btn');
+		var $EXPORT = $('#export');
+
+		$('.table-add').click(function () {
+		  var $clone = $TABLE.find('tr.hide').clone(true).removeClass('hide table-line');
+		  $TABLE.find('table').append($clone);
+		});
+
+		$('.table-remove').click(function () {
+		  $(this).parents('tr').detach();
+		});
+
+		$('.table-up').click(function () {
+		  var $row = $(this).parents('tr');
+		  if ($row.index() === 1) return; // Don't go above the header
+		  $row.prev().before($row.get(0));
+		});
+
+		$('.table-down').click(function () {
+		  var $row = $(this).parents('tr');
+		  $row.next().after($row.get(0));
+		});
+
+		// A few jQuery helpers for exporting only
+		jQuery.fn.pop = [].pop;
+		jQuery.fn.shift = [].shift;
+
+		$BTN.click(function () {
+		  var $rows = $TABLE.find('tr:not(:hidden)');
+		  var headers = [];
+		  var data = [];
+		  
+		  // Get the headers (add special header logic here)
+		  $($rows.shift()).find('th:not(:empty)').each(function () {
+		    headers.push($(this).text().toLowerCase());
+		  });
+		  
+		  // Turn all existing rows into a loopable array
+		  $rows.each(function () {
+		    var $td = $(this).find('td');
+		    var h = {};
+		    
+		    // Use the headers from earlier to name our hash keys
+		    headers.forEach(function (header, i) {
+		      h[header] = $td.eq(i).text();   
+		    });
+		    
+		    data.push(h);
+		  });
+		  
+		  // Output the result
+		  $EXPORT.text(JSON.stringify(data));
+		});
+    </script>
+
+</body>
+</html>
