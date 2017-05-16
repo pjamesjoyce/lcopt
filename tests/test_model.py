@@ -189,18 +189,18 @@ def test_list_parameters_as_df_with_external(parameterised_model):
 	df = parameterised_model.list_parameters_as_df()
 	assert isinstance(df, DataFrame)
 
-def test_save(linked_model):
-	import os.path
-	linked_model.save()
-	fname = '{}.lcopt'.format(MODEL_NAME)
-	
-	assert os.path.isfile(fname) 
+#def test_save(linked_model):
+#	import os.path
+#	linked_model.save()
+#	fname = '{}.lcopt'.format(MODEL_NAME)
+#	
+#	assert os.path.isfile(fname) 
 
-def test_load(linked_model):
-	expected = repr(linked_model.__dict__)
-	loaded_model = LcoptModel(load = MODEL_NAME)
-	observed = repr(loaded_model.__dict__)
-	assert observed == expected	
+#def test_load(linked_model):
+#	expected = repr(linked_model.__dict__)
+#	loaded_model = LcoptModel(load = MODEL_NAME)
+#	observed = repr(loaded_model.__dict__)
+#	assert observed == expected	
 
 def test_search_all_databases(linked_model):
 
