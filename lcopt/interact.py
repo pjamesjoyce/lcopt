@@ -433,9 +433,9 @@ class FlaskSandbox():
     def parameter_parsing(self, postData):
             
 
-            
+            print(postData)
             myjson = json.loads(postData['data'], object_pairs_hook=OrderedDict)
-            print(myjson)
+            #print(myjson)
             current_parameter_sets = []
             
             for line in myjson:
@@ -488,8 +488,9 @@ class FlaskSandbox():
 
         return "OK"
             
-        
-    def run(self):
+    def create_app(self):
+
+    #def run(self):
         
         app = Flask(__name__)
 
@@ -646,11 +647,29 @@ class FlaskSandbox():
             
             return render_template('parameter_set_table_sorted.html',
                                  args = args)
+        
+        @app.errorhandler(404)
+        def page_not_found(e):
+            return render_template('404.html'), 404
 
+        @app.errorhandler(500)
+        def page_not_found(e):
+            return render_template('500.html'), 500
+
+
+
+        #url = 'http://127.0.0.1:5000/'
+        #webbrowser.open_new(url)
+        #print ("running from the module")
+        #app.run()
+
+        return app
+
+    def run(self):
+        app = self.create_app()
 
         url = 'http://127.0.0.1:5000/'
         webbrowser.open_new(url)
-        print ("running from the module")
-        app.run()
+        #print ("running from the module")
 
-        
+        app.run()

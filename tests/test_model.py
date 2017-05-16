@@ -1,78 +1,4 @@
-import pytest
-from lcopt import LcoptModel
-
-MODEL_NAME = 'modelName'
-
-@pytest.fixture
-def blank_model():
-	
-	return LcoptModel(MODEL_NAME)
-
-@pytest.fixture
-def populated_model(blank_model):
-
-	model = blank_model
-
-	name = 'test_process_1'
-	unit = 'kilogram'
-	output_name  = 'test_output_1'
-	exchanges = [{'name':output_name, 'type':'production', 'unit':unit, 'lcopt_type':'intermediate'}]
-	location ='GLO'
-
-	model.create_process(name, exchanges, location, unit)
-
-	name = 'test_process_2'
-	unit = 'kilogram'
-	output_name  = 'test_output_2'
-	exchanges = [{'name':output_name, 'type':'production', 'unit':unit, 'lcopt_type':'intermediate'}]
-	location ='GLO'
-
-	model.create_process(name, exchanges, location, unit)
-
-	return model
-
-
-@pytest.fixture
-def linked_model(populated_model):
-
-	db = populated_model.database
-
-	source = populated_model.get_exchange('test_process_1')
-
-	source_exc = db['items'][source]['exchanges']
-	
-	source_output = [x['input'] for x in source_exc if x['type'] == 'production'][0]
-
-	target = populated_model.get_exchange('test_process_2')
-
-	new_exchange = {'amount': 1,
-			 'comment': 'technosphere exchange of {}'.format('test'),
-			 'input': source_output,
-			 'type': 'technosphere',
-			 'uncertainty type': 1}
-	
-	db['items'][target]['exchanges'].append(new_exchange)
-
-	populated_model.parameter_scan()
-	
-	return populated_model
-
-@pytest.fixture
-def parameterised_model(linked_model):
-	linked_model.add_parameter('test_parameter', description = 'test description', default = 1)
-	param_ids = [x for x in linked_model.params]
-
-	e_param_name = 'test_parameter'
-
-	linked_model.add_parameter(e_param_name, description = 'test description', default = 1)
-
-	new_function = "{}*2".format(e_param_name)
-	parameter = linked_model.params[param_ids[0]]
-	parameter['function'] = new_function
-
-	return linked_model
-
-
+from fixtures import *
 
 def test_createModel(blank_model):
 	
@@ -107,7 +33,21 @@ def test_get_exchange(populated_model):
 	
 	assert exc != False
 
+def test_dont_get_name(blank_model):
+	exc = blank_model.get_name('blah')
+	
+	assert exc is None
 
+def test_dont_get_unit(blank_model):
+	exc = blank_model.get_unit('blah')
+	
+	assert exc is None
+
+def test_existing_exchange(populated_model):
+	look_for = populated_model.get_exchange('test_process_1')[1]
+	exc = populated_model.exists_in_database(look_for)
+
+	assert exc
 
 def test_link_processes(populated_model):
 
@@ -130,7 +70,6 @@ def test_link_processes(populated_model):
 	
 	db['items'][target]['exchanges'].append(new_exchange)
 	
-	print (db['items'][target])
 	assert len([x for x in db['items'][target]['exchanges'] if x['type'] == 'technosphere'])>0
 
 def test_database_to_SimaPro_csv(linked_model):

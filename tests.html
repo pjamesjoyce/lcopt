@@ -228,7 +228,7 @@ function filter_table(elem) {
     not_found_message.hidden = !all_rows_hidden;
 }
 </script>
-    <p>Report generated on 16-May-2017 at 10:56:43 by<a href="https://pypi.python.org/pypi/pytest-html"> pytest-html</a> v1.14.2</p>
+    <p>Report generated on 16-May-2017 at 17:19:45 by<a href="https://pypi.python.org/pypi/pytest-html"> pytest-html</a> v1.14.2</p>
     <h2>Environment</h2>
     <table id="environment">
       <tr>
@@ -239,13 +239,13 @@ function filter_table(elem) {
         <td>Windows-7-6.1.7601-SP1</td></tr>
       <tr>
         <td>Plugins</td>
-        <td>{&apos;cov&apos;: &apos;2.5.1&apos;, &apos;html&apos;: &apos;1.14.2&apos;, &apos;metadata&apos;: &apos;1.5.0&apos;}</td></tr>
+        <td>{&apos;cov&apos;: &apos;2.5.1&apos;, &apos;flask&apos;: &apos;0.10.0&apos;, &apos;html&apos;: &apos;1.14.2&apos;, &apos;metadata&apos;: &apos;1.5.0&apos;}</td></tr>
       <tr>
         <td>Python</td>
         <td>3.6.1</td></tr></table>
     <h2>Summary</h2>
-    <p>21 tests ran in 5.93 seconds. </p>
-    <p class="filter" hidden="true">(Un)check the boxes to filter the results.</p><input checked="true" class="filter" data-test-result="passed" hidden="true" name="filter_checkbox" onChange="filter_table(this)" type="checkbox"/><span class="passed">21 passed</span>, <input checked="true" class="filter" data-test-result="skipped" disabled="true" hidden="true" name="filter_checkbox" onChange="filter_table(this)" type="checkbox"/><span class="skipped">0 skipped</span>, <input checked="true" class="filter" data-test-result="failed" disabled="true" hidden="true" name="filter_checkbox" onChange="filter_table(this)" type="checkbox"/><span class="failed">0 failed</span>, <input checked="true" class="filter" data-test-result="error" disabled="true" hidden="true" name="filter_checkbox" onChange="filter_table(this)" type="checkbox"/><span class="error">0 errors</span>, <input checked="true" class="filter" data-test-result="xfailed" disabled="true" hidden="true" name="filter_checkbox" onChange="filter_table(this)" type="checkbox"/><span class="xfailed">0 expected failures</span>, <input checked="true" class="filter" data-test-result="xpassed" disabled="true" hidden="true" name="filter_checkbox" onChange="filter_table(this)" type="checkbox"/><span class="xpassed">0 unexpected passes</span>
+    <p>39 tests ran in 5.86 seconds. </p>
+    <p class="filter" hidden="true">(Un)check the boxes to filter the results.</p><input checked="true" class="filter" data-test-result="passed" hidden="true" name="filter_checkbox" onChange="filter_table(this)" type="checkbox"/><span class="passed">39 passed</span>, <input checked="true" class="filter" data-test-result="skipped" disabled="true" hidden="true" name="filter_checkbox" onChange="filter_table(this)" type="checkbox"/><span class="skipped">0 skipped</span>, <input checked="true" class="filter" data-test-result="failed" disabled="true" hidden="true" name="filter_checkbox" onChange="filter_table(this)" type="checkbox"/><span class="failed">0 failed</span>, <input checked="true" class="filter" data-test-result="error" disabled="true" hidden="true" name="filter_checkbox" onChange="filter_table(this)" type="checkbox"/><span class="error">0 errors</span>, <input checked="true" class="filter" data-test-result="xfailed" disabled="true" hidden="true" name="filter_checkbox" onChange="filter_table(this)" type="checkbox"/><span class="xfailed">0 expected failures</span>, <input checked="true" class="filter" data-test-result="xpassed" disabled="true" hidden="true" name="filter_checkbox" onChange="filter_table(this)" type="checkbox"/><span class="xpassed">0 unexpected passes</span>
     <h2>Results</h2>
     <table id="results-table">
       <thead id="results-table-head">
@@ -256,6 +256,273 @@ function filter_table(elem) {
           <th>Links</th></tr>
         <tr hidden="true" id="not-found-message">
           <th colspan="4">No results found. Try to check the filters</th></tr></thead>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_interact.py::test_app</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>test_output_1 added to database
+test_output_2 added to database
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+test_parameter already exists - choose a different name
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_interact.py::test_client</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>test_output_1 added to database
+test_output_2 added to database
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+test_parameter already exists - choose a different name
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_interact.py::test_index</td>
+          <td class="col-duration">0.04</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>test_output_1 added to database
+test_output_2 added to database
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+test_parameter already exists - choose a different name
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_interact.py::test_status</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>test_output_1 added to database
+test_output_2 added to database
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+test_parameter already exists - choose a different name
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_interact.py::test_parameters</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>test_output_1 added to database
+test_output_2 added to database
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+test_parameter already exists - choose a different name
+----------------------------- Captured stdout call -----------------------------<br/>No parameter sets - creating a default set
+p_0_1 determined by a function
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_interact.py::test_post</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>test_output_1 added to database
+test_output_2 added to database
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+test_parameter already exists - choose a different name
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_interact.py::test_model_updates</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>test_output_1 added to database
+test_output_2 added to database
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+test_parameter already exists - choose a different name
+----------------------------- Captured stdout call -----------------------------<br/>test_output_3 added to database
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+{&#x27;name&#x27;: &#x27;test_process_3&#x27;, &#x27;code&#x27;: &#x27;31ea654af94271ead7af26adf1e0f5ec&#x27;, &#x27;type&#x27;: &#x27;process&#x27;, &#x27;categories&#x27;: [], &#x27;location&#x27;: &#x27;GLO&#x27;, &#x27;unit&#x27;: &#x27;kilogram&#x27;, &#x27;exchanges&#x27;: [{&#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;ae6231834b25008e6fdf24849a66c906&#x27;), &#x27;type&#x27;: &#x27;production&#x27;, &#x27;amount&#x27;: 1, &#x27;uncertainty type&#x27;: 1, &#x27;comment&#x27;: &#x27;production exchange of test_output_3&#x27;}]}
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test_label&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;b4098f7754039ca7d454af2506dd1ff4&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_interact.py::test_move_item</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>test_output_1 added to database
+test_output_2 added to database
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+test_parameter already exists - choose a different name
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_interact.py::test_add_unlinked_input</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>test_output_1 added to database
+test_output_2 added to database
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+test_parameter already exists - choose a different name
+----------------------------- Captured stdout call -----------------------------<br/>unlinked_input added to database
+{&#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;dd05a02e2660be6188f8ec113fba37f3&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;amount&#x27;: 1, &#x27;uncertainty type&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of unlinked_input&#x27;}
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_interact.py::test_add_linked_input</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>test_output_1 added to database
+test_output_2 added to database
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+test_parameter already exists - choose a different name
+----------------------------- Captured stdout call -----------------------------<br/>linked_input added to database
+{&#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;30b3fa7cbd64bd17f3e942120c568e55&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;amount&#x27;: 1, &#x27;uncertainty type&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of linked_input&#x27;}
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_interact.py::test_add_biosphere_input</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>test_output_1 added to database
+test_output_2 added to database
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+test_parameter already exists - choose a different name
+----------------------------- Captured stdout call -----------------------------<br/>linked_input added to database
+{&#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;30b3fa7cbd64bd17f3e942120c568e55&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;amount&#x27;: 1, &#x27;uncertainty type&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of linked_input&#x27;}
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_interact.py::test_inputLookup_technosphere_linked</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>test_output_1 added to database
+test_output_2 added to database
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+test_parameter already exists - choose a different name
+----------------------------- Captured stdout call -----------------------------<br/>linked_input added to database
+{&#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;30b3fa7cbd64bd17f3e942120c568e55&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;amount&#x27;: 1, &#x27;uncertainty type&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of linked_input&#x27;}
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_interact.py::test_inputLookup_technosphere_unlinked</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>test_output_1 added to database
+test_output_2 added to database
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+test_parameter already exists - choose a different name
+----------------------------- Captured stdout call -----------------------------<br/>unlinked_input added to database
+{&#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;dd05a02e2660be6188f8ec113fba37f3&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;amount&#x27;: 1, &#x27;uncertainty type&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of unlinked_input&#x27;}
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+This is an unlinked product
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_interact.py::test_inputLookup_biosphere_input</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>test_output_1 added to database
+test_output_2 added to database
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+test_parameter already exists - choose a different name
+----------------------------- Captured stdout call -----------------------------<br/>linked_input added to database
+{&#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;30b3fa7cbd64bd17f3e942120c568e55&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;amount&#x27;: 1, &#x27;uncertainty type&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of linked_input&#x27;}
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_interact.py::test_searchEcoinvent</td>
+          <td class="col-duration">0.02</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>test_output_1 added to database
+test_output_2 added to database
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+test_parameter already exists - choose a different name
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_interact.py::test_searchBiosphere</td>
+          <td class="col-duration">0.01</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>test_output_1 added to database
+test_output_2 added to database
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+test_parameter already exists - choose a different name
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_interact.py::test_parameter_parsing</td>
+          <td class="col-duration">0.09</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>test_output_1 added to database
+test_output_2 added to database
+{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
+test_parameter already exists - choose a different name
+----------------------------- Captured stdout call -----------------------------<br/>ImmutableMultiDict([(&#x27;action&#x27;, &#x27;parse_parameters&#x27;), (&#x27;data&#x27;, &#x27;[{&quot;id&quot;:&quot;p_3_2&quot;,&quot;Name&quot;:&quot;Tea leaves&quot;,&quot;Unit&quot;:&quot;kg&quot;,&quot;Normal tea&quot;:&quot;0.01&quot;,&quot;Black tea&quot;:&quot;0.01&quot;},{&quot;id&quot;:&quot;p_0_2&quot;,&quot;Name&quot;:&quot;Boiling water&quot;,&quot;Unit&quot;:&quot;l&quot;,&quot;Normal tea&quot;:&quot;1&quot;,&quot;Black tea&quot;:&quot;1&quot;},{&quot;id&quot;:&quot;p_2_4&quot;,&quot;Name&quot;:&quot;Black tea&quot;,&quot;Unit&quot;:&quot;l&quot;,&quot;Normal tea&quot;:&quot;0.8&quot;,&quot;Black tea&quot;:&quot;0.8&quot;},{&quot;id&quot;:&quot;kettle_power&quot;,&quot;Name&quot;:&quot;Power rating of kettle, kW&quot;,&quot;Unit&quot;:&quot;&quot;,&quot;Normal tea&quot;:&quot;1.5&quot;,&quot;Black tea&quot;:&quot;1.5&quot;},{&quot;id&quot;:&quot;boil_time&quot;,&quot;Name&quot;:&quot;Kettle boiling time, mins&quot;,&quot;Unit&quot;:&quot;&quot;,&quot;Normal tea&quot;:&quot;3&quot;,&quot;Black tea&quot;:&quot;3&quot;},{&quot;id&quot;:&quot;milk_density&quot;,&quot;Name&quot;:&quot;Density of milk&quot;,&quot;Unit&quot;:&quot;&quot;,&quot;Normal tea&quot;:&quot;1.035&quot;,&quot;Black tea&quot;:&quot;1.035&quot;},{&quot;id&quot;:&quot;milk_amount&quot;,&quot;Name&quot;:&quot;Amount of milk, l&quot;,&quot;Unit&quot;:&quot;&quot;,&quot;Normal tea&quot;:&quot;0.02&quot;,&quot;Black tea&quot;:&quot;0&quot;}]&#x27;)])
+Normal tea p_3_2 0.01
+created Normal tea
+Black tea p_3_2 0.01
+created Black tea
+Normal tea p_0_2 1
+Black tea p_0_2 1
+Normal tea p_2_4 0.8
+Black tea p_2_4 0.8
+Normal tea kettle_power 1.5
+Black tea kettle_power 1.5
+Normal tea boil_time 3
+Black tea boil_time 3
+Normal tea milk_density 1.035
+Black tea milk_density 1.035
+Normal tea milk_amount 0.02
+Black tea milk_amount 0
+[&#x27;Normal tea&#x27;, &#x27;Black tea&#x27;]
+parameters saved
+</div></td></tr></tbody>
       <tbody class="passed results-table-row">
         <tr>
           <td class="col-result">Passed</td>
@@ -320,6 +587,35 @@ test_output_2 added to database
       <tbody class="passed results-table-row">
         <tr>
           <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_model.py::test_dont_get_name</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_model.py::test_dont_get_unit</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_model.py::test_existing_exchange</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>test_output_1 added to database
+test_output_2 added to database
+</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
           <td class="col-name">tests/test_model.py::test_link_processes</td>
           <td class="col-duration">0.00</td>
           <td class="col-links"></td></tr>
@@ -327,13 +623,12 @@ test_output_2 added to database
           <td class="extra" colspan="4">
             <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>test_output_1 added to database
 test_output_2 added to database
------------------------------ Captured stdout call -----------------------------<br/>{&#x27;name&#x27;: &#x27;test_process_2&#x27;, &#x27;code&#x27;: &#x27;b93ad809b841e753afc6ae99251908c9&#x27;, &#x27;type&#x27;: &#x27;process&#x27;, &#x27;categories&#x27;: [], &#x27;location&#x27;: &#x27;GLO&#x27;, &#x27;unit&#x27;: &#x27;kilogram&#x27;, &#x27;exchanges&#x27;: [{&#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;b4098f7754039ca7d454af2506dd1ff4&#x27;), &#x27;type&#x27;: &#x27;production&#x27;, &#x27;amount&#x27;: 1, &#x27;uncertainty type&#x27;: 1, &#x27;comment&#x27;: &#x27;production exchange of test_output_2&#x27;}, {&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}]}
 </div></td></tr></tbody>
       <tbody class="passed results-table-row">
         <tr>
           <td class="col-result">Passed</td>
           <td class="col-name">tests/test_model.py::test_database_to_SimaPro_csv</td>
-          <td class="col-duration">0.04</td>
+          <td class="col-duration">0.03</td>
           <td class="col-links"></td></tr>
         <tr>
           <td class="extra" colspan="4">
@@ -359,7 +654,7 @@ test_output_2 added to database
         <tr>
           <td class="col-result">Passed</td>
           <td class="col-name">tests/test_model.py::test_database_to_SimaPro_csv_ext_params</td>
-          <td class="col-duration">0.03</td>
+          <td class="col-duration">0.04</td>
           <td class="col-links"></td></tr>
         <tr>
           <td class="extra" colspan="4">
@@ -372,7 +667,7 @@ test_parameter already exists - choose a different name
         <tr>
           <td class="col-result">Passed</td>
           <td class="col-name">tests/test_model.py::test_generate_parameter_set_excel_file_ext_params</td>
-          <td class="col-duration">0.04</td>
+          <td class="col-duration">0.03</td>
           <td class="col-links"></td></tr>
         <tr>
           <td class="extra" colspan="4">
@@ -436,32 +731,8 @@ test_parameter already exists - choose a different name
       <tbody class="passed results-table-row">
         <tr>
           <td class="col-result">Passed</td>
-          <td class="col-name">tests/test_model.py::test_save</td>
-          <td class="col-duration">0.08</td>
-          <td class="col-links"></td></tr>
-        <tr>
-          <td class="extra" colspan="4">
-            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>test_output_1 added to database
-test_output_2 added to database
-{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
-</div></td></tr></tbody>
-      <tbody class="passed results-table-row">
-        <tr>
-          <td class="col-result">Passed</td>
-          <td class="col-name">tests/test_model.py::test_load</td>
-          <td class="col-duration">0.23</td>
-          <td class="col-links"></td></tr>
-        <tr>
-          <td class="extra" colspan="4">
-            <div class="log">---------------------------- Captured stdout setup -----------------------------<br/>test_output_1 added to database
-test_output_2 added to database
-{&#x27;amount&#x27;: 1, &#x27;comment&#x27;: &#x27;technosphere exchange of test&#x27;, &#x27;input&#x27;: (&#x27;modelName_Database&#x27;, &#x27;9f493499c502c2f9b111770df8cb1f77&#x27;), &#x27;type&#x27;: &#x27;technosphere&#x27;, &#x27;uncertainty type&#x27;: 1}
-</div></td></tr></tbody>
-      <tbody class="passed results-table-row">
-        <tr>
-          <td class="col-result">Passed</td>
           <td class="col-name">tests/test_model.py::test_search_all_databases</td>
-          <td class="col-duration">0.07</td>
+          <td class="col-duration">0.03</td>
           <td class="col-links"></td></tr>
         <tr>
           <td class="extra" colspan="4">
@@ -473,7 +744,7 @@ test_output_2 added to database
         <tr>
           <td class="col-result">Passed</td>
           <td class="col-name">tests/test_model.py::test_search_specific_database</td>
-          <td class="col-duration">0.03</td>
+          <td class="col-duration">0.02</td>
           <td class="col-links"></td></tr>
         <tr>
           <td class="extra" colspan="4">
@@ -485,7 +756,7 @@ test_output_2 added to database
         <tr>
           <td class="col-result">Passed</td>
           <td class="col-name">tests/test_model.py::test_search_specific_database_markets</td>
-          <td class="col-duration">0.03</td>
+          <td class="col-duration">0.02</td>
           <td class="col-links"></td></tr>
         <tr>
           <td class="extra" colspan="4">
