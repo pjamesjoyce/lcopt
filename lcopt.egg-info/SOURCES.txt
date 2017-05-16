@@ -91,6 +91,8 @@ lcopt/static/js/cdn_cache/selectize_duplicates.js
 lcopt/static/js/cdn_cache/selectize_duplicates.min.js
 lcopt/static/js/cdn_cache/selectize_duplicates_JJ.js
 lcopt/static/js/cdn_cache/typeahead.bundle.js
+lcopt/templates/404.html
+lcopt/templates/500.html
 lcopt/templates/Header.csv
 lcopt/templates/Process.csv
 lcopt/templates/ProjectParameters.csv

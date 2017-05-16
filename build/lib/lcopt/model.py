@@ -77,40 +77,9 @@ def unnormalise_unit(unit):
         #print (un_units)
         return un_units[0]
 
-
-DISABLE_SEARCH = False
 # This is a copy straight from bw2data.query, extracted so as not to cause a dependency.
-try:
-    from lcopt.bw2query import Query, Dictionaries, Filter
-except ImportError:
-    warnings.warn("bw2data module not found. Search functions will not work")
-    DISABLE_SEARCH = True
+from lcopt.bw2query import Query, Dictionaries, Filter
 
-
-
-
-# This is the decorator for functions to be disabled if bw2data isn't found
-def req_bw2data(my_function):
-    def req_check(*args,**kwargs):
-        #print ("checking requirements are met...")
-        if DISABLE_SEARCH:
-            warnings.warn("bw2data module not found. Search functions do not work")
-        else:
-            ret = my_function(*args, **kwargs)
-            return ret
-    return req_check
-
-
-def shutdown_server():
-    func = request.environ.get('werkzeug.server.shutdown')
-    if func is None:
-        raise RuntimeError('Not running with the Werkzeug Server')
-    func()
-
-#PARAMETER_TEMPLATE = read template file as string?
-
-def loadModel(modelName):
-    return pickle.load(open("{}.pickle".format(modelName), "rb"))
 
 class LcoptModel(object):
     """docstring for LcoptModel"""
@@ -329,36 +298,6 @@ class LcoptModel(object):
 
         return True
         
-        
-    def add_parameter(self, param_name, description = None, default = 0):
-        if description == None:
-            description = "Parameter called {}".format(param_name)
-        
-        name_check = lambda x:x['name'] == param_name
-        name_check_list = list(filter(name_check, self.ext_params))
-        if len(name_check_list) == 0:
-            self.ext_params.append({'name':param_name, 'description': description, 'default': default})
-        else:
-            print('{} already exists - choose a different name'.format(param_name))
-
-    #def edit_function(self):
-    #    function_editor = IFS(self)
-        
-    def create_parameter_set(self):
-        p_set = OrderedDict()
-        p_set_name = "ParameterSet_{}".format(len(self.parameter_sets)+1)
-        p = self.params
-        for k in p.keys():
-            if p[k]['function'] == None:
-                p_set[k] = float(input("{} >  ".format(p[k]['description'])))
-            else:
-                print("{} is determined by a function".format(p[k]['description']))
-
-        for e in self.ext_params:
-            p_set['{}'.format(e['name'])] = float(input("value for {} >  ".format(e['description'])))
-            
-        self.parameter_sets[p_set_name] = p_set
-
 
     def generate_parameter_set_excel_file(self):
         
@@ -400,55 +339,19 @@ class LcoptModel(object):
         df.to_excel(writer, sheet_name=self.name, columns =  my_columns, index= False, merge_cells = False)
        
         return p_set_name
-        
-     # convert parameter sets into matrices   
-        
-    def parse_function(self, function, parameter_set):
 
-        int_param_re_pattern = "(p_\d{1,}_\d{1,})"
-        ext_param_re_pattern = "([\d\w_]{1,})"
-
-        int_param_re = re.compile(int_param_re_pattern)
-        ext_param_re = re.compile(ext_param_re_pattern)
-
-        function = int_param_re.sub(r"parameter_set['\1']", function)
-        function = ext_param_re.sub(r"parameter_set['\1']", function)
         
-        #print(function)
-
-        return eval(function)
-    
-    def generate_matrices(self):
+    def add_parameter(self, param_name, description = None, default = 0):
+        if description == None:
+            description = "Parameter called {}".format(param_name)
         
-        #overwrite old matrices
-        self.model_matrices = OrderedDict()
-        self.technosphere_matrices = OrderedDict()
-        self.leontif_matrices = OrderedDict()
-        
-        #generate coefficient matrices
-        for ps_k in self.parameter_sets.keys():
-            ps = self.parameter_sets[ps_k]
-            matrix_copy = deepcopy(self.matrix)
+        name_check = lambda x:x['name'] == param_name
+        name_check_list = list(filter(name_check, self.ext_params))
+        if len(name_check_list) == 0:
+            self.ext_params.append({'name':param_name, 'description': description, 'default': default})
+        else:
+            print('{} already exists - choose a different name'.format(param_name))
 
-            for pk in self.params:
-                p = self.params[pk]
-                
-                if p['function'] == None:
-                    c = p['coords']
-                    matrix_copy[c] = ps[pk]
-                else:
-                    matrix_copy[p['coords']] = self.parse_function(p['function'], ps)
-                    
-            self.model_matrices[ps_k] = matrix_copy
-        
-        #generate technosphere matrices
-        for ps_k in self.parameter_sets.keys():
-            self.technosphere_matrices[ps_k] = self.model_matrices[ps_k] - np.identity(len(self.model_matrices[ps_k]))
-
-        #generate leontif matrices
-        for ps_k in self.parameter_sets.keys():
-            self.leontif_matrices[ps_k] = np.linalg.inv(np.identity(len(self.model_matrices[ps_k]))-self.model_matrices[ps_k])
-    
     def list_parameters_as_df(self):
         to_df = []
 
@@ -475,11 +378,6 @@ class LcoptModel(object):
         
         return df
 
-    def matrix_as_df(self, matrix):
-
-        df = pd.DataFrame(data = matrix, index=self.names, columns = self.names)
-
-        return df
 
     def import_external_db(self, db_file):
         db = pickle.load(open("{}.pickle".format(db_file), "rb"))
@@ -487,8 +385,6 @@ class LcoptModel(object):
         new_db = {'items': db, 'name': name}
         self.external_databases.append(new_db)
 
-
-    @req_bw2data
     def search_databases(self, search_term, location = None, markets_only=False, databases_to_search = None):
 
         if databases_to_search is None:
@@ -699,55 +595,6 @@ class LcoptModel(object):
     def launch_interact(self):
         my_flask = FlaskSandbox(self)
         my_flask.run()
-
-
-    def create_parameter_set_flask(self):
-    
-        app = Flask(__name__)
-        print(__name__)
-
-        @app.route('/')
-        def parameter_setup():
-            
-            parameters = []
-            p = self.params
-            for k in p.keys():
-                if p[k]['function'] == None:
-                    parameters.append({'id':k, 'name': p[k]['description'], 'value': '', 'unit':p[k]['unit']})
-                else:
-                    print("{} is determined by a function".format(p[k]['description']))
-
-            for e in self.ext_params:
-                parameters.append({'id':'{}'.format(e['name']), 'type':'external', 'name': e['description'], 'value': e['default'], 'unit':'?'})
-            
-            return render_template('index.html', 
-                                  title = 'Parameter set',
-                                  items = parameters)
-        
-        
-        @app.route('/', methods=['POST'])
-        def parameter_parsing():
-            
-            p_set = OrderedDict()
-            p_set_name = "ParameterSet_{}".format(len(self.parameter_sets)+1)
-
-            myjson = request.json
-            
-            for i in myjson:
-                try:
-                    p_set[i['id']] = float(i['value'])
-                except ValueError:
-                    p_set[i['id']] = str(i['value'])
-                
-            self.parameter_sets[p_set_name] = p_set
-            
-            shutdown_server()
-            return 'Server shutting down... Please close this tab'
-            
-        if __name__ == 'lcopt.model':
-            url = 'http://127.0.0.1:5000'
-            webbrowser.open_new(url)
-            app.run(debug=False)
 
 
 ### Brightway2 ###
