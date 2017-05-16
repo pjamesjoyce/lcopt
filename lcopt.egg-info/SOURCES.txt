@@ -20,17 +20,14 @@ lcopt.egg-info/top_level.txt
 lcopt/assets/biosphere3.pickle
 lcopt/assets/ecoinvent3_3.pickle
 lcopt/static/THIS IS SYMLINKED TO THE NOTEBOOK TEST PATH
-lcopt/static/css/analysis (James Joyce's conflicted copy 2017-03-15).css
 lcopt/static/css/analysis.css
 lcopt/static/css/d3testing.css
 lcopt/static/css/function_box.css
 lcopt/static/css/parameter_table.css
-lcopt/static/css/sandbox (James Joyce's conflicted copy 2017-03-15).css
 lcopt/static/css/sandbox.css
 lcopt/static/css/status.css
 lcopt/static/css/style.css
 lcopt/static/css/testing.css
-lcopt/static/css/treetest (James Joyce's conflicted copy 2017-03-15).css
 lcopt/static/css/treetest.css
 lcopt/static/css/typeahead.css
 lcopt/static/css/cdn_cache/Muli-Regular.ttf

@@ -1,0 +1,185 @@
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Coverage report</title>
+    <link rel="stylesheet" href="style.css" type="text/css">
+    
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" src="jquery.ba-throttle-debounce.min.js"></script>
+    <script type="text/javascript" src="jquery.tablesorter.min.js"></script>
+    <script type="text/javascript" src="jquery.hotkeys.js"></script>
+    <script type="text/javascript" src="coverage_html.js"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(coverage.index_ready);
+    </script>
+</head>
+<body class="indexfile">
+
+<div id="header">
+    <div class="content">
+        <h1>Coverage report:
+            <span class="pc_cov">41%</span>
+        </h1>
+
+        <img id="keyboard_icon" src="keybd_closed.png" alt="Show keyboard shortcuts" />
+
+        <form id="filter_container">
+            <input id="filter" type="text" value="" placeholder="filter..." />
+        </form>
+    </div>
+</div>
+
+<div class="help_panel">
+    <img id="panel_icon" src="keybd_open.png" alt="Hide keyboard shortcuts" />
+    <p class="legend">Hot-keys on this page</p>
+    <div>
+    <p class="keyhelp">
+        <span class="key">n</span>
+        <span class="key">s</span>
+        <span class="key">m</span>
+        <span class="key">x</span>
+        
+        <span class="key">c</span> &nbsp; change column sorting
+    </p>
+    </div>
+</div>
+
+<div id="index">
+    <table class="index">
+        <thead>
+            
+            <tr class="tablehead" title="Click to sort">
+                <th class="name left headerSortDown shortkey_n">Module</th>
+                <th class="shortkey_s">statements</th>
+                <th class="shortkey_m">missing</th>
+                <th class="shortkey_x">excluded</th>
+                
+                <th class="right shortkey_c">coverage</th>
+            </tr>
+        </thead>
+        
+        <tfoot>
+            <tr class="total">
+                <td class="name left">Total</td>
+                <td>1085</td>
+                <td>639</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="446 1085">41%</td>
+            </tr>
+        </tfoot>
+        <tbody>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcopt___init___py.html">lcopt\__init__.py</a></td>
+                <td>2</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="2 2">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcopt_analysis_py.html">lcopt\analysis.py</a></td>
+                <td>132</td>
+                <td>113</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="19 132">14%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcopt_bw2_export_py.html">lcopt\bw2_export.py</a></td>
+                <td>60</td>
+                <td>49</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="11 60">18%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcopt_bw2_parameter_utils_py.html">lcopt\bw2_parameter_utils.py</a></td>
+                <td>27</td>
+                <td>14</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="13 27">48%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcopt_bw2query_py.html">lcopt\bw2query.py</a></td>
+                <td>68</td>
+                <td>18</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="50 68">74%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcopt_interact_py.html">lcopt\interact.py</a></td>
+                <td>362</td>
+                <td>334</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="28 362">8%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcopt_io_py.html">lcopt\io.py</a></td>
+                <td>45</td>
+                <td>3</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="42 45">93%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcopt_model_py.html">lcopt\model.py</a></td>
+                <td>318</td>
+                <td>49</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="269 318">85%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcopt_parameter_interpreter_py.html">lcopt\parameter_interpreter.py</a></td>
+                <td>53</td>
+                <td>45</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="8 53">15%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="lcopt_utils_py.html">lcopt\utils.py</a></td>
+                <td>18</td>
+                <td>14</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="4 18">22%</td>
+            </tr>
+            
+        </tbody>
+    </table>
+
+    <p id="no_rows">
+        No items found using the specified filter.
+    </p>
+</div>
+
+<div id="footer">
+    <div class="content">
+        <p>
+            <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.4</a>,
+            created at 2017-05-16 10:56
+        </p>
+    </div>
+</div>
+
+</body>
+</html>

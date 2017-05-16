@@ -31,7 +31,11 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Download-URL: https://github.com/pjamesjoyce/lcopt/archive/0.1.tar.gz
 Description: # lcopt
-        Life cycle optimisation module
+        Life cycle options appraisal module
+        
+        [![Build Status](https://travis-ci.org/pjamesjoyce/lcopt.svg?branch=master)](https://travis-ci.org/pjamesjoyce/lcopt)
+        
+        [![Coverage Status](https://coveralls.io/repos/github/pjamesjoyce/lcopt/badge.svg?branch=master)](https://coveralls.io/github/pjamesjoyce/lcopt?branch=master)
         
         # Installation
         
