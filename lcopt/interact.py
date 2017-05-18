@@ -30,6 +30,7 @@ class FlaskSandbox():
             'create_function': self.create_function,
             'add_parameter': self.add_parameter,
             'simaPro_export': self.simaPro_export,
+            'removeInput': self.removeInput,
         }
         
         #print (self.modelInstance.newVariable)
@@ -280,6 +281,15 @@ class FlaskSandbox():
         
         return "OK"
     
+    def removeInput(self, postData):
+        m = self.modelInstance
+        db_name = m.database.get('name')
+        process_code = (db_name, postData['targetId'])
+        input_code = (db_name, postData['sourceId'].split("_")[0])
+
+        m.remove_input_link(process_code, input_code)
+
+
     def inputLookup(self, postData):
         m = self.modelInstance
         myInput = m.database['items'][(m.database['name'], postData['code'])]

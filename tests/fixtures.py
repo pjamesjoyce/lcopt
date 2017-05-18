@@ -73,3 +73,10 @@ def parameterised_model(linked_model):
 	parameter['function'] = new_function
 
 	return linked_model
+
+@pytest.fixture
+def fully_formed_model():
+	import os
+	script_path = os.path.dirname(os.path.realpath(__file__))
+	loadpath = os.path.join(script_path, r"assets/Test_model.lcopt")
+	return LcoptModel(load = loadpath)

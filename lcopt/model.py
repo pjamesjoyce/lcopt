@@ -139,7 +139,7 @@ class LcoptModel(object):
         self.get_name = partial(get_exchange_name_from_database, database=self.database)
         self.get_unit = partial(get_exchange_unit_from_database, database=self.database)
 
-        self.remove_from_database = partial(remove_from_specified_database, database = self.database)
+        self.remove_from_database = None #partial(remove_from_specified_database, database = self.database)
         
         # create a partial for saving that defaults to the name of the instance
         #self.save = partial(self.saveAs, filename = self.name)
@@ -267,7 +267,7 @@ class LcoptModel(object):
         
         print (param_id)
         
-        problem_functions = check_param_function_use(self, param_id)
+        problem_functions = self.check_param_function_use(param_id)
         
         
         if len(problem_functions) != 0:
