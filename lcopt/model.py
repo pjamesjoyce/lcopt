@@ -229,6 +229,13 @@ class LcoptModel(object):
 
         return True
 
+    def delete_product(self, code):
+        # TODO: write this
+        pass
+
+    def delete_process(self, code):
+        # TODO: write this
+        pass
 
     def parameter_scan(self):
         """scan the database of the model instance to generate and expose parameters"""
