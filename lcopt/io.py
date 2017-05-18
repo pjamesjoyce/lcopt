@@ -9,9 +9,12 @@ defaultDatabase = {
 # add an item to a specified database
 def add_to_specified_database(item, database):
     database['items'][(database['name'],item['code'])] = item
+
+def remove_from_specified_database(item_key, database):
+    del database['items'][item_key]
     
 # partial function to add the item to the default database
-add_to_database = partial(add_to_specified_database, database = defaultDatabase)
+#add_to_database = partial(add_to_specified_database, database = defaultDatabase)
 
 # get an item from the database in the exchange format
 def get_exchange_from_database(name, database):

@@ -138,6 +138,8 @@ class LcoptModel(object):
         self.exists_in_database = partial(exists_in_specific_database, database = self.database)
         self.get_name = partial(get_exchange_name_from_database, database=self.database)
         self.get_unit = partial(get_exchange_unit_from_database, database=self.database)
+
+        self.remove_from_database = partial(remove_from_specified_database, database = self.database)
         
         # create a partial for saving that defaults to the name of the instance
         #self.save = partial(self.saveAs, filename = self.name)
@@ -229,12 +231,70 @@ class LcoptModel(object):
 
         return True
 
-    def delete_product(self, code):
-        # TODO: write this
-        pass
+    def check_param_function_use(self, param_id):
+    
+        current_functions = {k:x['function'] for k, x in self.params.items() if x['function'] is not None}
+        
+        problem_list = []
+        
+        for k, f in current_functions.items():
+            if param_id in f:
+                problem_list.append((k, f))
+                
+        return problem_list
+
+    def remove_input_link(self, process_code, input_code):
+        # 1. find correct process
+        # 2. find correct exchange
+        # 3. remove that exchange
+        # 4. check for parameter conflicts?
+        # 4. run parameter scan to rebuild matrices?
+        
+        print(process_code, input_code)
+        
+        process = self.database['items'][process_code]
+        exchanges = process['exchanges']
+        
+        initial_count = len(exchanges)
+        
+        new_exchanges = [e for e in exchanges if e['input'] != input_code]
+        
+        product_code = [e['input'] for e in exchanges if e['type'] == 'production'][0]
+        
+        print(product_code)
+        
+        param_id = [k for k, v in self.params.items() if (v['from'] == input_code[1] and v['to'] == product_code[1])][0]
+        
+        print (param_id)
+        
+        problem_functions = check_param_function_use(self, param_id)
+        
+        
+        if len(problem_functions) != 0:
+            print('the following functions have been removed:')
+            for p in problem_functions:
+                self.params[p[0]]['function'] = None
+                print(p)
+
+        process['exchanges'] = new_exchanges
+
+        del self.params[param_id]
+
+        self.parameter_scan()
+
+        return initial_count - len(new_exchanges)
+
 
     def delete_process(self, code):
         # TODO: write this
+
+        # 1. Check for problems
+        # 2. Check the product of the process
+        # 3. Assess this product for problems
+        # 4. Remove that product
+        # 5. Check incoming links
+        # 6. Assess these links for parameters
+        # 7. Remove links
         pass
 
     def parameter_scan(self):
@@ -266,7 +326,7 @@ class LcoptModel(object):
                         col_code = cr_list.index(e['input'][1])
 
                     elif e['type'] =='technosphere':
-                        print(e)
+                        #print(e)
                         row_code = cr_list.index(e['input'][1])
                         inputs.append((row_code, e['amount']))
 
