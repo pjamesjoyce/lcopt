@@ -1,0 +1,245 @@
+{SimaPro 8.2.0.0}
+{CSV Format version: 8.0.5}
+{CSV separator: Tab}
+{Decimal separator: .}
+{Date separator: /}
+{Short date format: dd/MM/yyyy}
+
+
+Process
+
+Category type
+processing
+
+Process identifier
+modelNam43409007168
+
+Type
+
+
+Process name
+test_process_1
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+test_output_1	kilogram	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+Process
+
+Category type
+processing
+
+Process identifier
+modelNam06893977058
+
+Type
+
+
+Process name
+test_process_2
+
+Status
+
+
+Time period
+Unspecified
+
+Geography
+Unspecified
+
+Technology
+Unspecified
+
+Representativeness
+Unspecified
+
+Multiple output allocation
+Unspecified
+
+Substitution allocation
+Unspecified
+
+Cut off rules
+Unspecified
+
+Capital goods
+Unspecified
+
+Boundary with nature
+Unspecified
+
+Infrastructure
+No
+
+Date
+13/02/2017
+
+Record
+
+
+Generator
+
+
+External documents
+
+
+Literature references
+
+
+Collection method
+
+
+Data treatment
+
+
+Verification
+
+
+Comment
+
+
+Allocation rules
+
+
+System description
+	
+
+Products
+test_output_2	kilogram	1	100	not defined	01. Testing	
+
+Avoided products
+
+Resources
+
+Materials/fuels
+test_output_1	kilogram	p_0_1	Undefined	0	0	0	
+
+Electricity/heat
+
+Emissions to air
+
+Emissions to water
+
+Emissions to soil
+
+Final waste flows
+
+Non material emissions
+
+Social issues
+
+Economic issues
+
+Waste to treatment
+
+Input parameters
+
+Calculated parameters
+
+End
+
+
+Project Input parameters
+test_parameter	1	Undefined	1	0	0	No	test description
+
+End
+
+Project Calculated parameters
+p_0_1	test_parameter*2	Input of test_output_1 to create test_output_2
+
+End

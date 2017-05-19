@@ -168,66 +168,24 @@ def test_search_specific_database_location(linked_model):
 	
 	assert len(results)>0
 
-'''
-def test_load():
-	assert 1
+def test_remove_input_link(fully_formed_model):
+	
+	input_code = fully_formed_model.get_exchange(EXISTING_INPUT_NAME)
+	process_code = fully_formed_model.get_exchange(EXISTING_PROCESS_NAME)
 
-def test_add_parameter():
-	model.add_parameter()
+	assert fully_formed_model.remove_input_link(process_code, input_code) == 1
 
-def test_analyse():
-	assert 1
+def test_unlink_intermediate(fully_formed_model):
 
-def test_create_parameter_set():
-	assert 1
+	sourceId = fully_formed_model.get_exchange(EXISTING_PROCESS_NAME)[1]
+	targetId = fully_formed_model.get_exchange(EXISTING_PROCESS_NAME_2)[1]
 
-def test_create_parameter_set_flask():
-	assert 1
+	assert fully_formed_model.unlink_intermediate(sourceId, targetId)
 
-def test_create_process():
-	assert 1
+def test_analyse(fully_formed_model):
 
-def test_create_product():
-	assert 1
+	demand_item_name = FINAL_PROCESS_NAME
+	demand_item_id = fully_formed_model.get_exchange(FINAL_PROCESS_NAME)[1]
 
-def test_database_to_SimaPro_csv():
-	assert 1
+	assert fully_formed_model.analyse(demand_item_name, demand_item_id)
 
-def test_export_to_bw2():
-	assert 1
-
-def test_generate_matrices():
-	assert 1
-
-def test_generate_parameter_set_excel_file():
-	assert 1
-
-def test_import_external_db():
-	assert 1
-
-def test_launch_interact():
-	assert 1
-
-def test_list_parameters_as_df():
-	assert 1
-
-def test_load():
-	assert 1
-
-def test_matrix_as_df():
-	assert 1
-
-def test_parameter_scan():
-	assert 1
-
-def test_parse_function():
-	assert 1
-
-
-
-def test_save():
-	assert 1
-
-def test_search_databases():
-	assert 1
-'''

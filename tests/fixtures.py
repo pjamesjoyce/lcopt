@@ -5,6 +5,21 @@ MODEL_NAME = 'modelName'
 
 PARAMETER_DATA = '[{"id":"p_3_2","Name":"Tea leaves","Unit":"kg","Normal tea":"0.01","Black tea":"0.01"},{"id":"p_0_2","Name":"Boiling water","Unit":"l","Normal tea":"1","Black tea":"1"},{"id":"p_2_4","Name":"Black tea","Unit":"l","Normal tea":"0.8","Black tea":"0.8"},{"id":"kettle_power","Name":"Power rating of kettle, kW","Unit":"","Normal tea":"1.5","Black tea":"1.5"},{"id":"boil_time","Name":"Kettle boiling time, mins","Unit":"","Normal tea":"3","Black tea":"3"},{"id":"milk_density","Name":"Density of milk","Unit":"","Normal tea":"1.035","Black tea":"1.035"},{"id":"milk_amount","Name":"Amount of milk, l","Unit":"","Normal tea":"0.02","Black tea":"0"}]'
 
+EXISTING_PROCESS_NAME = 'Process 1'
+EXISTING_PROCESS_NAME_2 = 'Process 2'
+FINAL_PROCESS_NAME = 'Process 3'
+NEW_PROCESS_NAME = 'Process 4'
+NEW_OUTPUT_NAME = 'Output 4'
+
+EXISTING_INPUT_NAME = 'Input 2'
+
+ELECTRICITY_NAME = "market for electricity, medium voltage {DE} [kilowatt hour]"
+ELECTRICITY_ID = "('Ecoinvent3_3_cutoff', '8a1ef516cc78d560d3a677357b366de2')"
+
+CO2_NAME = "Carbon dioxide, fossil (emission to air) [kilogram]"
+CO2_ID = "('biosphere3', '349b29d1-3e58-4c66-98b9-9d1a076efd2e')"
+
+
 @pytest.fixture
 def blank_model():
 	
@@ -73,3 +88,10 @@ def parameterised_model(linked_model):
 	parameter['function'] = new_function
 
 	return linked_model
+
+@pytest.fixture
+def fully_formed_model():
+	import os
+	script_path = os.path.dirname(os.path.realpath(__file__))
+	loadpath = os.path.join(script_path, r"assets/Test_model.lcopt")
+	return LcoptModel(load = loadpath)
