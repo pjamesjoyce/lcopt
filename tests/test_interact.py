@@ -15,6 +15,7 @@ def flask_client(app):
 	return app.test_client()
 
 EXISTING_PROCESS_NAME = 'Process 1'
+EXISTING_PROCESS_NAME_2 = 'Process 2'
 FINAL_PROCESS_NAME = 'Process 3'
 NEW_PROCESS_NAME = 'Process 4'
 NEW_OUTPUT_NAME = 'Output 4'
@@ -430,6 +431,20 @@ def test_unlink_input(flask_client, fully_formed_model):
 	sourceId = "{}__0".format(fully_formed_model.get_exchange(EXISTING_INPUT_NAME)[1])
 	postData = {
 		'action': 'removeInput',
+		'targetId': targetId,
+		'sourceId': sourceId, 
+	}
+
+	response = flask_client.post('/process_post', data = postData)
+
+	assert response.status_code == 200
+
+def test_unlink_intermediate(flask_client, fully_formed_model):
+	
+	targetId = fully_formed_model.get_exchange(EXISTING_PROCESS_NAME)[1]
+	sourceId = fully_formed_model.get_exchange(EXISTING_PROCESS_NAME_2)[1]
+	postData = {
+		'action': 'unlinkIntermediate',
 		'targetId': targetId,
 		'sourceId': sourceId, 
 	}

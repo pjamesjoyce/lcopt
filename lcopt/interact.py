@@ -31,6 +31,7 @@ class FlaskSandbox():
             'add_parameter': self.add_parameter,
             'simaPro_export': self.simaPro_export,
             'removeInput': self.removeInput,
+            'unlinkIntermediate':self.unlinkIntermediate,
         }
         
         #print (self.modelInstance.newVariable)
@@ -327,6 +328,12 @@ class FlaskSandbox():
 
         return "OK"
 
+    def unlinkIntermediate(self, postData):
+
+        m = self.modelInstance
+        m.unlink_intermediate(postData['sourceId'], postData['targetId'])
+
+        return "OK"
 
     def inputLookup(self, postData):
         m = self.modelInstance

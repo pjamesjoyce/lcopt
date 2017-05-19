@@ -266,6 +266,24 @@ var newConnection = function(info, instance){
         $.post('/process_post', postData);
 }
 
+var unlinkIntermediate = function(connection) {
+    //console.log(connection.targetId)
+    targetId = connection.targetId
+    sourceId = connection.sourceId
+
+    postData = {
+          'action': 'unlinkIntermediate',
+          'targetId' : targetId,
+          'sourceId': sourceId,
+        };
+
+        //console.log(postData);
+    $.post('/process_post', postData);
+
+    jsPlumb.detach(connection)
+
+}
+
 var addInput = function(e, instance){
 
     var target = $( e.target )

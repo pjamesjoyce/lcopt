@@ -175,4 +175,11 @@ def test_remove_input_link(fully_formed_model):
 
 	assert fully_formed_model.remove_input_link(process_code, input_code) == 1
 
+def test_unlink_intermediate(fully_formed_model):
+
+	sourceId = fully_formed_model.get_exchange('Process 1')[1]
+	targetId = fully_formed_model.get_exchange('Process 2')[1]
+
+	assert fully_formed_model.unlink_intermediate(sourceId, targetId)
+
 

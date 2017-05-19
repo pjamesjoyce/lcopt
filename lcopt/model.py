@@ -246,7 +246,7 @@ class LcoptModel(object):
         # 4. check for parameter conflicts?
         # 4. run parameter scan to rebuild matrices?
         
-        print(process_code, input_code)
+        #print(process_code, input_code)
         
         process = self.database['items'][process_code]
         exchanges = process['exchanges']
@@ -257,11 +257,11 @@ class LcoptModel(object):
         
         product_code = [e['input'] for e in exchanges if e['type'] == 'production'][0]
         
-        print(product_code)
+        #print(product_code)
         
         param_id = [k for k, v in self.params.items() if (v['from'] == input_code[1] and v['to'] == product_code[1])][0]
         
-        print (param_id)
+        #print (param_id)
         
         problem_functions = self.check_param_function_use(param_id)
         
@@ -280,18 +280,21 @@ class LcoptModel(object):
 
         return initial_count - len(new_exchanges)
 
+    def unlink_intermediate(self, sourceId, targetId):
+        
+        source = self.database['items'][(self.database.get('name'), sourceId)]
+        target = self.database['items'][(self.database.get('name'), targetId)]
 
-    def delete_process(self, code):
-        # TODO: write this
+        production_exchange = [x['input'] for x in source['exchanges'] if x['type'] == 'production'][0]
 
-        # 1. Check for problems
-        # 2. Check the product of the process
-        # 3. Assess this product for problems
-        # 4. Remove that product
-        # 5. Check incoming links
-        # 6. Assess these links for parameters
-        # 7. Remove links
-        pass
+        new_exchanges = [x for x in target['exchanges'] if x['input'] != production_exchange]
+
+        target['exchanges'] = new_exchanges
+
+        self.parameter_scan()
+
+        return True
+
 
     def parameter_scan(self):
         """scan the database of the model instance to generate and expose parameters"""
