@@ -4,8 +4,8 @@ import hashlib
 from fixtures import *
 
 @pytest.fixture
-def app(parameterised_model):
-	sandbox = FlaskSandbox(parameterised_model)
+def app(fully_formed_model):
+	sandbox = FlaskSandbox(fully_formed_model)
 	app = sandbox.create_app()
 	return app
 
@@ -13,6 +13,20 @@ def app(parameterised_model):
 def flask_client(app):
 	app.config['TESTING'] = True
 	return app.test_client()
+
+EXISTING_PROCESS_NAME = 'Process 1'
+FINAL_PROCESS_NAME = 'Process 3'
+NEW_PROCESS_NAME = 'Process 4'
+NEW_OUTPUT_NAME = 'Output 4'
+
+EXISTING_INPUT_NAME = 'Input 2'
+
+ELECTRICITY_NAME = "market for electricity, medium voltage {DE} [kilowatt hour]"
+ELECTRICITY_ID = "('Ecoinvent3_3_cutoff', '8a1ef516cc78d560d3a677357b366de2')"
+
+CO2_NAME = "Carbon dioxide, fossil (emission to air) [kilogram]"
+CO2_ID = "('biosphere3', '349b29d1-3e58-4c66-98b9-9d1a076efd2e')"
+
 
 def test_app(app):
 	assert repr(app)
@@ -37,12 +51,12 @@ def test_post(flask_client):
 	response = flask_client.post('/process_post', data=dict(action='echo'))
 	assert b'Hello from echo' in response.data
 
-def test_model_updates(flask_client, parameterised_model):
-	items_0 = [v['name'] for k,v in parameterised_model.database['items'].items()]
+def test_model_updates(flask_client, fully_formed_model):
+	items_0 = [v['name'] for k,v in fully_formed_model.database['items'].items()]
 	
-	process_name = 'test_process_3'
+	process_name = NEW_PROCESS_NAME
 	unit = 'kilogram'
-	output_name = 'test_output_3'
+	output_name = NEW_OUTPUT_NAME
 
 	to_hash = '{}process{}GLO'.format(process_name, unit)
 	
@@ -58,7 +72,7 @@ def test_model_updates(flask_client, parameterised_model):
 
 	response = flask_client.post('/process_post', data = postData)
 
-	items_1 = [v['name'] for k,v in parameterised_model.database['items'].items()]
+	items_1 = [v['name'] for k,v in fully_formed_model.database['items'].items()]
 		
 	assert response.status_code == 200
 
@@ -66,14 +80,14 @@ def test_model_updates(flask_client, parameterised_model):
 
 	# test connections
 	
-	source_name = 'test_process_2'
-	source = parameterised_model.get_exchange(source_name)
+	source_name = FINAL_PROCESS_NAME
+	source = fully_formed_model.get_exchange(source_name)
 	sourceId = source[1]
-	target = parameterised_model.get_exchange(process_name)
+	target = fully_formed_model.get_exchange(process_name)
 	targetId = target[1]
 	label = 'test_label'
 
-	target_prior = str(parameterised_model.database['items'][target])
+	target_prior = str(fully_formed_model.database['items'][target])
 	
 	postData = dict(
 		action = 'newConnection',
@@ -86,17 +100,17 @@ def test_model_updates(flask_client, parameterised_model):
 
 	assert response.status_code == 200
 
-	target_post = str(parameterised_model.database['items'][target])
+	target_post = str(fully_formed_model.database['items'][target])
 
 	assert target_prior != target_post
 
 
-def test_move_item(flask_client, parameterised_model):
+def test_move_item(flask_client, fully_formed_model):
 
 	from random import randint
 
-	item_name = 'test_process_1'
-	item = parameterised_model.get_exchange(item_name)
+	item_name = EXISTING_PROCESS_NAME
+	item = fully_formed_model.get_exchange(item_name)
 	item_code = item[1]
 
 	new_x = str(randint(0,500))
@@ -114,14 +128,14 @@ def test_move_item(flask_client, parameterised_model):
 	response = flask_client.post('/process_post', data = postData)
 	assert response.status_code == 200
 
-	assert parameterised_model.sandbox_positions[item_code]['x'] == new_x
-	assert parameterised_model.sandbox_positions[item_code]['y'] == new_y
+	assert fully_formed_model.sandbox_positions[item_code]['x'] == new_x
+	assert fully_formed_model.sandbox_positions[item_code]['y'] == new_y
 
 
-def test_add_unlinked_input(flask_client, parameterised_model):
+def test_add_unlinked_input(flask_client, fully_formed_model):
 	
-	target_name = 'test_process_1'
-	target = parameterised_model.get_exchange(target_name)
+	target_name = EXISTING_PROCESS_NAME
+	target = fully_formed_model.get_exchange(target_name)
 	targetId = target[1]
 
 	name = 'unlinked_input'
@@ -148,19 +162,19 @@ def test_add_unlinked_input(flask_client, parameterised_model):
 
 	assert response.status_code == 200
 
-	target_exchanges = parameterised_model.database['items'][target]['exchanges']
-	new_input = parameterised_model.get_exchange(name)
+	target_exchanges = fully_formed_model.database['items'][target]['exchanges']
+	new_input = fully_formed_model.get_exchange(name)
 
 	assert str(new_input) in str(target_exchanges)
 
 
-def test_add_linked_input(flask_client, parameterised_model):
+def test_add_linked_input(flask_client, fully_formed_model):
 
-	ext_link_name = "market for electricity, medium voltage {DE} [kilowatt hour]"
-	ext_link_id = "('Ecoinvent3_3_cutoff', '8a1ef516cc78d560d3a677357b366de2')"
+	ext_link_name = ELECTRICITY_NAME
+	ext_link_id = ELECTRICITY_ID
 
-	target_name = 'test_process_1'
-	target = parameterised_model.get_exchange(target_name)
+	target_name = EXISTING_PROCESS_NAME
+	target = fully_formed_model.get_exchange(target_name)
 	targetId = target[1]
 
 	name = 'linked_input'
@@ -187,20 +201,20 @@ def test_add_linked_input(flask_client, parameterised_model):
 
 	assert response.status_code == 200
 
-	target_exchanges = parameterised_model.database['items'][target]['exchanges']
-	new_input = parameterised_model.get_exchange(name)
+	target_exchanges = fully_formed_model.database['items'][target]['exchanges']
+	new_input = fully_formed_model.get_exchange(name)
 
 	assert str(new_input) in str(target_exchanges)
 
-	assert parameterised_model.database['items'][new_input]['ext_link'] != None
+	assert fully_formed_model.database['items'][new_input]['ext_link'] != None
 
-def test_add_biosphere_input(flask_client, parameterised_model):
+def test_add_biosphere_input(flask_client, fully_formed_model):
 
-	ext_link_name = "Carbon dioxide, fossil (emission to air) [kilogram]"
-	ext_link_id = "('biosphere3', '349b29d1-3e58-4c66-98b9-9d1a076efd2e')"
+	ext_link_name = CO2_NAME
+	ext_link_id = CO2_ID
 
-	target_name = 'test_process_1'
-	target = parameterised_model.get_exchange(target_name)
+	target_name = EXISTING_PROCESS_NAME
+	target = fully_formed_model.get_exchange(target_name)
 	targetId = target[1]
 
 	name = 'linked_input'
@@ -227,21 +241,21 @@ def test_add_biosphere_input(flask_client, parameterised_model):
 
 	assert response.status_code == 200
 
-	target_exchanges = parameterised_model.database['items'][target]['exchanges']
-	new_input = parameterised_model.get_exchange(name)
+	target_exchanges = fully_formed_model.database['items'][target]['exchanges']
+	new_input = fully_formed_model.get_exchange(name)
 
 	assert str(new_input) in str(target_exchanges)
 
-	assert parameterised_model.database['items'][new_input]['ext_link'] != None
+	assert fully_formed_model.database['items'][new_input]['ext_link'] != None
 
-def test_inputLookup_technosphere_linked(flask_client, parameterised_model):
+def test_inputLookup_technosphere_linked(flask_client, fully_formed_model):
 	
 
-	ext_link_name = "market for electricity, medium voltage {DE} [kilowatt hour]"
-	ext_link_id = "('Ecoinvent3_3_cutoff', '8a1ef516cc78d560d3a677357b366de2')"
+	ext_link_name = ELECTRICITY_NAME
+	ext_link_id = ELECTRICITY_ID
 
-	target_name = 'test_process_1'
-	target = parameterised_model.get_exchange(target_name)
+	target_name = EXISTING_PROCESS_NAME
+	target = fully_formed_model.get_exchange(target_name)
 	targetId = target[1]
 
 	name = 'linked_input'
@@ -268,7 +282,7 @@ def test_inputLookup_technosphere_linked(flask_client, parameterised_model):
 
 	assert response.status_code == 200
 
-	new_input = parameterised_model.get_exchange(name)
+	new_input = fully_formed_model.get_exchange(name)
 
 	postData ={
 		'action': 'inputLookup',
@@ -280,10 +294,10 @@ def test_inputLookup_technosphere_linked(flask_client, parameterised_model):
 
 	assert response.status_code == 200
 
-def test_inputLookup_technosphere_unlinked(flask_client, parameterised_model):
+def test_inputLookup_technosphere_unlinked(flask_client, fully_formed_model):
 	
-	target_name = 'test_process_1'
-	target = parameterised_model.get_exchange(target_name)
+	target_name = EXISTING_PROCESS_NAME
+	target = fully_formed_model.get_exchange(target_name)
 	targetId = target[1]
 
 	name = 'unlinked_input'
@@ -308,7 +322,7 @@ def test_inputLookup_technosphere_unlinked(flask_client, parameterised_model):
 
 	assert response.status_code == 200
 
-	new_input = parameterised_model.get_exchange(name)
+	new_input = fully_formed_model.get_exchange(name)
 
 	postData ={
 		'action': 'inputLookup',
@@ -320,13 +334,13 @@ def test_inputLookup_technosphere_unlinked(flask_client, parameterised_model):
 
 	assert response.status_code == 200
 
-def test_inputLookup_biosphere_input(flask_client, parameterised_model):
+def test_inputLookup_biosphere_input(flask_client, fully_formed_model):
 
-	ext_link_name = "Carbon dioxide, fossil (emission to air) [kilogram]"
-	ext_link_id = "('biosphere3', '349b29d1-3e58-4c66-98b9-9d1a076efd2e')"
+	ext_link_name = CO2_NAME
+	ext_link_id = CO2_ID
 
-	target_name = 'test_process_1'
-	target = parameterised_model.get_exchange(target_name)
+	target_name = EXISTING_PROCESS_NAME
+	target = fully_formed_model.get_exchange(target_name)
 	targetId = target[1]
 
 	name = 'linked_input'
@@ -353,7 +367,7 @@ def test_inputLookup_biosphere_input(flask_client, parameterised_model):
 
 	assert response.status_code == 200
 
-	new_input = parameterised_model.get_exchange(name)
+	new_input = fully_formed_model.get_exchange(name)
 
 	postData ={
 		'action': 'inputLookup',
@@ -365,7 +379,7 @@ def test_inputLookup_biosphere_input(flask_client, parameterised_model):
 
 	assert response.status_code == 200
 
-def test_searchEcoinvent(flask_client, parameterised_model):
+def test_searchEcoinvent(flask_client, fully_formed_model):
 	
 	search_term = 'electricity'
 	location = 'DE'
@@ -382,7 +396,7 @@ def test_searchEcoinvent(flask_client, parameterised_model):
 
 	assert response.status_code == 200
 
-def test_searchBiosphere(flask_client, parameterised_model):
+def test_searchBiosphere(flask_client, fully_formed_model):
 	
 	search_term = 'carbon dioxide, fossil'
 	location = ''
@@ -405,6 +419,21 @@ def test_parameter_parsing(flask_client):
 		action = 'parse_parameters',
 		data = PARAMETER_DATA
 		)
+	response = flask_client.post('/process_post', data = postData)
+
+	assert response.status_code == 200
+
+
+def test_unlink_input(flask_client, fully_formed_model):
+	
+	targetId = fully_formed_model.get_exchange(EXISTING_PROCESS_NAME)[1]
+	sourceId = "{}__0".format(fully_formed_model.get_exchange(EXISTING_INPUT_NAME)[1])
+	postData = {
+		'action': 'removeInput',
+		'targetId': targetId,
+		'sourceId': sourceId, 
+	}
+
 	response = flask_client.post('/process_post', data = postData)
 
 	assert response.status_code == 200

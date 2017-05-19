@@ -102,6 +102,12 @@ class FlaskSandbox():
         link_indices = [process_output_map[x] if x in intermediate_codes else x for x in product_codes]
                
         
+        row_totals = matrix.sum(axis=1)
+        input_row_totals = {k: row_totals[m.names.index(v)] for k,v in input_map.items()}
+        biosphere_row_totals = {k: row_totals[m.names.index(v)] for k,v in biosphere_map.items()}
+
+
+
         # compute the nodes
         i = 1
         self.nodes = []
@@ -111,15 +117,15 @@ class FlaskSandbox():
         
         i=1
         for p in input_codes:
-            
-            self.nodes.append({'name':input_map[p],'type':'input','id':p+"__0",'initX':i*50+150,'initY':i*50})
-            i+=1
+            if input_row_totals[p] != 0:
+                self.nodes.append({'name':input_map[p],'type':'input','id':p+"__0",'initX':i*50+150,'initY':i*50})
+                i+=1
 
         i=1
         for p in biosphere_codes:
-            
-            self.nodes.append({'name':biosphere_map[p],'type':'biosphere','id':p+"__0",'initX':i*50+150,'initY':i*50})
-            i+=1
+            if biosphere_row_totals[p] != 0:
+                self.nodes.append({'name':biosphere_map[p],'type':'biosphere','id':p+"__0",'initX':i*50+150,'initY':i*50})
+                i+=1
             
         # compute links
         self.links=[]
@@ -129,6 +135,7 @@ class FlaskSandbox():
         
         #check there is a matrix (new models won't have one until parameter_scan() is run)
         if matrix is not None:
+
             for c, column in enumerate(matrix.T):
                 for r, i in enumerate(column):
                     if i>0:
@@ -281,6 +288,32 @@ class FlaskSandbox():
         
         return "OK"
     
+    def update_sandbox_on_delete(self, modelInstance, full_id):
+        id_components = full_id.split("__")
+        alt_id_sandbox_positions = {tuple(k.split("__")):v for k,v in modelInstance.sandbox_positions.items()}
+        new_sandbox_positions = {}
+
+        for k, v in alt_id_sandbox_positions.items():
+
+            print (k)
+            print(id_components)
+
+            if len(k) ==1:
+                new_sandbox_positions['{}'.format(*k)] = v
+
+            elif id_components[0] in k and k[1] == id_components[1]:
+                pass
+
+            elif id_components[0] in k and int(k[1])>int(id_components[1]):
+                new_sandbox_positions['{0}__{1}'.format(k[0], int(k[1])-1)] = v
+
+            else:
+                new_sandbox_positions['{}__{}'.format(*k)] = v
+
+        modelInstance.sandbox_positions = new_sandbox_positions
+        
+        return True
+
     def removeInput(self, postData):
         m = self.modelInstance
         db_name = m.database.get('name')
@@ -288,6 +321,11 @@ class FlaskSandbox():
         input_code = (db_name, postData['sourceId'].split("_")[0])
 
         m.remove_input_link(process_code, input_code)
+        self.update_sandbox_on_delete(m, postData['sourceId'])
+
+        # TODO: Sort out sandbox variables
+
+        return "OK"
 
 
     def inputLookup(self, postData):

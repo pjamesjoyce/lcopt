@@ -139,11 +139,7 @@ class LcoptModel(object):
         self.get_name = partial(get_exchange_name_from_database, database=self.database)
         self.get_unit = partial(get_exchange_unit_from_database, database=self.database)
 
-        self.remove_from_database = None #partial(remove_from_specified_database, database = self.database)
-        
-        # create a partial for saving that defaults to the name of the instance
-        #self.save = partial(self.saveAs, filename = self.name)
-        
+       
         
         
     def rename(self,newname):

@@ -618,7 +618,11 @@ var removeInput = function(e, instance){
             $.post('/process_post', postData)
 
     // TODO : Update the GUI
-          
+
+    //jsPlumb.remove(thisNodeID)
+    jsPlumb.detach(thisConnections[0])
+    jsPlumb.remove(thisNodeID)
+    $('.popover').remove()      
 }
 
 // This is the add biosphere function - a big copy of the addInput one - these could maybe be rationalised later...
