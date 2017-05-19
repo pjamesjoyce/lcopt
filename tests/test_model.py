@@ -170,16 +170,22 @@ def test_search_specific_database_location(linked_model):
 
 def test_remove_input_link(fully_formed_model):
 	
-	input_code = fully_formed_model.get_exchange('Input 2')
-	process_code = fully_formed_model.get_exchange('Process 1')
+	input_code = fully_formed_model.get_exchange(EXISTING_INPUT_NAME)
+	process_code = fully_formed_model.get_exchange(EXISTING_PROCESS_NAME)
 
 	assert fully_formed_model.remove_input_link(process_code, input_code) == 1
 
 def test_unlink_intermediate(fully_formed_model):
 
-	sourceId = fully_formed_model.get_exchange('Process 1')[1]
-	targetId = fully_formed_model.get_exchange('Process 2')[1]
+	sourceId = fully_formed_model.get_exchange(EXISTING_PROCESS_NAME)[1]
+	targetId = fully_formed_model.get_exchange(EXISTING_PROCESS_NAME_2)[1]
 
 	assert fully_formed_model.unlink_intermediate(sourceId, targetId)
 
+def test_analyse(fully_formed_model):
+
+	demand_item_name = FINAL_PROCESS_NAME
+	demand_item_id = fully_formed_model.get_exchange(FINAL_PROCESS_NAME)[1]
+
+	assert fully_formed_model.analyse(demand_item_name, demand_item_id)
 

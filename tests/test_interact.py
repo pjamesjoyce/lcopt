@@ -14,20 +14,6 @@ def flask_client(app):
 	app.config['TESTING'] = True
 	return app.test_client()
 
-EXISTING_PROCESS_NAME = 'Process 1'
-EXISTING_PROCESS_NAME_2 = 'Process 2'
-FINAL_PROCESS_NAME = 'Process 3'
-NEW_PROCESS_NAME = 'Process 4'
-NEW_OUTPUT_NAME = 'Output 4'
-
-EXISTING_INPUT_NAME = 'Input 2'
-
-ELECTRICITY_NAME = "market for electricity, medium voltage {DE} [kilowatt hour]"
-ELECTRICITY_ID = "('Ecoinvent3_3_cutoff', '8a1ef516cc78d560d3a677357b366de2')"
-
-CO2_NAME = "Carbon dioxide, fossil (emission to air) [kilogram]"
-CO2_ID = "('biosphere3', '349b29d1-3e58-4c66-98b9-9d1a076efd2e')"
-
 
 def test_app(app):
 	assert repr(app)

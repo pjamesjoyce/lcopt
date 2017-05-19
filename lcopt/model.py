@@ -674,3 +674,5 @@ class LcoptModel(object):
         my_analysis = Bw2Analysis(self)
         self.result_set = my_analysis.run_analyses(demand_item, demand_item_code,  **self.analysis_settings)
 
+        return True
+
