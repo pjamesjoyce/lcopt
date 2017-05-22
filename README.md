@@ -53,7 +53,7 @@ Update werkzeug (this is a python 3.6 thing...)
 pip install -U werkzeug
 ```
 
-Finallu, install lcopt via pip:
+Finally, install lcopt via pip:
 
 ```
 pip install lcopt

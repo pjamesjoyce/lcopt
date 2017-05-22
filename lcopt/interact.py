@@ -324,7 +324,7 @@ class FlaskSandbox():
             #print ('no location')
             location = None
             
-        result = m.search_databases(search_term, location,  markets_only, databases_to_search = [m.ecoinventName])
+        result = m.search_databases(search_term, location,  markets_only, databases_to_search = m.technosphere_databases)
         
         json_dict = {str(k):v for k, v in dict(result).items()}
         
@@ -337,7 +337,7 @@ class FlaskSandbox():
         
         m = self.modelInstance
             
-        result = m.search_databases(search_term, databases_to_search = [m.biosphereName])
+        result = m.search_databases(search_term, databases_to_search = m.biosphere_databases)
         
         json_dict = {str(k):v for k, v in dict(result).items()}
         
@@ -347,7 +347,7 @@ class FlaskSandbox():
 
     def create_function(self, postData):
 
-        print(postData)
+        #print(postData)
         new_function = postData['my_function']
         parameter = self.modelInstance.params[postData['for']]
         parameter['function'] = new_function
@@ -399,7 +399,7 @@ class FlaskSandbox():
                 for exchange in exchanges:
 
                     if parameters[exchange].get('function'):
-                        print ('{} determined by a function'.format(exchange))
+                        #print ('{} determined by a function'.format(exchange))
                         values = ['{} = {:.3g}'.format(parameters[exchange]['function'], e_ps[exchange]) for e_ps_name, e_ps in evaluated_parameters.items()]
                         isFunction = True
                     else:
@@ -433,7 +433,7 @@ class FlaskSandbox():
     def parameter_parsing(self, postData):
             
 
-            print(postData)
+            #print(postData)
             myjson = json.loads(postData['data'], object_pairs_hook=OrderedDict)
             #print(myjson)
             current_parameter_sets = []
@@ -455,7 +455,7 @@ class FlaskSandbox():
                                 self.modelInstance.parameter_sets[k][line_id] = float(line[k])
                             else:
                                 self.modelInstance.parameter_sets[k] = OrderedDict()
-                                print ('created {}'.format(k))
+                                #print ('created {}'.format(k))
                                 self.modelInstance.parameter_sets[k][line_id] = float(line[k])
 
             new_parameter_sets = OrderedDict()
@@ -465,11 +465,11 @@ class FlaskSandbox():
 
             self.modelInstance.parameter_sets = new_parameter_sets
 
-            print([k for k in self.modelInstance.parameter_sets.keys()])
+            #print([k for k in self.modelInstance.parameter_sets.keys()])
 
             self.modelInstance.save()       
 
-            print('parameters saved')    
+            #print('parameters saved')    
             
             return 'OK'
             #return redirect("/")
@@ -477,7 +477,7 @@ class FlaskSandbox():
     def add_parameter(self, postData):
 
         self.modelInstance.add_parameter(postData['param_id'], postData['param_description'], float(postData['param_default']))
-        print ('Added {} (default {}) added to global parameters'.format(postData['param_id'], postData['param_default']))
+        #print ('Added {} (default {}) added to global parameters'.format(postData['param_id'], postData['param_default']))
 
         return "OK"
 
@@ -608,7 +608,7 @@ class FlaskSandbox():
             args['item'] = item
             args['item_code'] = item_code
 
-            print('PRELOAD {}'.format(args['item_code']))
+            #print('PRELOAD {}'.format(args['item_code']))
             
             #self.modelInstance.analyse(item)
             return render_template('analysis_preload.html', args = args)
