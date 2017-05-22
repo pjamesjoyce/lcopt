@@ -109,6 +109,8 @@ class LcoptModel(object):
         self.biosphereName = "biosphere3"
         self.ecoinventFilename = "ecoinvent3_3"
         self.biosphereFilename = "biosphere3"
+        self.technosphere_databases = [self.ecoinventName]
+        self.biosphere_databases = [self.biosphereName]
 
         # default settings for bw2 analysis
         self.analysis_settings = {
@@ -187,6 +189,9 @@ class LcoptModel(object):
 
             self.analysis_settings =savedInstance.analysis_settings
 
+            self.technosphere_databases = savedInstance.technosphere_databases
+            self.biosphere_databases = savedInstance.biosphere_databases
+
         except Exception:
             pass
 
@@ -259,7 +264,7 @@ class LcoptModel(object):
                         col_code = cr_list.index(e['input'][1])
 
                     elif e['type'] =='technosphere':
-                        print(e)
+                        #print(e)
                         row_code = cr_list.index(e['input'][1])
                         inputs.append((row_code, e['amount']))
 
@@ -315,7 +320,8 @@ class LcoptModel(object):
 
                 p_set.append(base_dict)
             else:
-                print("{} is determined by a function".format(p[k]['description']))
+                pass
+                #print("{} is determined by a function".format(p[k]['description']))
 
         for e in self.ext_params:
             base_dict = {'id':'{}'.format(e['name']), 'type':'external', 'name': e['description'], 'unit':''}
@@ -330,11 +336,11 @@ class LcoptModel(object):
         writer = pd.ExcelWriter(p_set_name, engine='xlsxwriter')
 
         ps_columns = [k for k in parameter_sets.keys()]
-        print (ps_columns)
+        #print (ps_columns)
         my_columns = ['name', 'unit', 'id']
         
         my_columns.extend(ps_columns)
-        print (my_columns)
+        #print (my_columns)
 
         df.to_excel(writer, sheet_name=self.name, columns =  my_columns, index= False, merge_cells = False)
        
@@ -379,11 +385,23 @@ class LcoptModel(object):
         return df
 
 
-    def import_external_db(self, db_file):
+    def import_external_db(self, db_file, db_type = None):
         db = pickle.load(open("{}.pickle".format(db_file), "rb"))
         name = list(db.keys())[0][0]
         new_db = {'items': db, 'name': name}
         self.external_databases.append(new_db)
+
+        if db_type is None : #Assume its a technosphere database
+            db_type = 'technosphere'
+
+        if db_type == 'technosphere':
+            self.technosphere_databases.append(name)
+        elif db_type == 'biosphere':
+            self.biosphere_databases.append(name)
+
+        else:
+            raise Exception
+            print ("Database type must be 'technosphere' or 'biosphere'")
 
     def search_databases(self, search_term, location = None, markets_only=False, databases_to_search = None):
 
