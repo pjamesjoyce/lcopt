@@ -8,7 +8,7 @@ Life cycle options appraisal module
 # Installation
 
 For lcopt to work you should have the latest version of [brightway2](https://brightwaylca.org/) by Chris Mutel installed.
-This will make most of lcopts dependencies are satisfied.
+This will make sure most of lcopts dependencies are satisfied.
 
 The instructions for installing brightway below are current as of April 2017, but check [here](https://docs.brightwaylca.org/installation.html) for the latest ones.
 

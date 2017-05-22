@@ -140,10 +140,8 @@ class LcoptModel(object):
         self.exists_in_database = partial(exists_in_specific_database, database = self.database)
         self.get_name = partial(get_exchange_name_from_database, database=self.database)
         self.get_unit = partial(get_exchange_unit_from_database, database=self.database)
-        
-        # create a partial for saving that defaults to the name of the instance
-        #self.save = partial(self.saveAs, filename = self.name)
-        
+
+       
         
         
     def rename(self,newname):
@@ -229,6 +227,74 @@ class LcoptModel(object):
         new_process = item_factory(name=name, location=location, unit=unit, type='process', exchanges=found_exchanges)
         
         self.add_to_database(new_process)
+
+        self.parameter_scan()
+
+        return True
+
+    def check_param_function_use(self, param_id):
+    
+        current_functions = {k:x['function'] for k, x in self.params.items() if x['function'] is not None}
+        
+        problem_list = []
+        
+        for k, f in current_functions.items():
+            if param_id in f:
+                problem_list.append((k, f))
+                
+        return problem_list
+
+    def remove_input_link(self, process_code, input_code):
+        # 1. find correct process
+        # 2. find correct exchange
+        # 3. remove that exchange
+        # 4. check for parameter conflicts?
+        # 4. run parameter scan to rebuild matrices?
+        
+        #print(process_code, input_code)
+        
+        process = self.database['items'][process_code]
+        exchanges = process['exchanges']
+        
+        initial_count = len(exchanges)
+        
+        new_exchanges = [e for e in exchanges if e['input'] != input_code]
+        
+        product_code = [e['input'] for e in exchanges if e['type'] == 'production'][0]
+        
+        #print(product_code)
+        
+        param_id = [k for k, v in self.params.items() if (v['from'] == input_code[1] and v['to'] == product_code[1])][0]
+        
+        #print (param_id)
+        
+        problem_functions = self.check_param_function_use(param_id)
+        
+        
+        if len(problem_functions) != 0:
+            print('the following functions have been removed:')
+            for p in problem_functions:
+                self.params[p[0]]['function'] = None
+                print(p)
+
+        process['exchanges'] = new_exchanges
+
+        del self.params[param_id]
+
+        self.parameter_scan()
+
+        return initial_count - len(new_exchanges)
+
+    def unlink_intermediate(self, sourceId, targetId):
+        
+        source = self.database['items'][(self.database.get('name'), sourceId)]
+        target = self.database['items'][(self.database.get('name'), targetId)]
+
+        production_exchange = [x['input'] for x in source['exchanges'] if x['type'] == 'production'][0]
+
+        new_exchanges = [x for x in target['exchanges'] if x['input'] != production_exchange]
+
+        target['exchanges'] = new_exchanges
 
         self.parameter_scan()
 
@@ -625,4 +691,6 @@ class LcoptModel(object):
     def analyse(self, demand_item, demand_item_code):
         my_analysis = Bw2Analysis(self)
         self.result_set = my_analysis.run_analyses(demand_item, demand_item_code,  **self.analysis_settings)
+
+        return True
 

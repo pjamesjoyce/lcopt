@@ -1,5 +1,5 @@
 *.ipynb
-*.lcopt
+/*.lcopt
 /*.csv
 *.json
 *.xlsx

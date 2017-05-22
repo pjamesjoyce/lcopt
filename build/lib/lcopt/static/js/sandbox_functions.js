@@ -76,12 +76,12 @@ var newNodeExternal = function(name, type, id, x, y, instance, outputlabel = '')
   var output =  $('<div>').addClass('op').html('<i class="material-icons w3-small" data-toggle="popover" data-placement= "bottom" data-trigger="hover" title="Biosphere exchange" data-content="Add an emission (or resource flow) to/from the environment (biosphere) to this process">local_florist</i>');
   var analyse =  $('<div>').addClass('analyse').html('<i class="material-icons w3-small" data-toggle="popover" data-placement= "right" data-trigger="hover" title="Analyse" data-content="Run LCA for this process">pie_chart</i>');
   //var edit = $('<div>').addClass('ed').html('<i class="material-icons w3-medium" data-toggle="popover" data-placement= "bottom" data-trigger="hover" title="Edit" data-content="Edit quantity">edit</i>');
-
+  var unlink =  $('<div>').addClass('unlink').html('<i class="material-icons w3-small" data-toggle="popover" data-placement= "right" data-trigger="hover" title="Remove" data-content="Remove this input/emission">delete</i>');
 
   if(type == 'transformation'){
     buttons.append(connect).append(input).append(output).append(analyse);
   }else{
-    //buttons.append(edit);
+    buttons.append(unlink);
   };
   //buttons.append(del);
   d.append(title);

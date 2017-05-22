@@ -86,7 +86,17 @@ var jsPlumbsetup = function (nodes, links,linklabels, outputlabels) {
               width:7.5,
               foldback: 0.8
           } ],
-          [ "Label", { label: "Connect", id: "label", cssClass: "aLabel" }],
+          [ "Label", { 
+                label: "Connect", 
+                id: "label", 
+                cssClass: "aLabel",
+                events: {
+                  click: function(labelOverlay, originalEvent) { 
+                        
+                        unlinkIntermediate(labelOverlay.component) 
+                      }
+                }
+                }],
       ],
       //overlays: [
       //	[ "Label", { label: "Establish connection", id: "label", cssClass: "aLabel" }],

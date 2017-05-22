@@ -286,6 +286,19 @@
     /*box-shadow: 0 0 6px black;*/
 }
 
+.unlink {
+    position: absolute;
+    width:25%;
+    left:75%;
+
+    cursor: pointer;
+    color:black;
+
+    -webkit-transition: -webkit-box-shadow 0.25s ease-in;
+    -moz-transition: -moz-box-shadow 0.25s ease-in;
+    transition: box-shadow 0.25s ease-in;
+}
+
 
 
 .statemachine-demo .jsplumb-endpoint {
