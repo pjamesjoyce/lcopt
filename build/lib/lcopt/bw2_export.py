@@ -98,7 +98,7 @@ class Bw2Exporter():
 
             #add external links
             if 'ext_link' in product.keys():
-                if product['ext_link'][0] == 'biosphere3':
+                if product['ext_link'][0] in self.modelInstance.biosphere_databases:
                     product['exchanges'].append(exchange_factory(product['ext_link'], 'biosphere', 1, 1, 'external link to {}'.format(product['ext_link'][0])))
                 else:    
                     product['exchanges'].append(exchange_factory(product['ext_link'], 'technosphere', 1, 1, 'external link to {}'.format(product['ext_link'][0])))

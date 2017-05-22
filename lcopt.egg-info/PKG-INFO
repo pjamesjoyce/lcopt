@@ -85,7 +85,7 @@ Description: # lcopt
         pip install -U werkzeug
         ```
         
-        Finallu, install lcopt via pip:
+        Finally, install lcopt via pip:
         
         ```
         pip install lcopt
