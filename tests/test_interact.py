@@ -1,18 +1,5 @@
-from lcopt.interact import FlaskSandbox
-import pytest
 import hashlib
 from fixtures import *
-
-@pytest.fixture
-def app(fully_formed_model):
-	sandbox = FlaskSandbox(fully_formed_model)
-	app = sandbox.create_app()
-	return app
-
-@pytest.fixture
-def flask_client(app):
-	app.config['TESTING'] = True
-	return app.test_client()
 
 
 def test_app(app):
@@ -25,12 +12,32 @@ def test_index(flask_client):
 	rv = flask_client.get('/')
 	assert rv.status_code == 200
 
+def test_blank_launch(blank_flask_client):
+	rv = blank_flask_client.get('/')
+	assert rv.status_code == 200
+
 def test_status(flask_client):
 	rv = flask_client.get('/status.json')
 	assert rv.status_code == 200
 
 def test_parameters(flask_client):
 	rv = flask_client.get('/parameters.json')
+	assert rv.status_code == 200
+
+def test_inputs(flask_client):
+	rv = flask_client.get('/inputs.json')
+	assert rv.status_code == 200
+
+def test_biosphere(flask_client):
+	rv = flask_client.get('/biosphere.json')
+	assert rv.status_code == 200
+
+def test_functions(flask_client):
+	rv = flask_client.get('/functions')
+	assert rv.status_code == 200
+
+def test_parameters(flask_client):
+	rv = flask_client.get('/parameters')
 	assert rv.status_code == 200
 
 
@@ -438,3 +445,28 @@ def test_unlink_intermediate(flask_client, fully_formed_model):
 	response = flask_client.post('/process_post', data = postData)
 
 	assert response.status_code == 200
+
+
+def test_analyse(flask_client, fully_formed_model):
+	root_url = '/analyse'
+	item = FINAL_PROCESS_NAME.replace(" ", "%20")
+	item_code = fully_formed_model.get_exchange(FINAL_PROCESS_NAME)[1]
+
+	full_url = '{}?item={}&item_code={}'.format(root_url, item, item_code)
+
+	rv = flask_client.get(full_url, follow_redirects=True)
+	assert rv.status_code == 200
+
+def test_analysis(flask_client, fully_formed_model):
+	root_url = '/analysis'
+	item = FINAL_PROCESS_NAME.replace(" ", "%20")
+	item_code = fully_formed_model.get_exchange(FINAL_PROCESS_NAME)[1]
+
+	full_url = '{}?item={}&item_code={}'.format(root_url, item, item_code)
+
+	rv = flask_client.get(full_url, follow_redirects=True)
+	assert rv.status_code == 200
+	assert fully_formed_model.result_set
+
+	rv = flask_client.get('/testing', follow_redirects=True)
+	assert rv.status_code == 200

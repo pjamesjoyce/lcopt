@@ -1,5 +1,6 @@
 import pytest
 from lcopt import LcoptModel
+from lcopt.interact import FlaskSandbox
 
 MODEL_NAME = 'modelName'
 
@@ -19,6 +20,7 @@ ELECTRICITY_ID = "('Ecoinvent3_3_cutoff', '8a1ef516cc78d560d3a677357b366de2')"
 CO2_NAME = "Carbon dioxide, fossil (emission to air) [kilogram]"
 CO2_ID = "('biosphere3', '349b29d1-3e58-4c66-98b9-9d1a076efd2e')"
 
+FULL_MODEL_PATH = r"assets/Test_model"
 
 @pytest.fixture
 def blank_model():
@@ -93,5 +95,26 @@ def parameterised_model(linked_model):
 def fully_formed_model():
 	import os
 	script_path = os.path.dirname(os.path.realpath(__file__))
-	loadpath = os.path.join(script_path, r"assets/Test_model.lcopt")
+	loadpath = os.path.join(script_path, FULL_MODEL_PATH)
 	return LcoptModel(load = loadpath)
+
+@pytest.fixture
+def blank_app(blank_model):
+	sandbox = FlaskSandbox(blank_model)
+	return sandbox.create_app()
+
+@pytest.fixture
+def blank_flask_client(blank_app):
+	blank_app.config['TESTING'] = True
+	return blank_app.test_client()
+
+@pytest.fixture
+def app(fully_formed_model):
+	sandbox = FlaskSandbox(fully_formed_model)
+	app = sandbox.create_app()
+	return app
+
+@pytest.fixture
+def flask_client(app):
+	app.config['TESTING'] = True
+	return app.test_client()

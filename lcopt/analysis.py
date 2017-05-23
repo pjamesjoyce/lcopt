@@ -7,15 +7,10 @@ import bw2analyzer
 
 from bw2analyzer.tagged import recurse_tagged_database, aggregate_tagged_graph
 
-import matplotlib.pyplot as plt
-
 from copy import deepcopy
 from itertools import groupby
 
 import json
-
-plt.style.use('ggplot')
-plt.rcParams['figure.figsize'] = (5, 5)
 
 class Bw2Analysis():
     def __init__(self, modelInstance):
@@ -32,13 +27,13 @@ class Bw2Analysis():
             print ('Switched to existing bw2 project - {}'.format(self.bw2_project_name))
             return True
             
-        elif DEFAULT_DB_NAME in bw2.projects:
+        elif DEFAULT_DB_NAME in bw2.projects:                                       # pragma: no cover
             bw2.projects.set_current(DEFAULT_DB_NAME)
             bw2.projects.copy_project(self.bw2_project_name, switch = True)
             print ('Created new bw2 project - {}'.format(self.bw2_project_name))
             return True
         
-        else:
+        else:                                                                       # pragma: no cover
             print ("bw2 project setup failed, please create the 'LCOPT_Setup' project in advance with the biosphere and necessary external databases (e.g. 'Ecoinvent_3_3_cutoff') ")
             print ("To do this, run lcopt_bw_setup in lcopt.utils")
             return False
@@ -160,7 +155,7 @@ class Bw2Analysis():
                 del bw2.databases[name]
                 print ('Rewriting database ({}) ...'.format(name))
             else:
-                print ('Writing database ({})...'.format(name))
+                print ('Writing database ({})...'.format(name))                         # pragma: no cover
             new_db = bw2.Database(name)
             
             new_db.write(self.bw2_database)

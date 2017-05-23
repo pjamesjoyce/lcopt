@@ -130,9 +130,9 @@ class LcoptModel(object):
 
         # Try and initialise the external databases if they're not there already
         if self.ecoinventName not in [x['name'] for x in self.external_databases]:
-            self.import_external_db(ecoinventPath)
+            self.import_external_db(ecoinventPath, 'technosphere')
         if self.biosphereName not in [x['name'] for x in self.external_databases]:
-            self.import_external_db(biospherePath)
+            self.import_external_db(biospherePath, 'biosphere')
 
         # create partial version of io functions
         self.add_to_database = partial(add_to_specified_database, database = self.database)
@@ -676,7 +676,7 @@ class LcoptModel(object):
 ### Flask ###
 
 
-    def launch_interact(self):
+    def launch_interact(self):              # pragma: no cover
         my_flask = FlaskSandbox(self)
         my_flask.run()
 

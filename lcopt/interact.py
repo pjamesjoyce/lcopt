@@ -36,7 +36,7 @@ class FlaskSandbox():
         
         #print (self.modelInstance.newVariable)
         
-    def shutdown_server(self):
+    def shutdown_server(self):                             # pragma: no cover
         func = request.environ.get('werkzeug.server.shutdown')
         if func is None:
             raise RuntimeError('Not running with the Werkzeug Server')
@@ -102,10 +102,10 @@ class FlaskSandbox():
         
         link_indices = [process_output_map[x] if x in intermediate_codes else x for x in product_codes]
                
-        
-        row_totals = matrix.sum(axis=1)
-        input_row_totals = {k: row_totals[m.names.index(v)] for k,v in input_map.items()}
-        biosphere_row_totals = {k: row_totals[m.names.index(v)] for k,v in biosphere_map.items()}
+        if matrix is not None:
+            row_totals = matrix.sum(axis=1)
+            input_row_totals = {k: row_totals[m.names.index(v)] for k,v in input_map.items()}
+            biosphere_row_totals = {k: row_totals[m.names.index(v)] for k,v in biosphere_map.items()}
 
 
 
@@ -196,7 +196,7 @@ class FlaskSandbox():
         #print('Setting {} to ({},{})'.format(f['uuid'], f['x'], f['y']))
         return "OK"
     
-    def saveModel(self, postData):
+    def saveModel(self, postData):  # pragma: no cover
         #print ("this is where we save the model")
         self.modelInstance.save()
         return "OK"
@@ -570,10 +570,10 @@ class FlaskSandbox():
             action = self.postActions[f['action']]
             return action(f)
             
-            #return "OK"
+            #return "OK"                
 
         @app.route('/shutdown')
-        def shutdown():
+        def shutdown():                             # pragma: no cover
             self.shutdown_server()
             return render_template('shutdown.html')
         
@@ -686,10 +686,10 @@ class FlaskSandbox():
             #return render_template('testbed.html', args = args)
             
 
-        @app.route('/network.json')
-        def network_as_json():
-            parameter_set = request.args.get('ps')
-            return self.modelInstance.result_set[int(parameter_set)]['json']
+        #@app.route('/network.json')
+        #def network_as_json():
+        #    parameter_set = request.args.get('ps')
+        #    return self.modelInstance.result_set[int(parameter_set)]['json']
         
         @app.route('/parameters')
         def sorted_parameter_setup():
@@ -720,7 +720,7 @@ class FlaskSandbox():
 
         return app
 
-    def run(self):
+    def run(self):                      #pragma: no cover
         app = self.create_app()
 
         url = 'http://127.0.0.1:5000/'

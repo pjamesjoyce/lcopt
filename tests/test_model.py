@@ -92,6 +92,16 @@ def test_generate_parameter_set_excel_file_ext_params(parameterised_model):
 	observed = parameterised_model.generate_parameter_set_excel_file()
 	assert observed == expected		
 
+def test_database_to_SimaPro_csv_ff_model(fully_formed_model):
+	expected = "{}_database_export.csv".format(fully_formed_model.name)
+	observed = fully_formed_model.database_to_SimaPro_csv()
+	assert observed == expected
+
+def test_generate_parameter_set_excel_file_ff_model(fully_formed_model):
+	expected = "ParameterSet_{}_input_file.xlsx".format(fully_formed_model.name) 
+	observed = fully_formed_model.generate_parameter_set_excel_file()
+	assert observed == expected		
+
 def test_add_parameter(linked_model):
 	assert len(linked_model.ext_params) == 0
 	linked_model.add_parameter('test_parameter', description = 'test description', default = 1)
@@ -189,3 +199,8 @@ def test_analyse(fully_formed_model):
 
 	assert fully_formed_model.analyse(demand_item_name, demand_item_id)
 
+def test_export_to_bw2(fully_formed_model):
+
+	name, bw2db = fully_formed_model.export_to_bw2()
+	
+	assert len(bw2db) != 0

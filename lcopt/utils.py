@@ -1,11 +1,11 @@
 try:
     import brightway2 as bw2
-except:
+except:															# pragma: no cover
     raise ImportError('Please install the brightway2 package first')
 
 DEFAULT_DB_NAME = "LCOPT_Setup"
 
-def lcopt_bw2_setup(ecospold_path, overwrite = False):
+def lcopt_bw2_setup(ecospold_path, overwrite = False): 				# pragma: no cover
 	if DEFAULT_DB_NAME in bw2.projects:
 		if overwrite:
 			bw2.projects.delete_project(name=DEFAULT_DB_NAME, delete_dir=True)
