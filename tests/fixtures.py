@@ -3,6 +3,7 @@ from lcopt import LcoptModel
 from lcopt.interact import FlaskSandbox
 from lcopt.utils import DEFAULT_DB_NAME
 import os
+import brightway2 as bw2
 
 MODEL_NAME = 'modelName'
 
@@ -22,7 +23,9 @@ ELECTRICITY_ID = "('Ecoinvent3_3_cutoff', '8a1ef516cc78d560d3a677357b366de2')"
 CO2_NAME = "Carbon dioxide, fossil (emission to air) [kilogram]"
 CO2_ID = "('biosphere3', '349b29d1-3e58-4c66-98b9-9d1a076efd2e')"
 
-FULL_MODEL_PATH = r"assets/Test_model"
+TEST_MODEL_NAME = "Test_model"
+
+FULL_MODEL_PATH = r"assets/{}".format(TEST_MODEL_NAME)
 
 IS_TRAVIS = 'TRAVIS' in os.environ
 
@@ -95,9 +98,12 @@ def parameterised_model(linked_model):
 
 	return linked_model
 
+
+
+
 @pytest.fixture
 def fully_formed_model():
-	import os
+	
 	script_path = os.path.dirname(os.path.realpath(__file__))
 	loadpath = os.path.join(script_path, FULL_MODEL_PATH)
 	return LcoptModel(load = loadpath)
@@ -122,18 +128,3 @@ def app(fully_formed_model):
 def flask_client(app):
 	app.config['TESTING'] = True
 	return app.test_client()
-
-@pytest.fixture
-def lcopt_bw2_setup_travis():
-
-	if IS_TRAVIS:
-
-		import brightway2 as bw2
-
-		bw2.projects.set_current(DEFAULT_DB_NAME)
-		bw2.bw2setup()
-		
-		return True
-	else:
-
-		return True

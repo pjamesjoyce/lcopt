@@ -192,7 +192,7 @@ def test_unlink_intermediate(fully_formed_model):
 
 	assert fully_formed_model.unlink_intermediate(sourceId, targetId)
 
-def test_analyse(fully_formed_model, lcopt_bw2_setup_travis):
+def test_analyse(fully_formed_model):
 
 	demand_item_name = FINAL_PROCESS_NAME
 	demand_item_id = fully_formed_model.get_exchange(FINAL_PROCESS_NAME)[1]
