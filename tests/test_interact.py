@@ -457,13 +457,7 @@ def test_analyse(flask_client, fully_formed_model):
 	rv = flask_client.get(full_url, follow_redirects=True)
 	assert rv.status_code == 200
 
-def test_analysis(flask_client, fully_formed_model):
-
-	def setup_for_Travis(lcopt_bw2_setup_travis):
-		return lcopt_bw2_setup_travis
-
-	if IS_TRAVIS:
-		setup_for_Travis()
+def test_analysis(flask_client, fully_formed_model, lcopt_bw2_setup_travis):
 
 	root_url = '/analysis'
 	item = FINAL_PROCESS_NAME.replace(" ", "%20")

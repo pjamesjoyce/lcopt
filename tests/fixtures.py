@@ -124,10 +124,16 @@ def flask_client(app):
 
 @pytest.fixture
 def lcopt_bw2_setup_travis():
-	script_path = os.path.dirname(os.path.realpath(__file__))
-	ecospold_folder = "assets"
-	ecospold_path = os.path.join(script_path, ecospold_folder)
-	
-	print(ecospold_path)
 
-	return lcopt_bw2_setup(ecospold_path)
+	if IS_TRAVIS:
+		script_path = os.path.dirname(os.path.realpath(__file__))
+		ecospold_folder = "assets"
+		ecospold_path = os.path.join(script_path, ecospold_folder)
+		
+		print(ecospold_path)
+
+		return lcopt_bw2_setup(ecospold_path)
+		
+	else:
+
+		return True

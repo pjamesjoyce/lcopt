@@ -16,11 +16,15 @@ def lcopt_bw2_setup_local():
 	ecospold_folder = "assets"
 	ecospold_path = os.path.join(script_path, ecospold_folder)
 	print(ecospold_path)
-	assert lcopt_bw2_setup(ecospold_path, overwrite = True, db_name = 'LCOPT_TESTING_DO_NOT_USE')
+
+	db_name = 'LCOPT_TESTING_DO_NOT_USE'
+
+	assert lcopt_bw2_setup(ecospold_path, overwrite = True, db_name = db_name)
 
 	import brightway2 as bw2
 
 	# tear down the testing project
+	bw2.projects.set_current('default')
 	bw2.projects.delete_project(name=db_name, delete_dir=True)	
 
 	assert db_name not in bw2.projects
