@@ -1,1 +1,9 @@
 flask
+asteval
+numpy
+pandas
+xlsxwriter
+jinja2
+brightway2
+bw2analyzer
+eight
