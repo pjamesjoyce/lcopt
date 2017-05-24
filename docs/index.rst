@@ -24,12 +24,9 @@ Features
 - Flexible model setup
 - Integration with SimaPro and Brightway2
 
-Documentation
-~~~~~~~~~~~~~
-
 .. toctree::
    :maxdepth: 1
-   :caption: Contents:
+   :caption: Documentation
    :glob:
    
    *
