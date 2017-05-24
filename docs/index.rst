@@ -3,14 +3,20 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+========
+Overview
+========
+
 lcopt - An interactive Life Cycle OPTions appraisal tool
-=================================
+--------------------------------------------------------
 
-[![Build Status](https://travis-ci.org/pjamesjoyce/lcopt.svg?branch=master)](https://travis-ci.org/pjamesjoyce/lcopt)
+.. image:: https://travis-ci.org/pjamesjoyce/lcopt.svg?branch=master
+	:target: https://travis-ci.org/pjamesjoyce/lcopt
 
-[![Coverage Status](https://coveralls.io/repos/github/pjamesjoyce/lcopt/badge.svg?branch=master)](https://coveralls.io/github/pjamesjoyce/lcopt?branch=master)
+.. image:: https://coveralls.io/repos/github/pjamesjoyce/lcopt/badge.svg?branch=master
+	:target: https://coveralls.io/github/pjamesjoyce/lcopt?branch=master
 
-TODO: Write an overview of what LCOPT is...
+Lcopt is a python module for creating fully parameterised LCA foreground models using a Flask based interactive GUI developed by `James Joyce <https://pjamesjoyce.github.io/>`_.
 
 Features
 --------
@@ -18,9 +24,11 @@ Features
 - Flexible model setup
 - Integration with SimaPro and Brightway2
 
+Documentation
+~~~~~~~~~~~~~
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
    :glob:
    

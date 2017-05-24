@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Using LCOPT &#8212; lcopt  documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Sphinx cheat sheet" href="test.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="test.html" title="Sphinx cheat sheet"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lcopt  documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="using-lcopt">
+<h1>Using LCOPT<a class="headerlink" href="#using-lcopt" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="launching-the-lcopt-gui">
+<h2>Launching the lcopt GUI<a class="headerlink" href="#launching-the-lcopt-gui" title="Permalink to this headline">¶</a></h2>
+<p>There are 2 options for using lcopt&#8217;s GUI (LCOPT INTERACT)</p>
+<div class="section" id="option-1-jupyter-notebooks-more-complicated-more-powerful">
+<h3>Option 1. Jupyter notebooks <strong>(More complicated, more powerful)</strong><a class="headerlink" href="#option-1-jupyter-notebooks-more-complicated-more-powerful" title="Permalink to this headline">¶</a></h3>
+<p>Probably the best way to use lcopt is via a jupyter notebook. This gives you more access to the inner workings if you need to get at something you can&#8217;t see in the GUI.</p>
+<p><cite>cd</cite> into whatever folder you want your notebooks and lcopt models to be stored in, then start jupyter e.g.</p>
+<p><code class="docutils literal"><span class="pre">`</span>
+<span class="pre">activate</span> <span class="pre">lcopt</span>
+<span class="pre">cd</span> <span class="pre">C:\Users\pjjoyce\Documents\01_Lcopt_models</span>
+<span class="pre">jupyter</span> <span class="pre">notebook</span>
+<span class="pre">`</span></code></p>
+<p>This will fire up the jupyter notebook server in your browser.
+Create a new notebook, give it a meaningful name.</p>
+<p>Then in the first cell import lcopt
+<code class="docutils literal"><span class="pre">`python</span>
+<span class="pre">from</span> <span class="pre">lcopt</span> <span class="pre">import</span> <span class="pre">*</span>
+<span class="pre">`</span></code></p>
+<p>Next create your LcoptModel
+<code class="docutils literal"><span class="pre">`python</span>
+<span class="pre">model</span> <span class="pre">=</span> <span class="pre">LcoptModel('MyFirstModel')</span>
+<span class="pre">`</span></code></p>
+<p>or load an existing one
+<code class="docutils literal"><span class="pre">`python</span>
+<span class="pre">model</span> <span class="pre">=</span> <span class="pre">LcoptModel(load</span> <span class="pre">=</span> <span class="pre">'MyFirstModel')</span>
+<span class="pre">`</span></code></p>
+<p>Then launch the interactive model creator/analyser
+<code class="docutils literal"><span class="pre">`python</span>
+<span class="pre">model.launch_interact()</span>
+<span class="pre">`</span></code></p>
+<p>## Option 2. lcopt_launcher.py (Simpler, only access to GUI)</p>
+<p>Using this option, you can type a couple of commands into the command line/console and use the GUI from then on</p>
+<p>First, download <cite>lcopt_launcher.py</cite> from [here](<a class="reference external" href="https://raw.githubusercontent.com/pjamesjoyce/lcopt/master/lcopt_launcher.py">https://raw.githubusercontent.com/pjamesjoyce/lcopt/master/lcopt_launcher.py</a>)</p>
+<p>Save it in the folder you want to store your models in</p>
+<p>Open the console/command line</p>
+<p><cite>cd</cite> into your chosen folder and run <cite>lcopt_launcher.py</cite></p>
+<p><code class="docutils literal"><span class="pre">`</span>
+<span class="pre">activate</span> <span class="pre">lcopt</span>
+<span class="pre">cd</span> <span class="pre">C:\Users\pjjoyce\Documents\01_Lcopt_models</span>
+<span class="pre">python</span> <span class="pre">lcopt_launcher.py</span>
+<span class="pre">`</span></code></p>
+<p>You&#8217;ll get an option to either create a new model or open an exising one. Make your choice and the GUI will open in your default browser.</p>
+<p># LCOPT INTERACT - the GUI</p>
+<p>Running the GUI via each of the options above launches a Flask server that gives you a nice UI to interact with the models. You can add processes, link them together, add biosphere and technosphere exchanges, and create parameter sets and functions using your parameters. It should be pretty intuitive, if you get stuck, try the &#8216;more info...&#8217; buttons.</p>
+<p>When your model&#8217;s ready you can export it to SimaPro as a .csv file and the parameter sets you&#8217;ve created as an Excel file (Note: you need SimaPro developer to import the parameter sets from the Excel file).</p>
+<p>To run the analyses interactively using brightway2 there&#8217;s an additional setup step. See below.</p>
+<p>The &#8216;QUIT&#8217; button in the top right hand corner will shut down the Flask server and tell you to close the window.</p>
+<p>If you&#8217;re running from a jupyter notebook, this frees up the notebook again so you can run any commands you need to.</p>
+<p>One useful command is <cite>model.save()</cite> which will save any unsaved changes (you can also save by clicking on the save button in LcoptInteract, but in case you forget you can use <cite>model.save()</cite>)</p>
+<p>The model is saved as a .lcopt file in your working directory (its really a .pickle file, but the .lcopt extension makes it easier to filter on in the lcopt_launcher file picker)</p>
+<p>NOTE: The next time you run the GUI from a notebook you need to use
+<code class="docutils literal"><span class="pre">`python</span>
+<span class="pre">model</span> <span class="pre">=</span> <span class="pre">LcoptModel(load</span> <span class="pre">=</span> <span class="pre">'MyFirstModel')</span>
+<span class="pre">`</span></code></p>
+<p>If you don&#8217;t it&#8217;ll create a new blank model called &#8216;MyFirstModel&#8217;. If you do do this by accident fear not - it won&#8217;t overwrite your .lcopt file until you save it.
+Quit interact by hitting the QUIT button and go back and change your command (just don&#8217;t click the save button or run <cite>model.save()</cite> in the meantime)</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Using LCOPT</a><ul>
+<li><a class="reference internal" href="#launching-the-lcopt-gui">Launching the lcopt GUI</a><ul>
+<li><a class="reference internal" href="#option-1-jupyter-notebooks-more-complicated-more-powerful">Option 1. Jupyter notebooks <strong>(More complicated, more powerful)</strong></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="test.html"
+                        title="previous chapter">Sphinx cheat sheet</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/use.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="test.html" title="Sphinx cheat sheet"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lcopt  documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, P. James Joyce.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.5.
+    </div>
+  </body>
+</html>

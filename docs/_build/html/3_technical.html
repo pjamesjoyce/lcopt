@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Technical Documentation &#8212; lcopt  documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Sphinx cheat sheet" href="test.html" />
+    <link rel="prev" title="Using LCOPT" href="2_use.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="test.html" title="Sphinx cheat sheet"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="2_use.html" title="Using LCOPT"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lcopt  documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-lcopt">
+<span id="technical-documentation"></span><h1>Technical Documentation<a class="headerlink" href="#module-lcopt" title="Permalink to this headline">¶</a></h1>
+<p>Here&#8217;s the docstring</p>
+<span class="target" id="module-lcopt.model"></span><dl class="class">
+<dt id="lcopt.model.LcoptModel">
+<em class="property">class </em><code class="descclassname">lcopt.model.</code><code class="descname">LcoptModel</code><span class="sig-paren">(</span><em>name='a1e99a47cbc90778938ef0fcb2432ac'</em>, <em>load=None</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>docstring for LcoptModel</p>
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.add_parameter">
+<code class="descname">add_parameter</code><span class="sig-paren">(</span><em>param_name</em>, <em>description=None</em>, <em>default=0</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.add_parameter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.analyse">
+<code class="descname">analyse</code><span class="sig-paren">(</span><em>demand_item</em>, <em>demand_item_code</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.analyse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.check_param_function_use">
+<code class="descname">check_param_function_use</code><span class="sig-paren">(</span><em>param_id</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.check_param_function_use" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.create_process">
+<code class="descname">create_process</code><span class="sig-paren">(</span><em>name</em>, <em>exchanges</em>, <em>location='GLO'</em>, <em>unit='kg'</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.create_process" title="Permalink to this definition">¶</a></dt>
+<dd><p>create a new process, including all new exchanges in the model instance database</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.create_product">
+<code class="descname">create_product</code><span class="sig-paren">(</span><em>name</em>, <em>location='GLO'</em>, <em>unit='kg'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.create_product" title="Permalink to this definition">¶</a></dt>
+<dd><p>create a new product with md5 hash id in the model instances database</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.database_to_SimaPro_csv">
+<code class="descname">database_to_SimaPro_csv</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.database_to_SimaPro_csv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.export_to_bw2">
+<code class="descname">export_to_bw2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.export_to_bw2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.generate_parameter_set_excel_file">
+<code class="descname">generate_parameter_set_excel_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.generate_parameter_set_excel_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.import_external_db">
+<code class="descname">import_external_db</code><span class="sig-paren">(</span><em>db_file</em>, <em>db_type=None</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.import_external_db" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.launch_interact">
+<code class="descname">launch_interact</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.launch_interact" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.list_parameters_as_df">
+<code class="descname">list_parameters_as_df</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.list_parameters_as_df" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.load">
+<code class="descname">load</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>load data from another instance - allows older versions to be loaded into the newer version of the class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.parameter_scan">
+<code class="descname">parameter_scan</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.parameter_scan" title="Permalink to this definition">¶</a></dt>
+<dd><p>scan the database of the model instance to generate and expose parameters</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.remove_input_link">
+<code class="descname">remove_input_link</code><span class="sig-paren">(</span><em>process_code</em>, <em>input_code</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.remove_input_link" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.rename">
+<code class="descname">rename</code><span class="sig-paren">(</span><em>newname</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.rename" title="Permalink to this definition">¶</a></dt>
+<dd><p>change the name of the class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.save">
+<code class="descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>save the instance as a pickle</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.search_databases">
+<code class="descname">search_databases</code><span class="sig-paren">(</span><em>search_term</em>, <em>location=None</em>, <em>markets_only=False</em>, <em>databases_to_search=None</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.search_databases" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.unlink_intermediate">
+<code class="descname">unlink_intermediate</code><span class="sig-paren">(</span><em>sourceId</em>, <em>targetId</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.unlink_intermediate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="lcopt.model.unnormalise_unit">
+<code class="descclassname">lcopt.model.</code><code class="descname">unnormalise_unit</code><span class="sig-paren">(</span><em>unit</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.unnormalise_unit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="2_use.html"
+                        title="previous chapter">Using LCOPT</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="test.html"
+                        title="next chapter">Sphinx cheat sheet</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/3_technical.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="test.html" title="Sphinx cheat sheet"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="2_use.html" title="Using LCOPT"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lcopt  documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, P. James Joyce.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.5.
+    </div>
+  </body>
+</html>
