@@ -1,6 +1,7 @@
 import pytest
 from lcopt import LcoptModel
 from lcopt.interact import FlaskSandbox
+from lcopt.utils import lcopt_bw2_setup
 import os
 
 MODEL_NAME = 'modelName'
@@ -133,7 +134,7 @@ def lcopt_bw2_setup_travis():
 		print(ecospold_path)
 
 		return lcopt_bw2_setup(ecospold_path)
-		
+
 	else:
 
 		return True

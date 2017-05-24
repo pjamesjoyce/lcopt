@@ -7,9 +7,9 @@ DEFAULT_DB_NAME = "LCOPT_Setup"
 
 def lcopt_bw2_setup(ecospold_path, overwrite = False, db_name = DEFAULT_DB_NAME):
 	if db_name in bw2.projects:
-		if overwrite:
+		if overwrite:											# pragma: no cover
 			bw2.projects.delete_project(name=db_name, delete_dir=True)
-		else:
+		else:													# pragma: no cover
 			print('Looks like bw2 is already set up - if you want to overwrite the existing version, use overwrite = True')
 			return False
 
