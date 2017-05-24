@@ -1,3 +1,11 @@
+"""
+lcopt.model
+-----------
+
+Module containing the LcoptModel class.
+
+"""
+
 from lcopt.io import *
 #from lcopt.ipython_interactive import IFS
 from lcopt.interact import FlaskSandbox
@@ -82,7 +90,14 @@ from lcopt.bw2query import Query, Dictionaries, Filter
 
 
 class LcoptModel(object):
-    """docstring for LcoptModel"""
+    """
+    This is the base model class.
+
+    To create a new model, enter a name e.g. ``model = LcoptModel('My_Model')``
+
+    To load an existing model use the ``load`` option e.g. ``model = LcoptModel(load = 'My_Model')``
+
+    """
     def __init__(self, name = hex(random.getrandbits(128))[2:-1], load = None):
         super(LcoptModel, self).__init__()
         
@@ -145,7 +160,7 @@ class LcoptModel(object):
         
         
     def rename(self,newname):
-        """change the name of the class"""
+        """change the name of the model (i.e. what the .lcopt file will be saved as)"""
         self.name = newname
         
     #def saveAs(self, filename):
@@ -153,11 +168,11 @@ class LcoptModel(object):
     #    pickle.dump(self, open("{}.pickle".format(filename), "wb"))
     
     def save(self):
-        """save the instance as a pickle"""
+        """save the instance as a .lcopt file"""
         pickle.dump(self, open("{}.lcopt".format(self.name), "wb"))
         
     def load(self, filename):
-        """load data from another instance - allows older versions to be loaded into the newer version of the class"""
+        """load data from a saved .lcopt file"""
         if filename[-6:] != ".lcopt":
             filename += ".lcopt"
         savedInstance = pickle.load(open("{}".format(filename), "rb"))
@@ -196,7 +211,11 @@ class LcoptModel(object):
     
         
     def create_product (self, name, location ='GLO', unit='kg', **kwargs):
-        """create a new product with md5 hash id in the model instances database"""
+
+        """
+        Create a new product in the model database
+        """
+
         new_product = item_factory(name=name, location=location, unit=unit, type='product', **kwargs)
 
         if not self.exists_in_database(new_product['code']):
@@ -208,7 +227,12 @@ class LcoptModel(object):
             return False
 
     def create_process(self, name, exchanges, location ='GLO', unit='kg'):
-        """create a new process, including all new exchanges in the model instance database"""
+        """
+        Create a new process, including all new exchanges (in brightway2's exchange format) in the model database.
+
+        Exchanges must have at least a name, type and unit field
+        """
+
         found_exchanges = []
         for e in exchanges:
 
@@ -245,6 +269,10 @@ class LcoptModel(object):
         return problem_list
 
     def remove_input_link(self, process_code, input_code):
+
+        """
+        Remove an input (technosphere or biosphere exchange) from a process, resolving all parameter issues
+        """
         # 1. find correct process
         # 2. find correct exchange
         # 3. remove that exchange
@@ -286,6 +314,9 @@ class LcoptModel(object):
         return initial_count - len(new_exchanges)
 
     def unlink_intermediate(self, sourceId, targetId):
+        """
+        Remove a link between two processes
+        """
         
         source = self.database['items'][(self.database.get('name'), sourceId)]
         target = self.database['items'][(self.database.get('name'), targetId)]
@@ -302,7 +333,11 @@ class LcoptModel(object):
 
 
     def parameter_scan(self):
-        """scan the database of the model instance to generate and expose parameters"""
+        """
+        Scan the database of the model instance to generate and expose parameters.
+        
+        This is called by other functions when items are added/removed from the model, but can be run by itself if you like
+        """
         
         #self.parameter_map = {}
         #self.params = OrderedDict()
@@ -371,6 +406,11 @@ class LcoptModel(object):
         
 
     def generate_parameter_set_excel_file(self):
+        """
+        Generate an excel file containing the parameter sets in a format you can import into SimaPro Developer.
+
+        The file will be called "ParameterSet_<ModelName>_input_file.xlsx"
+        """
         
         parameter_sets = self.parameter_sets
 
@@ -414,6 +454,10 @@ class LcoptModel(object):
 
         
     def add_parameter(self, param_name, description = None, default = 0):
+        """
+        Add a global parameter to the database that can be accessed by functions
+        """
+
         if description == None:
             description = "Parameter called {}".format(param_name)
         
@@ -425,6 +469,13 @@ class LcoptModel(object):
             print('{} already exists - choose a different name'.format(param_name))
 
     def list_parameters_as_df(self):
+        """
+        Only really useful when running from a jupyter notebook.
+
+        Lists the parameters in the model in a pandas dataframe
+
+        Columns: id, matrix coordinates, description, function
+        """
         to_df = []
 
         for i, e in enumerate(self.ext_params):
@@ -452,6 +503,29 @@ class LcoptModel(object):
 
 
     def import_external_db(self, db_file, db_type = None):
+        """
+        Import an external database for use in lcopt
+
+        db_type must be one of ``technosphere`` or ``biosphere``
+
+        The best way to 'obtain' an external database is to 'export' it from brightway as a pickle file
+
+        e.g.::
+
+            import brightway2 as bw
+            bw.projects.set_current('MyModel')
+            db = bw.Database('MyDatabase')
+            db_as_dict = db.load()
+            import pickle
+            with open('MyExport.pickle', 'wb') as f:
+                pickle.dump(db_as_dict, f)
+
+        NOTE: The Ecoinvent cutoff 3.3 database and the full biosphere database are included in the lcopt model as standard - no need to import those
+
+        This can be useful if you have your own methods which require new biosphere flows that you want to analyse using lcopt
+
+        """
+        
         db = pickle.load(open("{}.pickle".format(db_file), "rb"))
         name = list(db.keys())[0][0]
         new_db = {'items': db, 'name': name}
@@ -470,6 +544,12 @@ class LcoptModel(object):
             print ("Database type must be 'technosphere' or 'biosphere'")
 
     def search_databases(self, search_term, location = None, markets_only=False, databases_to_search = None):
+
+        """
+        Search external databases linked to your lcopt model.
+
+        To restrict the search to particular databases (e.g. technosphere or biosphere only) use a list of database names in the ``database_to_search`` variable
+        """
 
         if databases_to_search is None:
             #Search all of the databases available
@@ -497,6 +577,12 @@ class LcoptModel(object):
 ### Database to SimaPro ###
 
     def database_to_SimaPro_csv(self):
+
+        """
+        Export the lcopt model as a SimaPro csv file.
+
+        The file will be called "<ModelName>_database_export.csv"
+        """
 
         csv_args = {}
         csv_args['processes']=[]
@@ -677,6 +763,9 @@ class LcoptModel(object):
 
 
     def launch_interact(self):              # pragma: no cover
+        """
+        This is probably the most important method in the model - you use it to launch the GUI
+        """
         my_flask = FlaskSandbox(self)
         my_flask.run()
 
@@ -684,11 +773,29 @@ class LcoptModel(object):
 ### Brightway2 ###
 
     def export_to_bw2(self):
+        """
+        Export the lcopt model in the native brightway 2 format
+
+        returns name, database
+
+        to use it to export, then import to brightway::
+
+            name, db = model.export_to_bw2()
+            import brightway2 as bw
+            bw.projects.set_current('MyProject')
+            new_db = bw.Database(name)
+            new_db.write(db)
+            new_db.process()
+
+        """
         my_exporter = Bw2Exporter(self)
         name, bw2db = my_exporter.export_to_bw2()
         return name, bw2db
 
     def analyse(self, demand_item, demand_item_code):
+        """ Run the analyis of the model
+            Doesn't return anything, but creates a new item ``LcoptModel.result_set`` containing the results
+        """
         my_analysis = Bw2Analysis(self)
         self.result_set = my_analysis.run_analyses(demand_item, demand_item_code,  **self.analysis_settings)
 

@@ -1,3 +1,7 @@
+"""
+IO module
+"""
+
 from functools import partial
 import hashlib
 
@@ -8,6 +12,7 @@ defaultDatabase = {
 
 # add an item to a specified database
 def add_to_specified_database(item, database):
+    """ add an item to a database"""
     database['items'][(database['name'],item['code'])] = item
 
 
