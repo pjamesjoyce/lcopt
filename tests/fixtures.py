@@ -1,7 +1,7 @@
 import pytest
 from lcopt import LcoptModel
 from lcopt.interact import FlaskSandbox
-from lcopt.utils import lcopt_bw2_setup
+from lcopt.utils import DEFAULT_DB_NAME
 import os
 
 MODEL_NAME = 'modelName'
@@ -127,14 +127,13 @@ def flask_client(app):
 def lcopt_bw2_setup_travis():
 
 	if IS_TRAVIS:
-		script_path = os.path.dirname(os.path.realpath(__file__))
-		ecospold_folder = "assets"
-		ecospold_path = os.path.join(script_path, ecospold_folder)
+
+		import brightway2 as bw2
+
+		bw2.projects.set_current(DEFAULT_DB_NAME)
+		bw2.bw2setup()
 		
-		print(ecospold_path)
-
-		return lcopt_bw2_setup(ecospold_path)
-
+		return True
 	else:
 
 		return True

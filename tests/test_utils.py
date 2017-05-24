@@ -6,7 +6,9 @@ import os
 
 def test_lcopt_bw_build():
 	if IS_TRAVIS:
+
 		pass
+
 	else:
 		assert lcopt_bw2_setup_local()
 
