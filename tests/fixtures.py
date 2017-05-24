@@ -1,6 +1,7 @@
 import pytest
 from lcopt import LcoptModel
 from lcopt.interact import FlaskSandbox
+import os
 
 MODEL_NAME = 'modelName'
 
@@ -21,6 +22,8 @@ CO2_NAME = "Carbon dioxide, fossil (emission to air) [kilogram]"
 CO2_ID = "('biosphere3', '349b29d1-3e58-4c66-98b9-9d1a076efd2e')"
 
 FULL_MODEL_PATH = r"assets/Test_model"
+
+IS_TRAVIS = 'TRAVIS' in os.environ
 
 @pytest.fixture
 def blank_model():
@@ -118,3 +121,13 @@ def app(fully_formed_model):
 def flask_client(app):
 	app.config['TESTING'] = True
 	return app.test_client()
+
+@pytest.fixture
+def lcopt_bw2_setup_travis():
+	script_path = os.path.dirname(os.path.realpath(__file__))
+	ecospold_folder = "assets"
+	ecospold_path = os.path.join(script_path, ecospold_folder)
+	
+	print(ecospold_path)
+
+	return lcopt_bw2_setup(ecospold_path)

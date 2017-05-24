@@ -458,6 +458,13 @@ def test_analyse(flask_client, fully_formed_model):
 	assert rv.status_code == 200
 
 def test_analysis(flask_client, fully_formed_model):
+
+	def setup_for_Travis(lcopt_bw2_setup_travis):
+		return lcopt_bw2_setup_travis
+
+	if IS_TRAVIS:
+		setup_for_Travis()
+
 	root_url = '/analysis'
 	item = FINAL_PROCESS_NAME.replace(" ", "%20")
 	item_code = fully_formed_model.get_exchange(FINAL_PROCESS_NAME)[1]
