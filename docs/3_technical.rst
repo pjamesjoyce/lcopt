@@ -2,10 +2,10 @@
 Technical Documentation
 =======================
 
-.. automodule:: lcopt
-	:members:
-	:undoc-members:
-
 .. automodule:: lcopt.model
+
+.. autoclass:: LcoptModel(name=[randomly_generated_string], load=False)
 	:members:
-	:undoc-members:
+	
+.. automodule:: lcopt.utils
+	:members:

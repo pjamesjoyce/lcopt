@@ -15,7 +15,7 @@ Probably the best way to use lcopt is via a jupyter notebook. This gives you mor
 
 .. highlight:: console
 
-``cd`` into whatever folder you want your notebooks and lcopt models to be stored in, then start jupyter e.g.:
+``cd`` into whatever folder you want your notebooks and lcopt models to be stored in, then start jupyter e.g.::
 
 	activate lcopt
 	cd C:\Users\pjjoyce\Documents\01_Lcopt_models
@@ -72,7 +72,7 @@ Running the GUI via each of the options above launches a Flask server that gives
 
 When your model's ready you can export it to SimaPro as a .csv file and the parameter sets you've created as an Excel file (Note: you need SimaPro developer to import the parameter sets from the Excel file).
 
-To run the analyses interactively using brightway2 there's an additional setup step. See below.
+To run the analyses interactively using brightway2, make sure you've completed the additional setup step (:ref:`bw2_setup_step`).
 
 The 'QUIT' button in the top right hand corner will shut down the Flask server and tell you to close the window.
 

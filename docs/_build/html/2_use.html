@@ -63,10 +63,11 @@
 <h3>Option 1. Jupyter notebooks <em>(More complicated, more powerful)</em><a class="headerlink" href="#option-1-jupyter-notebooks-more-complicated-more-powerful" title="Permalink to this headline">¶</a></h3>
 <p>Probably the best way to use lcopt is via a jupyter notebook. This gives you more access to the inner workings if you need to get at something you can&#8217;t see in the GUI.</p>
 <p><code class="docutils literal"><span class="pre">cd</span></code> into whatever folder you want your notebooks and lcopt models to be stored in, then start jupyter e.g.:</p>
-<blockquote>
-<div>activate lcopt
-cd C:UserspjjoyceDocuments01_Lcopt_models
-jupyter notebook</div></blockquote>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">activate lcopt</span>
+<span class="go">cd C:\Users\pjjoyce\Documents\01_Lcopt_models</span>
+<span class="go">jupyter notebook</span>
+</pre></div>
+</div>
 <p>This will fire up the jupyter notebook server in your browser.
 Create a new notebook, give it a meaningful name.</p>
 <p>Then in the first cell import lcopt:</p>
@@ -105,7 +106,7 @@ Create a new notebook, give it a meaningful name.</p>
 <h2>LCOPT INTERACT - the GUI<a class="headerlink" href="#lcopt-interact-the-gui" title="Permalink to this headline">¶</a></h2>
 <p>Running the GUI via each of the options above launches a Flask server that gives you a nice UI to interact with the models. You can add processes, link them together, add biosphere and technosphere exchanges, and create parameter sets and functions using your parameters. It should be pretty intuitive, if you get stuck, try the &#8216;more info...&#8217; buttons.</p>
 <p>When your model&#8217;s ready you can export it to SimaPro as a .csv file and the parameter sets you&#8217;ve created as an Excel file (Note: you need SimaPro developer to import the parameter sets from the Excel file).</p>
-<p>To run the analyses interactively using brightway2 there&#8217;s an additional setup step. See below.</p>
+<p>To run the analyses interactively using brightway2, make sure you&#8217;ve completed the additional setup step (<a class="reference internal" href="1_installation.html#bw2-setup-step"><span class="std std-ref">Setting up brightway2 for lcopt</span></a>).</p>
 <p>The &#8216;QUIT&#8217; button in the top right hand corner will shut down the Flask server and tell you to close the window.</p>
 <p>If you&#8217;re running from a jupyter notebook, this frees up the notebook again so you can run any commands you need to.</p>
 <p>One useful command is <code class="docutils literal"><span class="pre">model.save()</span></code> which will save any unsaved changes (you can also save by clicking on the save button in LcoptInteract, but in case you forget you can use <code class="docutils literal"><span class="pre">model.save()</span></code>)</p>

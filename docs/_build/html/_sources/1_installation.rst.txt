@@ -49,8 +49,10 @@ Finally, install lcopt via pip::
 
 	pip install lcopt
 
+.. _bw2_setup_step:
+
 -----------------------------------------------------
-Running the analyses in LcoptInteract with brightway2
+Setting up brightway2 for lcopt
 -----------------------------------------------------
 
 To use the interactive analysis feature, you need to set up brightway2 to play nicely with lcopt.
