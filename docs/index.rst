@@ -21,8 +21,10 @@ Lcopt is a python module for creating fully parameterised LCA foreground models 
 Features
 --------
 
+- Intuitive GUI based on drawing of flow sheets
 - Flexible model setup
 - Integration with SimaPro and Brightway2
+- Run LCA analyses and explore the results from inside the GUI
 
 .. toctree::
    :maxdepth: 1

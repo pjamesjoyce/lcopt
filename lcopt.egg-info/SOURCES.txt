@@ -23,6 +23,7 @@ lcopt/static/THIS IS SYMLINKED TO THE NOTEBOOK TEST PATH
 lcopt/static/css/analysis.css
 lcopt/static/css/d3testing.css
 lcopt/static/css/function_box.css
+lcopt/static/css/methods_box.css
 lcopt/static/css/parameter_table.css
 lcopt/static/css/sandbox.css
 lcopt/static/css/status.css
@@ -60,6 +61,7 @@ lcopt/static/js/dynamic_table.js
 lcopt/static/js/foreignObjects.js
 lcopt/static/js/function_box.js
 lcopt/static/js/md5.js
+lcopt/static/js/methods_box.js
 lcopt/static/js/pie.js
 lcopt/static/js/pie2.js
 lcopt/static/js/sandbox.js
@@ -100,6 +102,7 @@ lcopt/templates/Quantities.csv
 lcopt/templates/SimaPro.csv
 lcopt/templates/Units.csv
 lcopt/templates/analysis.html
+lcopt/templates/analysis_fail.html
 lcopt/templates/analysis_preload.html
 lcopt/templates/base.html
 lcopt/templates/create_functions.html
@@ -110,6 +113,7 @@ lcopt/templates/mpld3.html
 lcopt/templates/parameter_set_table.html
 lcopt/templates/parameter_set_table_sorted.html
 lcopt/templates/sandbox.html
+lcopt/templates/settings.html
 lcopt/templates/shutdown.html
 lcopt/templates/testbed.html
 lcopt/templates/testbed_backup.html

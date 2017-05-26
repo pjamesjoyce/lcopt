@@ -1,6 +1,6 @@
 import hashlib
 from fixtures import *
-
+import json
 
 def test_app(app):
 	assert repr(app)
@@ -40,6 +40,13 @@ def test_parameters(flask_client):
 	rv = flask_client.get('/parameters')
 	assert rv.status_code == 200
 
+def test_settings(flask_client):
+	rv = flask_client.get('/settings')
+	assert rv.status_code == 200
+
+def test_methods(flask_client):
+	rv = flask_client.get('/methods.json')
+	assert rv.status_code == 200
 
 def test_post(flask_client):
 	response = flask_client.post('/process_post', data=dict(action='echo'))
@@ -471,3 +478,22 @@ def test_analysis(flask_client, fully_formed_model):
 
 	rv = flask_client.get('/testing', follow_redirects=True)
 	assert rv.status_code == 200
+
+def test_alter_methods(flask_client, fully_formed_model):
+	
+	method_list = [('ReCiPe Midpoint (H)', 'climate change', 'GWP100'),
+					('ReCiPe Midpoint (H)', 'human toxicity', 'HTPinf'),
+					('ReCiPe Midpoint (H)', 'particulate matter formation', 'PMFP')]
+
+	method_json = json.dumps(method_list)
+
+	postData = {
+		'action' : 'update_settings',
+		'settings_amount' : 1,
+		'settings_methods' : method_json
+	}
+
+
+	response = flask_client.post('/process_post', data = postData)
+
+	assert response.status_code == 200
