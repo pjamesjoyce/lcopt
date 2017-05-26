@@ -6,6 +6,7 @@
 
 <script src="{{ url_for('static', filename = 'js/cdn_cache/d3.min.js') }}"></script>
 <script src="{{ url_for('static', filename = 'js/cdn_cache/d3-legend.min.js') }}"></script>
+<script src="{{ url_for('static', filename = 'js/cdn_cache/d3-tip.js') }}"></script>
 
 <!--<script src="{{ url_for('static', filename = 'js/analysis.js') }}"></script>-->
 <script src="{{ url_for('static', filename = 'js/pie2.js') }}"></script>
@@ -13,7 +14,7 @@
 
 <script src = "{{ url_for('static', filename = 'js/treetest2.js') }}"></script>
 <script src = "{{ url_for('static', filename = 'js/stacked_bar.js') }}"></script>
-
+<script src = "{{ url_for('static', filename = 'js/sunburst.js') }}"></script>
 
 
 <link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/analysis.css') }}" />
@@ -25,122 +26,191 @@
 {% block content %}
 
 <div class="container-fluid">
+
   <div class="row">
     <div class="col-xs-10 col-xs-offset-1">
+      <h2>{{args.result_sets.settings.item}} <span class="text-muted">({{args.result_sets.settings.amount}} {{args.result_sets.settings.item_unit}})</span></h2>
+      <p class="text-muted">
+          Analysis run at {{args.result_sets.settings.timestamp}}
+      </p>
+      {% if args.latest %}
+      {%else%}
+      <p class="text-muted">
+          Note - these are a saved set of results. If you know you've made changes, click <a class="red" href='/analyse?item={{args.result_sets.settings.item | replace(" ", "%20")}}&item_code={{args.result_sets.settings.item_code}}'>here</a> to rerun the same analysis.
+      </p>
+      <p class="text-muted">
+          Or go back to the process flow sheet and use the analysis icon (<i class="material-icons md-18">pie_chart</i>) to run a new analysis.
+      </p>
+      {%endif%}
+    </div>
+  </div>
 
+  <div class="row top-padding">
+    <div class="col-xs-10 col-xs-offset-1">
+      <div class="row">
         <div class="row">
             <div class="col-xs-10">
-                <select id = "parameterSetChoice">
-                    {% for item in args.result_sets.settings.ps_names %}<option value = {{loop.index}}>{{item}}</option>{% endfor %}
-                </select>
-                <select id = "methodChoice">
-                    {% for item in args.result_sets.settings.method_names %}<option value = {{loop.index}}>{{item | capitalize}}</option>{% endfor %}
-                </select>
-            </div>
-        </div>
-        
-        
-        <div class="row">
-            <div id="bar" class = "col-xs-6">
-                
-            </div>
-
-            <div id = "stackedbar" class = "col-xs-6">
-
-            </div>
-        </div>
-
-        
-        {% set colspan =  (args.result_sets.results | length)  %}
-        {% set no_methods =  (args.result_sets.settings.methods | length)  %}
-        
-
-        <div class="row">
-            <!--<div class="col-xs-10 col-xs-offset-1">-->
-            <div class="col-xs-12">
-             <div id="table" class="">
-                <table id="myTable" class="table table-bordered table-condensed table-hover">
-                  <thead>
-                      <tr class ="table_header">
-                        <th rowspan="2">Process</th>
-                        {% for i in range(no_methods) %}
-                        <th colspan="{{colspan}}">{{args.result_sets.settings.method_names[i] | capitalize}} </br><span class = "unit">{{args.result_sets.settings.method_units[i]}}</span></th>
-                        {% endfor %}
-                      </tr>
-                      <tr class ="table_header">
-                        
-                        {% for i in range(no_methods) %}
-                            {% for j in args.result_sets.settings.ps_names %}
-                                <th>{{j}}</th>
-                            {% endfor %}
-                        {% endfor %}
-                      </tr>
-                    </thead>
-
-                    <tbody>
-
-                        
-                        {% for f in args.result_sets.results[0][0].foreground_results %}
-                            <!-- calculate the row total, to see if its zero -->
-                            {% set running_total = [0] %}
-
-                            {% for i in range(colspan) %}
-                                {% for j in range(no_methods) %}
-                                    {% if running_total.append(running_total.pop() + args.result_sets.results[i][j].foreground_results[f]) %}{% endif %}
-                                {% endfor %}
-                            {% endfor %}
-                            <!-- done -->
-
-                            
-                            {% if running_total[0] != 0 %}  
-
-                             <tr>
-                                <td class="row_title">{{f}}</td>
-                                {% for j in range(no_methods) %}
-                                {% for i in range(colspan) %}
-                                    
-                                        <td class="right_align">{{"%0.2g" | format(args.result_sets.results[i][j].foreground_results[f])}}</td>
-                                    {% endfor %}
-                                {% endfor %}
-                            </tr>
-                            
-
-                            {% endif %}
-
-                        {% endfor %}
-
-                        <tr class = "total_row">
-                            <td>TOTAL</td>
-                            {% for j in range(no_methods) %}
-                                {% for i in range(colspan) %}
-                                    
-                                        <td class="right_align">{{"%0.2g" | format(args.result_sets.results[i][j].score)}}</td>
-                                    {% endfor %}
-                                {% endfor %}
-                        </tr>
-                    </tbody>
-                    
-                </table>
+                <div class = "form-group col-xs-3">
+                    <label for="parameterSetChoice">Parameter set</label>
+                    <select id = "parameterSetChoice" class="form-control input-sm">
+                          {% for item in args.result_sets.settings.ps_names %}<option value = {{loop.index}}>{{item}}</option>{% endfor %}
+                    </select>
+                </div>    
+                <div class = "form-group col-xs-3">
+                    <label for="methodChoice">Method</label>
+                    <select id = "methodChoice"  class="form-control input-sm">
+                        {% for item in args.result_sets.settings.method_names %}<option value = {{loop.index}}>{{item | capitalize}}</option>{% endfor %}
+                    </select>
                 </div>
-              </div>
-        </div>
-
-        <div class="row">
-            <div class="col-xs-12">
-                <svg id='simaProTree'></svg>
             </div>
         </div>
 
         <div class="row">
-            <div id="pie" class = "col-xs-6">
+            <ul class="nav nav-tabs top-padding">
+                <li class="active"><a data-toggle="tab" href="#tab-stackedbar">Bar Charts</a></li>
+                <li><a data-toggle="tab" href="#tab-table">Table</a></li>
+                <li><a data-toggle="tab" href="#tab-tree">Tree</a></li>
+                <li><a data-toggle="tab" href="#tab-pie">Pie Chart</a></li>
+                <li><a data-toggle="tab" href="#tab-hotspots">Bullseye Hotspot Chart</a></li>
+            </ul>
+        </div>
+
+        
+        <div class = "tab-content">
+            <div class="tab-pane fade in active" id="tab-stackedbar">
+                <div id="bar" class = "col-xs-6">
+                    
+                </div>
+
+                <div id = "stackedbar" class = "col-xs-6">
+
+                </div>
+            </div>
+
+            
+            {% set colspan =  (args.result_sets.results | length)  %}
+            {% set no_methods =  (args.result_sets.settings.methods | length)  %}
+            
+
+            <div class="tab-pane fade" id="tab-table">
+                <!--<div class="col-xs-10 col-xs-offset-1">-->
+                <div class="row">
+                    <div class="col-xs-12">
+                     <div id="table" class="top-padding">
+                        <table id="myTable" class="table table-bordered table-condensed table-hover">
+                          <thead>
+                              <tr class ="table_header">
+                                <th rowspan="2">Process</th>
+                                {% for i in range(no_methods) %}
+                                <th colspan="{{colspan}}">{{args.result_sets.settings.method_names[i] | capitalize}} </br><span class = "unit">{{args.result_sets.settings.method_units[i]}}</span></th>
+                                {% endfor %}
+                              </tr>
+                              <tr class ="table_header">
+                                
+                                {% for i in range(no_methods) %}
+                                    {% for j in args.result_sets.settings.ps_names %}
+                                        <th>{{j}}</th>
+                                    {% endfor %}
+                                {% endfor %}
+                              </tr>
+                            </thead>
+
+                            <tbody>
+
+                                <tr class = "total_row">
+                                    <td>TOTAL</td>
+                                    {% for j in range(no_methods) %}
+                                        {% for i in range(colspan) %}
+                                            
+                                                <td class="right_align">{{"%0.2g" | format(args.result_sets.results[i][j].score)}}</td>
+                                            {% endfor %}
+                                        {% endfor %}
+                                </tr>
+
+                                
+                                {% for f in args.result_sets.results[0][0].foreground_results %}
+                                    <!-- calculate the row total, to see if its zero -->
+                                    {% set running_total = [0] %}
+
+                                    {% for i in range(colspan) %}
+                                        {% for j in range(no_methods) %}
+                                            {% if running_total.append(running_total.pop() + args.result_sets.results[i][j].foreground_results[f]) %}{% endif %}
+                                        {% endfor %}
+                                    {% endfor %}
+                                    <!-- done -->
+
+                                    
+                                    {% if running_total[0] != 0 %}  
+
+                                     <tr>
+                                        <td class="row_title">{{f}}</td>
+                                        {% for j in range(no_methods) %}
+                                        {% for i in range(colspan) %}
+                                            
+                                                <td class="right_align">{{"%0.2g" | format(args.result_sets.results[i][j].foreground_results[f])}}</td>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    </tr>
+                                    
+
+                                    {% endif %}
+
+                                {% endfor %}
+
+                                
+                            </tbody>
+                            
+                        </table>
+                        </div>
+                      </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="tab-tree">
                 
+                <div class="col-xs-12">
+                    <svg id='simaProTree'></svg>
+                </div>
             </div>
 
-            <div id = "blank" class = "col-xs-6">
-                <svg id = "legendtest"></svg>
+            <div class="tab-pane fade" id="tab-pie">
+
+                <div id="pie" class = "col-xs-6">
+                    
+                </div>
+
             </div>
+
+            <div class="tab-pane fade" id="tab-hotspots">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-inline">
+                            <div class="form-group">
+                                <span class="bold top-padding"><strong>Outer ring : </strong></span>
+                                Large: <input type="radio" name="outerring" value = "Large" class = "radio" id = "radio_large" checked="checked">
+                                Small: <input type="radio" name="outerring" value = "Small" class = "radio" id = "radio_small" >
+                                Tiny : <input type="radio" name="outerring" value = "Tiny" class = "radio" id = "radio_tiny">
+                                Hidden: <input type="radio" name="outerring" value = "Hide" class = "radio" id = "radio_hide">
+                            </div>
+                          </form>  
+                    </div>
+                </div>
+                
+                
+                <div class="row">
+
+                    <div id = "sb_div" class = "col-xs-6">
+                        <svg id = "sunburst"></svg>
+                    </div>
+                    <div id = "hovertext_div" class = "col-xs-6">
+                        <p id="hovertext"></p>
+                    </div>
+
+                </div>
+            </div>
+
         </div>
-
+      </div>
     </div>
   </div>
 </div>

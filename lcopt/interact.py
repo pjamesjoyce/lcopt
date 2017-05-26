@@ -6,6 +6,7 @@ from lcopt.io import exchange_factory
 from collections import OrderedDict
 from itertools import groupby
 
+
 from lcopt.bw2_export import Bw2Exporter
 
 class FlaskSandbox():
@@ -32,6 +33,7 @@ class FlaskSandbox():
             'simaPro_export': self.simaPro_export,
             'removeInput': self.removeInput,
             'unlinkIntermediate':self.unlinkIntermediate,
+            'update_settings':self.update_settings,
         }
         
         #print (self.modelInstance.newVariable)
@@ -542,6 +544,25 @@ class FlaskSandbox():
         self.modelInstance.generate_parameter_set_excel_file()
 
         return "OK"
+
+    def update_settings(self, postData):
+
+        #print(postData)
+
+        try: 
+            new_amount = float(postData['settings_amount'])
+        except:
+            new_amount = self.modelInstance.analysis_settings['amount']
+
+        if new_amount != 0:
+            self.modelInstance.analysis_settings['amount'] = new_amount
+
+        myjson = json.loads(postData['settings_methods'])
+        self.modelInstance.analysis_settings['methods'] = [tuple(x) for x in myjson]
+
+        #print (self.modelInstance.analysis_settings)
+
+        return "OK"
             
     def create_app(self):
 
@@ -658,7 +679,7 @@ class FlaskSandbox():
             args = {'model':{'name': self.modelInstance.name}}
             item = request.args.get('item')
             item_code = request.args.get('item_code')
-            print(request.args)
+            #print(request.args)
 
             args['item'] = item
             args['item_code'] = item_code
@@ -682,9 +703,27 @@ class FlaskSandbox():
             args['result_sets'] = self.modelInstance.result_set
             
             
-            return render_template('analysis.html', args = args)
+            #return render_template('analysis.html', args = args)
             #return render_template('testbed.html', args = args)
+            #redirect to the cached results so that reloading doesnt rerun the analysis
+            return redirect("/results?latest=True")
             
+        @app.route('/results')
+        def analysis_shortcut():
+            if hasattr(self.modelInstance, 'result_set'):
+
+                is_latest = request.args.get('latest')
+
+                item = self.modelInstance.result_set['settings']['item']
+
+                args = {'model':{'name': self.modelInstance.name}}
+            
+                args['item'] = item
+                args['latest'] = is_latest
+                args['result_sets'] = self.modelInstance.result_set
+                return render_template('analysis.html', args = args)
+            else:
+                return render_template('analysis_fail.html')
 
         #@app.route('/network.json')
         #def network_as_json():
@@ -703,6 +742,31 @@ class FlaskSandbox():
             return render_template('parameter_set_table_sorted.html',
                                  args = args)
         
+        @app.route('/methods.json')
+        def methods_as_json():
+
+            import brightway2 as bw2
+            from lcopt.utils import DEFAULT_DB_NAME
+
+            if self.modelInstance.name in bw2.projects:
+                print('getting custom methods')
+                bw2.projects.set_current(self.modelInstance.name)
+            else:
+                print('getting default methods')
+                bw2.projects.set_current(DEFAULT_DB_NAME)
+
+            method_list = list(bw2.methods)
+
+            return json.dumps(method_list)
+
+
+        @app.route('/settings')
+        def settings():
+            args = {}
+            args['current_methods'] = json.dumps(self.modelInstance.analysis_settings['methods'])
+            args['current_amount'] = self.modelInstance.analysis_settings['amount']
+            return render_template('settings.html', args = args)
+
         @app.errorhandler(404)
         def page_not_found(e):
             return render_template('404.html'), 404

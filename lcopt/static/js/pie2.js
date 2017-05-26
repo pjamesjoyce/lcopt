@@ -6,13 +6,13 @@ $(document).ready(function(){
 
 // set up some global variables
 var pieDimensions = {
-	height : 300,
-	width: 600,
+	height : 600,
+	width: 900,
 	innerRadius : 0,
-	outerRadius: 100,
+	outerRadius: 175,
 	labelInset: 30,
 	pointerInset: 5,
-	labelRadius:125,
+	labelRadius:200,
 };
 
 

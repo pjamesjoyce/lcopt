@@ -9,6 +9,8 @@ from bw2analyzer.tagged import recurse_tagged_database, aggregate_tagged_graph
 
 from copy import deepcopy
 from itertools import groupby
+import time
+import datetime
 
 import json
 
@@ -168,6 +170,9 @@ class Bw2Analysis():
                 
                 fu = {product_demand:amount}
                 parameter_sets = self.modelInstance.evaluated_parameter_sets
+
+                ts = time.time()
+                ts_format = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
                
                 result_dict = {
                     'settings':{
@@ -179,6 +184,8 @@ class Bw2Analysis():
                         'item_code': demand_item_code,
                         'amount': amount,
                         'ps_names': [name for name in parameter_sets.keys()],
+                        'item_unit':product_demand['unit'],
+                        'timestamp': ts_format,
                         }
                     }
                 result_sets = []

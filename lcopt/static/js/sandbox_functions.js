@@ -71,12 +71,12 @@ var newNodeExternal = function(name, type, id, x, y, instance, outputlabel = '')
   var d = $('<div>').attr('id', id).addClass('w ' + type);
   var title =  $('<div>').addClass('title').text(name);
   var buttons = $('<div>').addClass('buttons');
-  var connect =  $('<div>').addClass('ep').html('<i class="ep2 material-icons w3-small" data-toggle="popover" data-placement= "left" data-trigger="hover" title="Connect" data-content="Drag to connect to another process">trending_flat</i>');
-  var input =  $('<div>').addClass('ip').html('<i class="material-icons w3-small" data-toggle="popover" data-placement= "bottom" data-trigger="hover" title="Technosphere exchange" data-content="Add an input from the \'Technosphere\' (materials and energy) to this process">business</i>');
-  var output =  $('<div>').addClass('op').html('<i class="material-icons w3-small" data-toggle="popover" data-placement= "bottom" data-trigger="hover" title="Biosphere exchange" data-content="Add an emission (or resource flow) to/from the environment (biosphere) to this process">local_florist</i>');
-  var analyse =  $('<div>').addClass('analyse').html('<i class="material-icons w3-small" data-toggle="popover" data-placement= "right" data-trigger="hover" title="Analyse" data-content="Run LCA for this process">pie_chart</i>');
+  var connect =  $('<div>').addClass('ep').html('<i class="ep2 material-icons md-18" data-toggle="popover" data-placement= "left" data-trigger="hover" title="Connect" data-content="Drag to connect to another process">trending_flat</i>');
+  var input =  $('<div>').addClass('ip').html('<i class="material-icons md-18" data-toggle="popover" data-placement= "bottom" data-trigger="hover" title="Technosphere exchange" data-content="Add an input from the \'Technosphere\' (materials and energy) to this process">business</i>');
+  var output =  $('<div>').addClass('op').html('<i class="material-icons md-18" data-toggle="popover" data-placement= "bottom" data-trigger="hover" title="Biosphere exchange" data-content="Add an emission (or resource flow) to/from the environment (biosphere) to this process">local_florist</i>');
+  var analyse =  $('<div>').addClass('analyse').html('<i class="material-icons md-18" data-toggle="popover" data-placement= "right" data-trigger="hover" title="Analyse" data-content="Run LCA for this process">pie_chart</i>');
   //var edit = $('<div>').addClass('ed').html('<i class="material-icons w3-medium" data-toggle="popover" data-placement= "bottom" data-trigger="hover" title="Edit" data-content="Edit quantity">edit</i>');
-  var unlink = $('<div>').addClass('unlink').html('<i class="material-icons w3-medium" data-toggle="popover" data-placement= "bottom" data-trigger="hover" title="Remove" data-content="Remove this input/emision">clear</i>');
+  var unlink = $('<div>').addClass('unlink').html('<i class="material-icons md-18" data-toggle="popover" data-placement= "bottom" data-trigger="hover" title="Remove" data-content="Remove this input/emision">cancel</i>');
 
   if(type == 'transformation'){
     buttons.append(connect).append(input).append(output).append(analyse);

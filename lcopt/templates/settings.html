@@ -1,0 +1,101 @@
+{% extends 'base.html'%}
+
+{% block title %}Analysis{% endblock%}
+
+{% block head_postload %}
+	<script src="{{ url_for('static', filename = 'js/cdn_cache/selectize.js') }}"></script>
+	<script src="{{ url_for('static', filename = 'js/methods_box.js') }}"></script>
+
+	<link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/methods_box.css') }}" />
+	<link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/cdn_cache/selectize.css') }}" />
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="col-xs-10 col-xs-offset-1">
+      
+    <form class="form-horizontal">
+    	<div class="row">
+    		<div class="col-xs-3">
+		    	<div class="form-group">
+		    		<label class="control-label" for="settings_amount">Default amount to analyse</label>
+		    		<input class="form-control" type="text" name="settings_amount" id="settings_amount" value="{{args.current_amount}}"/>
+		    	</div>
+	    	</div>
+    	</div>
+    	<div class="row">
+    		<div class="col-xs-12">
+		    	<div class="form-group">
+		    		<label class="control-label" for="settings_methods">Methods</label>
+		    		 <select multiple name="settings_methods" id="settings_methods"></select>
+		    		 <!--<input type="text" name="settings_methods" id="settings_methods">-->
+		                
+		            </select>
+		    	</div>
+		    </div>
+    	</div>
+    </form>
+
+    <div class="form-group">
+    		<button id="export-btn" class="btn btn-primary">Save</button>
+    	</div>
+
+    </div>
+  </div>
+
+</div>
+
+<script type="text/javascript">
+	
+	$(document).ready(function(){
+
+
+		var $select
+
+		current_methods = {{args.current_methods|safe}}
+
+		$.getJSON('/methods.json', function(data){
+			//////console.log(data);
+			setUpSelectize(data, current_methods)
+		})
+
+	})
+
+	$('#export-btn').click(function(){
+
+	
+	//////console.log('change')
+	var my_items = $select[0].selectize.items;
+	var all_options = $select[0].selectize.options;
+	var chosen_methods = []
+
+	for(i in my_items){
+		this_item = my_items[i]
+		chosen_methods.push(all_options[this_item].value)
+
+	}
+	console.log(chosen_methods)
+
+	json_methods = JSON.stringify(chosen_methods);
+
+	console.log(json_methods)
+	postData = {
+		action : 'update_settings',
+		settings_amount : $('#settings_amount').val(),
+		settings_methods : json_methods,
+	}
+
+	$.post('/process_post', postData)
+
+	window.location.replace("/")
+
+})
+
+</script>
+
+{% endblock %}
+

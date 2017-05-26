@@ -27,10 +27,10 @@
   
     var partition = d3.partition();
 
-    var break1 = 0.4,
+    var break1 = 0.5,
         break2 = 0.6;
-    var show1 = 0.1,
-        show2 = 0.9;
+    var show1 = 0.2,
+        show2 = 0.6;
 
     var rscale 
     rscale = d3.scaleLinear().domain([0, break1*radius, break2*radius, 1.0*radius]).range([0, show1*radius, show2*radius, 1.0*radius]);
@@ -48,13 +48,14 @@
   
     function create_sunburst(){
     //var svg = d3.select("body").append("svg")
+      console.log('create sunburst')
       console.log('bound_data')
       console.log(bound_data)
         var svg = d3.select("#sunburst")        
             .attr("width", width)
             .attr("height", height);
             svg.selectAll("*").remove();
-            svg.append('circle').attr('id', 'tipfollowscursor').attr("transform", "translate(" + width * 0.1 + "," + (height * 0.95) + ")");; /*  to debug */;
+            svg.append('circle').attr('id', 'tipfollowscursor').attr("transform", "translate(" + width * 0.05 + "," + (height * 0.2) + ")");; /*  to debug */;
             svg = svg.append("g")
             .attr("transform", "translate(" + (0.45* width) + "," + (height / 2) + ")");
 
@@ -62,7 +63,8 @@
         svg.append("g")
           .attr("class", "legendNew")
           .attr("transform", 
-            "translate(" + (0.35*width) + "," + (-height / 2)+ ")");
+            "translate(" + (0.35*width) + "," + (-height / 2)+ ")")
+          .attr("height", height +"px");
           
 
         var ps = $('#parameterSetChoice').val() - 1
@@ -228,6 +230,13 @@
     create_sunburst()
     //create_force_layout()
   })
+
+  $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+    var target = $(e.target).attr("href") // activated tab
+    if (target=="#tab-hotspots"){
+      create_sunburst()
+    };
+  });
 
   $('.radio').change(function(){
     if($("#radio_small").prop("checked") == true){
