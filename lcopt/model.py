@@ -11,18 +11,15 @@ from lcopt.io import *
 from lcopt.interact import FlaskSandbox
 from lcopt.bw2_export import Bw2Exporter
 from lcopt.analysis import Bw2Analysis
+# This is a copy straight from bw2data.query, extracted so as not to cause a dependency.
+from lcopt.bw2query import Query, Dictionaries, Filter
 
 from functools import partial
 from collections import OrderedDict
 import numpy as np
-import re
 import pickle
 import random
-from copy import deepcopy
 import pandas as pd
-import xlsxwriter
-from flask import Flask, request, render_template
-import webbrowser
 import warnings
 from random import randint
 
@@ -76,17 +73,15 @@ UNITS_NORMALIZATION = {
     'Wh': 'watt hour',
 }
 
+
 def unnormalise_unit(unit):
     if unit in UNITS_NORMALIZATION.keys():
         return unit
     else:
         
-        un_units = list(filter(lambda x:UNITS_NORMALIZATION[x]==unit, UNITS_NORMALIZATION))
+        un_units = list(filter(lambda x: UNITS_NORMALIZATION[x] == unit, UNITS_NORMALIZATION))
         #print (un_units)
         return un_units[0]
-
-# This is a copy straight from bw2data.query, extracted so as not to cause a dependency.
-from lcopt.bw2query import Query, Dictionaries, Filter
 
 
 class LcoptModel(object):
@@ -98,7 +93,8 @@ class LcoptModel(object):
     To load an existing model use the ``load`` option e.g. ``model = LcoptModel(load = 'My_Model')``
 
     """
-    def __init__(self, name = hex(random.getrandbits(128))[2:-1], load = None):
+
+    def __init__(self, name=hex(random.getrandbits(128))[2:-1], load=None):
         super(LcoptModel, self).__init__()
         
         # name the instance
@@ -128,15 +124,14 @@ class LcoptModel(object):
         self.biosphere_databases = [self.biosphereName]
 
         # default settings for bw2 analysis
-        self.analysis_settings = {
-                                'amount' : 1,
-                                'methods' : [('IPCC 2013', 'climate change', 'GWP 100a'), ('USEtox', 'human toxicity', 'total')],
-                                'top_processes': 10,
-                                'gt_cutoff' : 0.01,
-                                'pie_cutoff' : 0.05,
-                            }
+        self.analysis_settings = {'amount': 1, 
+                                  'methods': [('IPCC 2013', 'climate change', 'GWP 100a'), ('USEtox', 'human toxicity', 'total')], 
+                                  'top_processes': 10, 
+                                  'gt_cutoff': 0.01, 
+                                  'pie_cutoff': 0.05
+                                  }
          
-        if load != None:
+        if load is not None:
             self.load(load)
                     
         asset_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'assets')
@@ -150,16 +145,13 @@ class LcoptModel(object):
             self.import_external_db(biospherePath, 'biosphere')
 
         # create partial version of io functions
-        self.add_to_database = partial(add_to_specified_database, database = self.database)
+        self.add_to_database = partial(add_to_specified_database, database=self.database)
         self.get_exchange = partial(get_exchange_from_database, database=self.database)
-        self.exists_in_database = partial(exists_in_specific_database, database = self.database)
+        self.exists_in_database = partial(exists_in_specific_database, database=self.database)
         self.get_name = partial(get_exchange_name_from_database, database=self.database)
         self.get_unit = partial(get_exchange_unit_from_database, database=self.database)
-
-       
         
-        
-    def rename(self,newname):
+    def rename(self, newname):
         """change the name of the model (i.e. what the .lcopt file will be saved as)"""
         self.name = newname
         
@@ -196,11 +188,10 @@ class LcoptModel(object):
 
             self.sandbox_positions = savedInstance.sandbox_positions
 
-
             self.ecoinventName = savedInstance.ecoinventName
             self.biosphereName = savedInstance.biosphereName
 
-            self.analysis_settings =savedInstance.analysis_settings
+            self.analysis_settings = savedInstance.analysis_settings
 
             self.technosphere_databases = savedInstance.technosphere_databases
             self.biosphere_databases = savedInstance.biosphere_databases
@@ -208,9 +199,7 @@ class LcoptModel(object):
         except Exception:
             pass
 
-    
-        
-    def create_product (self, name, location ='GLO', unit='kg', **kwargs):
+    def create_product (self, name, location='GLO', unit='kg', **kwargs):
 
         """
         Create a new product in the model database
@@ -226,7 +215,7 @@ class LcoptModel(object):
             #print('{} already exists in this database'.format(name))
             return False
 
-    def create_process(self, name, exchanges, location ='GLO', unit='kg'):
+    def create_process(self, name, exchanges, location='GLO', unit='kg'):
         """
         Create a new process, including all new exchanges (in brightway2's exchange format) in the model database.
 
@@ -241,7 +230,7 @@ class LcoptModel(object):
 
             this_exchange = self.get_exchange(exc_name)
             
-            if this_exchange == False:
+            if this_exchange is False:
                 my_unit = e.pop('unit', unit)
                     
                 this_exchange = self.create_product(exc_name, location=location, unit=my_unit, **e)
@@ -258,7 +247,7 @@ class LcoptModel(object):
 
     def check_param_function_use(self, param_id):
     
-        current_functions = {k:x['function'] for k, x in self.params.items() if x['function'] is not None}
+        current_functions = {k: x['function'] for k, x in self.params.items() if x['function'] is not None}
         
         problem_list = []
         
@@ -298,7 +287,6 @@ class LcoptModel(object):
         
         problem_functions = self.check_param_function_use(param_id)
         
-        
         if len(problem_functions) != 0:
             print('the following functions have been removed:')
             for p in problem_functions:
@@ -331,7 +319,6 @@ class LcoptModel(object):
 
         return True
 
-
     def parameter_scan(self):
         """
         Scan the database of the model instance to generate and expose parameters.
@@ -358,52 +345,51 @@ class LcoptModel(object):
         
         for key in items.keys():
             i = items[key]
-            if i['type']== 'process':
+            if i['type'] == 'process':
                 inputs = []
                 for e in i['exchanges']:
-                    if e['type']=='production':
+                    if e['type'] == 'production':
                         col_code = cr_list.index(e['input'][1])
 
-                    elif e['type'] =='technosphere':
+                    elif e['type'] == 'technosphere':
                         #print(e)
                         row_code = cr_list.index(e['input'][1])
                         inputs.append((row_code, e['amount']))
 
                 for ip in inputs:
-                    self.matrix[(ip[0],col_code)] = ip[1]
+                    self.matrix[(ip[0], col_code)] = ip[1]
 
         for c, column in enumerate(self.matrix.T):
             for r, i in enumerate(column):
-                if i>0:
+                if i > 0:
                     p_from = cr_list[r]
                     p_to = cr_list[c]
-                    coords = (r,c)
+                    coords = (r, c)
 
                     from_item_type = self.database['items'][(self.database['name'], p_from)]['lcopt_type']
                     #print('{}\t| {} --> {}'.format(coords, self.get_name(p_from), self.get_name(p_to)))
 
-                    if not 'p_{}_{}'.format(coords[0],coords[1]) in self.params:
-                        self.params['p_{}_{}'.format(coords[0],coords[1])] = {
-                            'function' : None,
-                            'description' : 'Input of {} to create {}'.format(self.get_name(p_from), self.get_name(p_to)),
-                            'coords':coords,
-                            'unit' : self.get_unit(p_from),
+                    if not 'p_{}_{}'.format(coords[0], coords[1]) in self.params:
+                        self.params['p_{}_{}'.format(coords[0], coords[1])] = {
+                            'function': None,
+                            'description': 'Input of {} to create {}'.format(self.get_name(p_from), self.get_name(p_to)),
+                            'coords': coords,
+                            'unit': self.get_unit(p_from),
                             'from': p_from,
                             'from_name': self.get_name(p_from),
                             'to': p_to,
                             'to_name': self.get_name(p_to),
-                            'type' : from_item_type,
+                            'type': from_item_type,
                         }
 
                     else:
                         pass
                         #print('p_{}_{} already exists'.format(coords[0],coords[1]))
 
-                    if not 'p_{}_{}'.format(coords[0],coords[1]) in self.parameter_map:
-                        self.parameter_map[(p_from,p_to)] = 'p_{}_{}'.format(coords[0],coords[1])
+                    if not 'p_{}_{}'.format(coords[0], coords[1]) in self.parameter_map:
+                        self.parameter_map[(p_from, p_to)] = 'p_{}_{}'.format(coords[0], coords[1])
 
         return True
-        
 
     def generate_parameter_set_excel_file(self):
         """
@@ -418,8 +404,8 @@ class LcoptModel(object):
         p_set_name = "ParameterSet_{}_input_file.xlsx".format(self.name)
         p = self.params
         for k in p.keys():
-            if p[k]['function'] == None:
-                base_dict = {'id':k, 'name': p[k]['description'], 'unit':p[k]['unit']}
+            if p[k]['function'] is None:
+                base_dict = {'id': k, 'name': p[k]['description'], 'unit': p[k]['unit']}
 
                 for s in parameter_sets.keys():
                     base_dict[s] = parameter_sets[s][k]
@@ -430,7 +416,7 @@ class LcoptModel(object):
                 #print("{} is determined by a function".format(p[k]['description']))
 
         for e in self.ext_params:
-            base_dict = {'id':'{}'.format(e['name']), 'type':'external', 'name': e['description'], 'unit':''}
+            base_dict = {'id': '{}'.format(e['name']), 'type': 'external', 'name': e['description'], 'unit': ''}
 
             for s in parameter_sets.keys():
                     base_dict[s] = parameter_sets[s][e['name']]
@@ -448,23 +434,22 @@ class LcoptModel(object):
         my_columns.extend(ps_columns)
         #print (my_columns)
 
-        df.to_excel(writer, sheet_name=self.name, columns =  my_columns, index= False, merge_cells = False)
+        df.to_excel(writer, sheet_name=self.name, columns=my_columns, index=False, merge_cells=False)
        
         return p_set_name
-
         
-    def add_parameter(self, param_name, description = None, default = 0):
+    def add_parameter(self, param_name, description=None, default=0):
         """
         Add a global parameter to the database that can be accessed by functions
         """
 
-        if description == None:
+        if description is None:
             description = "Parameter called {}".format(param_name)
         
-        name_check = lambda x:x['name'] == param_name
+        name_check = lambda x: x['name'] == param_name
         name_check_list = list(filter(name_check, self.ext_params))
         if len(name_check_list) == 0:
-            self.ext_params.append({'name':param_name, 'description': description, 'default': default})
+            self.ext_params.append({'name': param_name, 'description': description, 'default': default})
         else:
             print('{} already exists - choose a different name'.format(param_name))
 
@@ -501,8 +486,7 @@ class LcoptModel(object):
         
         return df
 
-
-    def import_external_db(self, db_file, db_type = None):
+    def import_external_db(self, db_file, db_type=None):
         """
         Import an external database for use in lcopt
 
@@ -531,7 +515,7 @@ class LcoptModel(object):
         new_db = {'items': db, 'name': name}
         self.external_databases.append(new_db)
 
-        if db_type is None : #Assume its a technosphere database
+        if db_type is None:             # Assume its a technosphere database
             db_type = 'technosphere'
 
         if db_type == 'technosphere':
@@ -543,7 +527,7 @@ class LcoptModel(object):
             raise Exception
             print ("Database type must be 'technosphere' or 'biosphere'")
 
-    def search_databases(self, search_term, location = None, markets_only=False, databases_to_search = None):
+    def search_databases(self, search_term, location=None, markets_only=False, databases_to_search=None):
 
         """
         Search external databases linked to your lcopt model.
@@ -555,7 +539,7 @@ class LcoptModel(object):
             #Search all of the databases available
             data = Dictionaries(self.database['items'], *[x['items'] for x in self.external_databases])
         else:
-            data = Dictionaries(*[x['items'] for x in self.external_databases if x['name'] in databases_to_search ])
+            data = Dictionaries(*[x['items'] for x in self.external_databases if x['name'] in databases_to_search])
 
         query = Query()
 
@@ -573,9 +557,6 @@ class LcoptModel(object):
         
         return result
 
-
-### Database to SimaPro ###
-
     def database_to_SimaPro_csv(self):
 
         """
@@ -585,16 +566,14 @@ class LcoptModel(object):
         """
 
         csv_args = {}
-        csv_args['processes']=[]
+        csv_args['processes'] = []
         db = self.database['items']
         
-
-        product_filter = lambda x:db[x]['type'] == 'product'
-        process_filter = lambda x:db[x]['type'] == 'process'
+        product_filter = lambda x: db[x]['type'] == 'product'
+        process_filter = lambda x: db[x]['type'] == 'process'
 
         processes = list(filter(process_filter, db))
         products = list(filter(product_filter, db))
-
 
         created_exchanges = []
 
@@ -606,17 +585,16 @@ class LcoptModel(object):
 
             current = {}
             current['name'] = item['name']
-            current['id'] = (self.name.replace(" ", "") + "XXXXXXXX")[:8] + ('00000000000' + str(randint(1,99999999999)))[-11:]
+            current['id'] = (self.name.replace(" ", "") + "XXXXXXXX")[:8] + ('00000000000' + str(randint(1, 99999999999)))[-11:]
             current['unit'] = item['unit']
             current['exchanges'] = []
             
             process_params = []
             
-            production_filter = lambda x:x['type'] == 'production'
+            production_filter = lambda x: x['type'] == 'production'
             
             output_code = list(filter(production_filter, item['exchanges']))[0]['input'][1]
             
-
             for e in item['exchanges']:
 
                 if e['type'] == 'technosphere':
@@ -633,7 +611,7 @@ class LcoptModel(object):
                     
                     process_params.append(this_param)
                    
-                    this_exchange['amount'] = this_param #e['amount']
+                    this_exchange['amount'] = this_param 
 
                     this_exchange['unit'] = self.get_unit(this_code)
 
@@ -642,24 +620,19 @@ class LcoptModel(object):
                 elif e['type'] == 'production':
                     this_code = e['input'][1]
                     name = self.get_name(this_code)
-                    current['output_name']=name
+                    current['output_name'] = name
 
                     created_exchanges.append(name)
                     
-                    
-                #process parameters
+                # process parameters
                 
             for p in process_params:
-                if self.params[p]['function'] == None:
-                    project_input_params.append({'name':p, 'comment':self.params[p]['description']})
+                if self.params[p]['function'] is None:
+                    project_input_params.append({'name': p, 'comment': self.params[p]['description']})
                 else:
-                    project_calc_params.append({'name':p, 'comment':self.params[p]['description'], 'formula':self.params[p]['function']})
-                
-                
-                        
+                    project_calc_params.append({'name': p, 'comment': self.params[p]['description'], 'formula': self.params[p]['function']})
 
             csv_args['processes'].append(current)
-            
             
         for k in products:
             this_item = db[k]
@@ -674,7 +647,7 @@ class LcoptModel(object):
                 current = {}
                 current['name'] = this_name
                 current['output_name'] = this_name
-                current['id'] = (self.name.replace(" ", "") + "XXXXXXXX")[:8] + ('00000000000' + str(randint(1,99999999999)))[-11:]
+                current['id'] = (self.name.replace(" ", "") + "XXXXXXXX")[:8] + ('00000000000' + str(randint(1, 99999999999)))[-11:]
                 current['unit'] = this_item['unit']
                 #current['exchanges'] = []
                 
@@ -682,8 +655,7 @@ class LcoptModel(object):
                     
                     ext_link = this_item['ext_link']
 
-                    
-                    db_filter = lambda x:x['name'] == ext_link[0]
+                    db_filter = lambda x: x['name'] == ext_link[0]
                     extdb = list(filter(db_filter, self.external_databases))[0]['items']
                     ext_item = extdb[ext_link]
                     if ext_link[0] != self.biosphereName:
@@ -698,7 +670,7 @@ class LcoptModel(object):
 
                         #print ('{} has an external link to {}'.format(this_name, simaPro_name))
                         
-                        current['exchanges'] = [{'formatted_name':simaPro_name, 'unit':unit, 'amount':1}]
+                        current['exchanges'] = [{'formatted_name': simaPro_name, 'unit': unit, 'amount': 1}]
                     else:
                         #print('{} has a biosphere exchange - need to sort this out'.format(this_name))
                         #print(ext_item)
@@ -706,18 +678,17 @@ class LcoptModel(object):
                         formatted_name = ext_item['name']
 
                         if 'air' in ext_item['categories']:
-                            current['air_emissions'] = [{'formatted_name':formatted_name, 'subcompartment':'', 'unit':unit, 'amount':1, 'comment': 'emission of {} to air'.format(formatted_name)}]
+                            current['air_emissions'] = [{'formatted_name': formatted_name, 'subcompartment': '', 'unit': unit, 'amount': 1, 'comment': 'emission of {} to air'.format(formatted_name)}]
 
                         elif 'water' in ext_item['categories']:
-                            current['water_emissions'] = [{'formatted_name':formatted_name, 'subcompartment':'', 'unit':unit, 'amount':1, 'comment': 'emission of {} to water'.format(formatted_name)}]
+                            current['water_emissions'] = [{'formatted_name': formatted_name, 'subcompartment': '', 'unit': unit, 'amount': 1, 'comment': 'emission of {} to water'.format(formatted_name)}]
 
                         elif 'soil' in ext_item['categories']:
-                            current['soil_emissions'] = [{'formatted_name':formatted_name, 'subcompartment':'', 'unit':unit, 'amount':1, 'comment': 'emission of {} to soil'.format(formatted_name)}]
+                            current['soil_emissions'] = [{'formatted_name': formatted_name, 'subcompartment': '', 'unit': unit, 'amount': 1, 'comment': 'emission of {} to soil'.format(formatted_name)}]
 
                         else:
                             print('{} has a biosphere exchange that isnt to air water or soil')
                             print(ext_item)
-                    
                     
                 else:
                     warnings.warn('{} has NO internal or external link - it is burden free'.format(this_name))
@@ -725,21 +696,20 @@ class LcoptModel(object):
                 csv_args['processes'].append(current)
                 created_exchanges.append(this_name)
             
-            
         #print(csv_args)
         #print(created_exchanges)
         
-        csv_args['project']={}
+        csv_args['project'] = {}
         
         #NOTE - currently external parameters can only be constants
 
-        csv_args['project']['calculated_parameters']=project_calc_params
+        csv_args['project']['calculated_parameters'] = project_calc_params
         
         #add the external parameters to the input parameter list        
         for p in self.ext_params:
-            project_input_params.append({'name':p['name'], 'comment':p['description'], 'default':p['default']})
+            project_input_params.append({'name': p['name'], 'comment': p['description'], 'default': p['default']})
         
-        csv_args['project']['input_parameters']=project_input_params
+        csv_args['project']['input_parameters'] = project_input_params
 
         #print (csv_args)
 
@@ -759,8 +729,7 @@ class LcoptModel(object):
         return fname
 
 
-### Flask ###
-
+# << Flask >> #
 
     def launch_interact(self):              # pragma: no cover
         """
@@ -770,7 +739,7 @@ class LcoptModel(object):
         my_flask.run()
 
 
-### Brightway2 ###
+# << Brightway2 >> #
 
     def export_to_bw2(self):
         """
@@ -797,7 +766,6 @@ class LcoptModel(object):
             Doesn't return anything, but creates a new item ``LcoptModel.result_set`` containing the results
         """
         my_analysis = Bw2Analysis(self)
-        self.result_set = my_analysis.run_analyses(demand_item, demand_item_code,  **self.analysis_settings)
+        self.result_set = my_analysis.run_analyses(demand_item, demand_item_code, **self.analysis_settings)
 
         return True
-

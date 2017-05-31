@@ -1,18 +1,11 @@
 from lcopt.bw2_export import Bw2Exporter
-
 from lcopt.utils import DEFAULT_DB_NAME
-
 import brightway2 as bw2
-import bw2analyzer
-
 from bw2analyzer.tagged import recurse_tagged_database, aggregate_tagged_graph
-
 from copy import deepcopy
-from itertools import groupby
 import time
 import datetime
 
-import json
 
 class Bw2Analysis():
     def __init__(self, modelInstance):
@@ -26,13 +19,13 @@ class Bw2Analysis():
     def setup_bw2(self):
         if self.bw2_project_name in bw2.projects:
             bw2.projects.set_current(self.bw2_project_name)
-            print ('Switched to existing bw2 project - {}'.format(self.bw2_project_name))
+            print('Switched to existing bw2 project - {}'.format(self.bw2_project_name))
             return True
             
         elif DEFAULT_DB_NAME in bw2.projects:                                       # pragma: no cover
             bw2.projects.set_current(DEFAULT_DB_NAME)
-            bw2.projects.copy_project(self.bw2_project_name, switch = True)
-            print ('Created new bw2 project - {}'.format(self.bw2_project_name))
+            bw2.projects.copy_project(self.bw2_project_name, switch=True)
+            print('Created new bw2 project - {}'.format(self.bw2_project_name))
             return True
         
         else:                                                                       # pragma: no cover
@@ -69,8 +62,6 @@ class Bw2Analysis():
 
         return this_d
 
-
-
     def recurse(self, d):
 
         to_return = {}
@@ -88,7 +79,7 @@ class Bw2Analysis():
                     if k in to_return.keys():
                         to_return[k].append(self.recurse(e))
                     else:
-                        to_return[k]=[self.recurse(e)]
+                        to_return[k] = [self.recurse(e)]
                         
             elif k == 'biosphere':
                 to_return[k] = v
@@ -100,7 +91,7 @@ class Bw2Analysis():
                 #print (k,v)
                 to_return[k] = str(v)
             #elif k == 'impact':
-             #   print('impact of {} = {}'.format(d['activity'], v))
+            #   print('impact of {} = {}'.format(d['activity'], v))
 
             else:
                 to_return[k] = v
@@ -113,7 +104,7 @@ class Bw2Analysis():
 
         to_return = {}
         
-        if d['tag']=='intermediate':
+        if d['tag'] == 'intermediate':
             #print('this needs to be dropped')
             #print ('Dropping {}'.format(d['activity']))
             for key in d.keys():
@@ -125,8 +116,6 @@ class Bw2Analysis():
             if 'technosphere' in d['technosphere'][0].keys():
                 d['technosphere'] = d['technosphere'][0]['technosphere']
 
-                    
-        
         for k, v in d.items():
             #print (k)
             if k == 'technosphere':
@@ -136,7 +125,7 @@ class Bw2Analysis():
                     if k in to_return.keys():
                         to_return[k].append(self.drop_level_recurse(e))
                     else:
-                        to_return[k]=[self.drop_level_recurse(e)]
+                        to_return[k] = [self.drop_level_recurse(e)]
 
             elif k == 'activity':
                 #print (k,v)
@@ -147,7 +136,7 @@ class Bw2Analysis():
             
         return to_return
     
-    def run_analyses(self, demand_item, demand_item_code,  amount = 1, methods = [('IPCC 2013', 'climate change', 'GWP 100a')], top_processes = 10, gt_cutoff = 0.01, pie_cutoff =0.05):
+    def run_analyses(self, demand_item, demand_item_code, amount=1, methods=[('IPCC 2013', 'climate change', 'GWP 100a')], top_processes=10, gt_cutoff=0.01, pie_cutoff=0.05):
         
         ready = self.setup_bw2()
         name = self.bw2_database_name
@@ -166,45 +155,43 @@ class Bw2Analysis():
             #print ('trying to get {}'.format(demand_item_code))
             product_demand = new_db.get(demand_item_code)
             
-            if product_demand != False:
+            if product_demand is not False:
                 
-                fu = {product_demand:amount}
+                fu = {product_demand: amount}
                 parameter_sets = self.modelInstance.evaluated_parameter_sets
 
                 ts = time.time()
                 ts_format = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
                
                 result_dict = {
-                    'settings':{
+                    'settings': {
                         'pie_cutoff': pie_cutoff,
                         'methods': [str(method) for method in methods],
-                        'method_names' : [method[1] for method in methods],
-                        'method_units' : [bw2.methods[method]['unit'] for method in methods],
+                        'method_names': [method[1] for method in methods],
+                        'method_units': [bw2.methods[method]['unit'] for method in methods],
                         'item': demand_item,
                         'item_code': demand_item_code,
                         'amount': amount,
                         'ps_names': [name for name in parameter_sets.keys()],
-                        'item_unit':product_demand['unit'],
+                        'item_unit': product_demand['unit'],
                         'timestamp': ts_format,
-                        }
                     }
+                }
                 result_sets = []
                 
-
                 #for each parameter set in the model run the analysis
 
                 for n, (parameter_set_name, parameter_set) in enumerate(parameter_sets.items()):
                     
                     # update the parameter_set values
-                    print ('\nAnalysis {}\n'.format(n+1))
+                    print ('\nAnalysis {}\n'.format(n + 1))
                     
                     self.update_exchange_amounts(new_db, parameter_set)
-                    
                     
                     initial_method = methods[0]
                     # run the LCA
                     lca = bw2.LCA(fu, initial_method)
-                    lca.lci(factorize = True)
+                    lca.lci(factorize=True)
                     lca.lcia()
                     
                     ps_results = []
@@ -223,15 +210,15 @@ class Bw2Analysis():
 
                         label = "lcopt_type"
                         type_graph = [recurse_tagged_database(key, amount, method_dict, lca, label, default_tag)
-                                 for key, amount in fu.items()]
-                        type_result = aggregate_tagged_graph(type_graph)
+                                      for key, amount in fu.items()]
+                        # type_result = aggregate_tagged_graph(type_graph)
                         
-                        #for k,v in type_result.items():
+                        # for k,v in type_result.items():
                         #    print('{}\t\t{}'.format(k,v))
                         
                         label = "name"
                         foreground_graph = [recurse_tagged_database(key, amount, method_dict, lca, label, default_tag)
-                                 for key, amount in fu.items()]
+                                            for key, amount in fu.items()]
                         foreground_result = aggregate_tagged_graph(foreground_graph)
                         
                         #for k,v in foreground_result.items():
@@ -242,13 +229,13 @@ class Bw2Analysis():
                         
                         result_set = {
                             'ps_name': parameter_set_name,
-                            'method':str(method),
-                            'unit' : unit,
-                            'score':score,
-                            'foreground_results':foreground_result,
+                            'method': str(method),
+                            'unit': unit,
+                            'score': score,
+                            'foreground_results': foreground_result,
                             'graph': recursed_graph,
-                            'dropped_graph' : dropped_graph,
-                            'original_graph' : str(type_graph[0])
+                            'dropped_graph': dropped_graph,
+                            'original_graph': str(type_graph[0])
                         }
                         
                         ps_results.append(result_set)
@@ -257,7 +244,4 @@ class Bw2Analysis():
 
                 result_dict['results'] = result_sets
                     
-                return result_dict
-                        
-                        
-                
+                return result_dict                                                

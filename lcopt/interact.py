@@ -9,6 +9,7 @@ from itertools import groupby
 
 from lcopt.bw2_export import Bw2Exporter
 
+
 class FlaskSandbox():
     
     def __init__(self, modelInstance):
@@ -18,22 +19,22 @@ class FlaskSandbox():
         
         # Set up the dictionary of actions that can be processed by POST requests
         self.postActions = {
-            'savePosition':self.savePosition,
-            'saveModel':self.saveModel,
-            'newProcess':self.newProcess,
-            'echo':self.echo,
-            'searchEcoinvent':self.searchEcoinvent,
-            'searchBiosphere':self.searchBiosphere,
+            'savePosition': self.savePosition,
+            'saveModel': self.saveModel,
+            'newProcess': self.newProcess,
+            'echo': self.echo,
+            'searchEcoinvent': self.searchEcoinvent,
+            'searchBiosphere': self.searchBiosphere,
             'newConnection': self.newConnection,
-            'addInput':self.addInput,
-            'inputLookup':self.inputLookup,
+            'addInput': self.addInput,
+            'inputLookup': self.inputLookup,
             'parse_parameters': self.parameter_parsing,
             'create_function': self.create_function,
             'add_parameter': self.add_parameter,
             'simaPro_export': self.simaPro_export,
             'removeInput': self.removeInput,
-            'unlinkIntermediate':self.unlinkIntermediate,
-            'update_settings':self.update_settings,
+            'unlinkIntermediate': self.unlinkIntermediate,
+            'update_settings': self.update_settings,
         }
         
         #print (self.modelInstance.newVariable)
@@ -48,7 +49,7 @@ class FlaskSandbox():
         
         exchanges = self.modelInstance.database['items'][process_id]['exchanges']
         
-        production_filter = lambda x:x['type'] == 'production'
+        production_filter = lambda x: x['type'] == 'production'
            
         code = list(filter(production_filter, exchanges))[0]['input'][1]
         
@@ -61,87 +62,78 @@ class FlaskSandbox():
         
         sandbox_positions = m.sandbox_positions
 
-
-        products = OrderedDict((k,v) for k, v in db.items() if v['type'] == 'product')
+        products = OrderedDict((k, v) for k, v in db.items() if v['type'] == 'product')
         product_codes = [k[1] for k in products.keys()]
 
-
-        processes = OrderedDict((k,v) for k, v in db.items() if v['type'] == 'process')
+        processes = OrderedDict((k, v) for k, v in db.items() if v['type'] == 'process')
         process_codes = [k[1] for k in processes.keys()]
-        process_name_map = {k[1]:v['name'] for k, v in processes.items()}
+        process_name_map = {k[1]: v['name'] for k, v in processes.items()}
 
-
-        #note this maps from output code to process
+        # note this maps from output code to process
         process_output_map = {self.output_code(x): x[1] for x in processes.keys()}
-        self.reverse_process_output_map = {value:key for key, value in process_output_map.items()}
+        self.reverse_process_output_map = {value: key for key, value in process_output_map.items()}
 
-
-        intermediates = {k:v for k, v in products.items() if v['lcopt_type'] == 'intermediate'}
+        intermediates = {k: v for k, v in products.items() if v['lcopt_type'] == 'intermediate'}
         intermediate_codes = [k[1] for k in intermediates.keys()]
         intermediate_map = {k[1]: v['name'] for k, v in intermediates.items()}
 
         #process_output_name_map = {process_code: output_name for x in processes.keys()}
         process_output_name_map = {x[1]: intermediate_map[self.reverse_process_output_map[x[1]]] for x in processes.keys()}
 
-
-        inputs = OrderedDict((k,v) for k, v in products.items() if v['lcopt_type'] == 'input')
+        inputs = OrderedDict((k, v) for k, v in products.items() if v['lcopt_type'] == 'input')
         input_codes = [k[1] for k in inputs.keys()]
         input_map = {k[1]: v['name'] for k, v in inputs.items()}
-        self.reverse_input_map = {value:key for key, value in input_map.items()}
+        self.reverse_input_map = {value: key for key, value in input_map.items()}
 
-
-        biosphere = OrderedDict((k,v) for k, v in products.items() if v['lcopt_type'] == 'biosphere')
+        biosphere = OrderedDict((k, v) for k, v in products.items() if v['lcopt_type'] == 'biosphere')
         biosphere_codes = [k[1] for k in biosphere.keys()]
         biosphere_map = {k[1]: v['name'] for k, v in biosphere.items()}
-        self.reverse_biosphere_map = {value:key for key, value in biosphere_map.items()}
-
+        self.reverse_biosphere_map = {value: key for key, value in biosphere_map.items()}
 
         label_map = {**input_map, **process_output_name_map, **biosphere_map}
 
         #print('label_map = {}\n'.format(label_map))
         
-        self.outputlabels = [{'process_id': x, 'output_name':process_output_name_map[x]} for x in process_codes]
+        self.outputlabels = [{'process_id': x, 'output_name': process_output_name_map[x]} for x in process_codes]
         
         link_indices = [process_output_map[x] if x in intermediate_codes else x for x in product_codes]
                
         if matrix is not None:
             row_totals = matrix.sum(axis=1)
-            input_row_totals = {k: row_totals[m.names.index(v)] for k,v in input_map.items()}
-            biosphere_row_totals = {k: row_totals[m.names.index(v)] for k,v in biosphere_map.items()}
-
-
+            input_row_totals = {k: row_totals[m.names.index(v)] for k, v in input_map.items()}
+            biosphere_row_totals = {k: row_totals[m.names.index(v)] for k, v in biosphere_map.items()}
 
         # compute the nodes
         i = 1
         self.nodes = []
         for t in process_codes:
-            self.nodes.append({'name':process_name_map[t],'type':'transformation','id':t,'initX':i*100,'initY':i*100})
-            i+=1
+            self.nodes.append({'name': process_name_map[t], 'type': 'transformation', 'id': t, 'initX': i * 100, 'initY': i * 100})
+            i += 1
         
-        i=1
+        i = 1
         for p in input_codes:
             if input_row_totals[p] != 0:
-                self.nodes.append({'name':input_map[p],'type':'input','id':p+"__0",'initX':i*50+150,'initY':i*50})
-                i+=1
+                self.nodes.append({'name': input_map[p], 'type': 'input', 'id': p + "__0", 'initX': i * 50 + 150, 'initY': i * 50})
+                i += 1
 
-        i=1
+        i = 1
         for p in biosphere_codes:
             if biosphere_row_totals[p] != 0:
-                self.nodes.append({'name':biosphere_map[p],'type':'biosphere','id':p+"__0",'initX':i*50+150,'initY':i*50})
-                i+=1
+                self.nodes.append({'name': biosphere_map[p], 'type': 'biosphere', 'id': p + "__0", 'initX': i * 50 + 150, 'initY': i * 50})
+                i += 1
             
         # compute links
-        self.links=[]
+        self.links = []
         
         input_duplicates = []
-        biosphere_duplicates =[]
+        biosphere_duplicates = []
         
         #check there is a matrix (new models won't have one until parameter_scan() is run)
         if matrix is not None:
 
             for c, column in enumerate(matrix.T):
                 for r, i in enumerate(column):
-                    if i>0:
+                    if i > 0:
                         p_from = link_indices[r]
                         p_to = link_indices[c]
                         if p_from in input_codes:
@@ -156,27 +148,25 @@ class FlaskSandbox():
                             suffix = ""
                             p_type = 'intermediate'
                         
-                        self.links.append({'sourceID':p_from + suffix, 'targetID':p_to, 'type':p_type, 'amount':1, 'label':label_map[p_from]})
+                        self.links.append({'sourceID': p_from + suffix, 'targetID': p_to, 'type': p_type, 'amount': 1, 'label': label_map[p_from]})
                     
         #add extra nodes
-        while len(input_duplicates)>0:
+        while len(input_duplicates) > 0:
             p = input_duplicates.pop()
             count = input_duplicates.count(p)
-            if count>0:
+            if count > 0:
                 suffix = "__" + str(count)
-                self.nodes.append({'name':input_map[p],'type':'input','id':p+suffix,'initX':i*50+150,'initY':i*50})
-                i+=1
+                self.nodes.append({'name': input_map[p], 'type': 'input', 'id': p + suffix, 'initX': i * 50 + 150, 'initY': i * 50})
+                i += 1
                 
-
-        while len(biosphere_duplicates)>0:
+        while len(biosphere_duplicates) > 0:
             p = biosphere_duplicates.pop()
             count = biosphere_duplicates.count(p)
-            if count>0:
+            if count > 0:
                 suffix = "__" + str(count)
-                self.nodes.append({'name':biosphere_map[p],'type':'biosphere','id':p+suffix,'initX':i*50+150,'initY':i*50})
-                i+=1
+                self.nodes.append({'name': biosphere_map[p], 'type': 'biosphere', 'id': p + suffix, 'initX': i * 50 + 150, 'initY': i * 50})
+                i += 1
                 
-            
         #try and reset the locations
         
         for n in self.nodes:
@@ -192,7 +182,7 @@ class FlaskSandbox():
     def savePosition(self, f):
         
         if f['uuid'] not in self.modelInstance.sandbox_positions:
-            self.modelInstance.sandbox_positions[f['uuid']]={}
+            self.modelInstance.sandbox_positions[f['uuid']] = {}
         self.modelInstance.sandbox_positions[f['uuid']]['x'] = f['x']
         self.modelInstance.sandbox_positions[f['uuid']]['y'] = f['y']
         #print('Setting {} to ({},{})'.format(f['uuid'], f['x'], f['y']))
@@ -209,9 +199,9 @@ class FlaskSandbox():
         m = self.modelInstance
         name = postData['process_name']
         unit = postData['unit']
-        output_name  = postData['output_name']
-        exchanges = [{'name':output_name, 'type':'production', 'unit':unit, 'lcopt_type':'intermediate'}]
-        location ='GLO'
+        output_name = postData['output_name']
+        exchanges = [{'name': output_name, 'type': 'production', 'unit': unit, 'lcopt_type': 'intermediate'}]
+        location = 'GLO'
         m.create_process(name, exchanges, location, unit)
         self.modelInstance.parameter_scan()
         print (m.database['items'][(m.database['name'], postData['uuid'])])
@@ -230,10 +220,10 @@ class FlaskSandbox():
         target = postData['targetId']
         label = postData['label']
         new_exchange = {'amount': 1,
-                 'comment': 'technosphere exchange of {}'.format(label),
-                 'input': (db['name'], self.reverse_process_output_map[source]),
-                 'type': 'technosphere',
-                 'uncertainty type': 1}
+                        'comment': 'technosphere exchange of {}'.format(label),
+                        'input': (db['name'], self.reverse_process_output_map[source]),
+                        'type': 'technosphere',
+                        'uncertainty type': 1}
         
         db['items'][(db['name'], target)]['exchanges'].append(new_exchange)
         
@@ -248,7 +238,7 @@ class FlaskSandbox():
         my_targetId = postData['targetId']
         
         my_name = postData['name']
-        my_type = postData['type']
+        #my_type = postData['type']
         my_unit = postData['unit']
         my_location = postData['location']
         
@@ -256,10 +246,10 @@ class FlaskSandbox():
 
         exchange_to_link = m.get_exchange(my_name)
 
-        if exchange_to_link == False:
+        if exchange_to_link is False:
         
             #Create the new product
-            kwargs ={}
+            kwargs = {}
 
             if 'ext_link' in postData.keys():
                 my_ext_link = literal_eval(postData['ext_link'])
@@ -272,8 +262,8 @@ class FlaskSandbox():
                 lcopt_type = postData['lcopt_type']
                 kwargs['lcopt_type'] = lcopt_type
 
-            exchange_to_link = m.create_product (name = my_name, location =my_location , unit=my_unit, **kwargs)
-                #print('created unlinked product')
+            exchange_to_link = m.create_product (name=my_name, location=my_location, unit=my_unit, **kwargs)
+            #print('created unlinked product')
 
         #link the product
         #this_exchange = m.get_exchange(my_name)
@@ -288,12 +278,11 @@ class FlaskSandbox():
         #run the parameter scan
         m.parameter_scan()
         
-        
         return "OK"
     
     def update_sandbox_on_delete(self, modelInstance, full_id):
         id_components = full_id.split("__")
-        alt_id_sandbox_positions = {tuple(k.split("__")):v for k,v in modelInstance.sandbox_positions.items()}
+        alt_id_sandbox_positions = {tuple(k.split("__")): v for k, v in modelInstance.sandbox_positions.items()}
         new_sandbox_positions = {}
 
         for k, v in alt_id_sandbox_positions.items():
@@ -301,14 +290,14 @@ class FlaskSandbox():
             print (k)
             print(id_components)
 
-            if len(k) ==1:
+            if len(k) == 1:
                 new_sandbox_positions['{}'.format(*k)] = v
 
             elif id_components[0] in k and k[1] == id_components[1]:
                 pass
 
-            elif id_components[0] in k and int(k[1])>int(id_components[1]):
-                new_sandbox_positions['{0}__{1}'.format(k[0], int(k[1])-1)] = v
+            elif id_components[0] in k and int(k[1]) > int(id_components[1]):
+                new_sandbox_positions['{0}__{1}'.format(k[0], int(k[1]) - 1)] = v
 
             else:
                 new_sandbox_positions['{}__{}'.format(*k)] = v
@@ -355,19 +344,19 @@ class FlaskSandbox():
                 else:
                     full_link_string = '{} ({}) [{}]'.format(full_link['name'], ", ".join(full_link['categories']), full_link['unit'])
             
-            return_data['isLinked']=True
-            return_data['ext_link']=str(ext_link)
+            return_data['isLinked'] = True
+            return_data['ext_link'] = str(ext_link)
             return_data['ext_link_string'] = full_link_string
             return_data['ext_link_unit'] = full_link['unit']
         else:
             print('This is an unlinked product')
-            return_data['isLinked']=False
+            return_data['isLinked'] = False
             return_data['unlinked_unit'] = myInput['unit']
         
         return json.dumps(return_data)
     
     def echo(self, postData):
-        data = {'message':'Hello from echo'}
+        data = {'message': 'Hello from echo'}
         return json.dumps(data)
         
     def searchEcoinvent(self, postData):
@@ -381,11 +370,11 @@ class FlaskSandbox():
             #print ('no location')
             location = None
             
-        result = m.search_databases(search_term, location,  markets_only, databases_to_search = m.technosphere_databases)
+        result = m.search_databases(search_term, location, markets_only, databases_to_search=m.technosphere_databases)
         
-        json_dict = {str(k):v for k, v in dict(result).items()}
+        json_dict = {str(k): v for k, v in dict(result).items()}
         
-        data = {'message':'hello from ecoinvent', 'search_term':search_term, 'result':json_dict, 'format': 'ecoinvent'}
+        data = {'message': 'hello from ecoinvent', 'search_term': search_term, 'result': json_dict, 'format': 'ecoinvent'}
         return json.dumps(data)
 
     def searchBiosphere(self, postData):
@@ -394,11 +383,11 @@ class FlaskSandbox():
         
         m = self.modelInstance
             
-        result = m.search_databases(search_term, databases_to_search = m.biosphere_databases)
+        result = m.search_databases(search_term, databases_to_search=m.biosphere_databases)
         
-        json_dict = {str(k):v for k, v in dict(result).items()}
+        json_dict = {str(k): v for k, v in dict(result).items()}
         
-        data = {'message':'hello from biosphere3', 'search_term':search_term, 'result':json_dict, 'format': 'biosphere'}
+        data = {'message': 'hello from biosphere3', 'search_term': search_term, 'result': json_dict, 'format': 'biosphere'}
         #print (json_dict)
         return json.dumps(data)
 
@@ -414,7 +403,6 @@ class FlaskSandbox():
     def parameter_sorting(self):
         parameters = self.modelInstance.params
 
-
         # create a default parameter set if there isn't one yet
         if len(self.modelInstance.parameter_sets) == 0:
             print ('No parameter sets - creating a default set')
@@ -422,37 +410,35 @@ class FlaskSandbox():
             for param in parameters:
                 self.modelInstance.parameter_sets['ParameterSet_1'][param] = 0
 
-
         exporter = Bw2Exporter(self.modelInstance)
         exporter.evaluate_parameter_sets()
         evaluated_parameters = self.modelInstance.evaluated_parameter_sets
         
-
         subsectionTitles = {
-            'input':"Inputs from the 'technosphere'",
-            'intermediate':"Inputs from other processes",
+            'input': "Inputs from the 'technosphere'",
+            'intermediate': "Inputs from other processes",
             'biosphere': "Direct emissions to the environment"
         }
         
         to_name = lambda x: parameters[x]['to_name']
         input_order = lambda x: parameters[x]['coords'][1]
-        type_of = lambda x : parameters[x]['type']
+        type_of = lambda x: parameters[x]['type']
 
-        sorted_keys = sorted(parameters, key = input_order)
+        sorted_keys = sorted(parameters, key=input_order)
 
         sorted_parameters = []
 
         for target, items in groupby(sorted_keys, to_name):
             #print(target)
             
-            section = {'name': target, 'my_items':[]}
+            section = {'name': target, 'my_items': []}
 
-            sorted_exchanges = sorted(items, key = type_of)
+            sorted_exchanges = sorted(items, key=type_of)
 
             #print sorted_exchanges
             for type, exchanges in groupby(sorted_exchanges, type_of):
                 #print('\t{}'.format(type))
-                subsection = {'name':subsectionTitles[type], 'my_items':[]}
+                subsection = {'name': subsectionTitles[type], 'my_items': []}
                 for exchange in exchanges:
 
                     if parameters[exchange].get('function'):
@@ -465,9 +451,7 @@ class FlaskSandbox():
 
                     #print('\t\t{} ({}) {}'.format(parameters[exchange]['from_name'], exchange, values))
 
-                    subsection['my_items'].append({'id':exchange, 'name': parameters[exchange]['from_name'], 'existing_values': values, 'unit':parameters[exchange]['unit'], 'isFunction':isFunction})
-                
-                
+                    subsection['my_items'].append({'id': exchange, 'name': parameters[exchange]['from_name'], 'existing_values': values, 'unit': parameters[exchange]['unit'], 'isFunction': isFunction})
                 
                 section['my_items'].append(subsection)
             
@@ -478,10 +462,10 @@ class FlaskSandbox():
             section['name'] = "{}\t(1 {})".format(target, unit)
             sorted_parameters.append(section)
 
-        ext_section ={'name':'Global Parameters', 'my_items':[{'name':'User created', 'my_items':[]}]}
+        ext_section = {'name': 'Global Parameters', 'my_items': [{'name': 'User created', 'my_items': []}]}
         for e_p in self.modelInstance.ext_params:
             values = [ps[e_p['name']] if e_p['name'] in ps.keys() else e_p['default'] for ps_name, ps in self.modelInstance.parameter_sets.items()]
-            ext_section['my_items'][0]['my_items'].append({'id':e_p['name'], 'name': e_p['description'], 'existing_values': values, 'unit':'', 'isFunction':False})
+            ext_section['my_items'][0]['my_items'].append({'id': e_p['name'], 'name': e_p['description'], 'existing_values': values, 'unit': '', 'isFunction': False})
 
         sorted_parameters.append(ext_section)
 
@@ -489,7 +473,6 @@ class FlaskSandbox():
 
     def parameter_parsing(self, postData):
             
-
             #print(postData)
             myjson = json.loads(postData['data'], object_pairs_hook=OrderedDict)
             #print(myjson)
@@ -566,8 +549,6 @@ class FlaskSandbox():
             
     def create_app(self):
 
-    #def run(self):
-        
         app = Flask(__name__)
 
         @app.route('/')
@@ -576,8 +557,8 @@ class FlaskSandbox():
             
             self.get_sandbox_variables()
                         
-            args = {'model':{'name': name}, 'nodes':self.nodes, 'links':self.links, 'outputlabels':self.outputlabels}
-            return render_template('sandbox.html', args = args)
+            args = {'model': {'name': name}, 'nodes': self.nodes, 'links': self.links, 'outputlabels': self.outputlabels}
+            return render_template('sandbox.html', args=args)
         
         @app.route('/process_post', methods=['POST'])
         def process_post():
@@ -604,7 +585,7 @@ class FlaskSandbox():
             self.get_sandbox_variables()
             # to_json = [x for x in self.reverse_input_map.keys()]
             #to_json = reverse_input_map
-            to_json = [{'name':k, 'code': v} for k,v in self.reverse_input_map.items()]
+            to_json = [{'name': k, 'code': v} for k, v in self.reverse_input_map.items()]
             input_json = json.dumps(to_json)
             return input_json
 
@@ -614,14 +595,14 @@ class FlaskSandbox():
             self.get_sandbox_variables()
             # to_json = [x for x in self.reverse_input_map.keys()]
             #to_json = reverse_input_map
-            to_json = [{'name':k, 'code': v} for k,v in self.reverse_biosphere_map.items()]
+            to_json = [{'name': k, 'code': v} for k, v in self.reverse_biosphere_map.items()]
             biosphere_json = json.dumps(to_json)
             return biosphere_json
         
         @app.route('/testing')
         def testbed():
 
-            args = {'model':{'name': self.modelInstance.name}}
+            args = {'model': {'name': self.modelInstance.name}}
             args['result_sets'] = self.modelInstance.result_set
            
             return render_template('testbed.html', args=args)
@@ -629,7 +610,7 @@ class FlaskSandbox():
         @app.route('/functions')
         def function_editor():
             
-            args = {'model':{'name': self.modelInstance.name}}
+            args = {'model': {'name': self.modelInstance.name}}
             
             return render_template('create_functions.html', args=args)
 
@@ -647,10 +628,10 @@ class FlaskSandbox():
         def status():
 
             db = self.modelInstance.database['items']
-            products = OrderedDict((k,v) for k, v in db.items() if v['type'] == 'product')
-            inputs = OrderedDict((k,v) for k, v in products.items() if v['lcopt_type'] == 'input')
-            ext_linked_inputs = OrderedDict((k,v) for k, v in inputs.items() if v.get('ext_link'))
-            biosphere = OrderedDict((k,v) for k, v in products.items() if v['lcopt_type'] == 'biosphere')
+            products = OrderedDict((k, v) for k, v in db.items() if v['type'] == 'product')
+            inputs = OrderedDict((k, v) for k, v in products.items() if v['lcopt_type'] == 'input')
+            ext_linked_inputs = OrderedDict((k, v) for k, v in inputs.items() if v.get('ext_link'))
+            biosphere = OrderedDict((k, v) for k, v in products.items() if v['lcopt_type'] == 'biosphere')
 
             has_model = len(db) != 0
             model_has_impacts = len(ext_linked_inputs) + len(biosphere) != 0
@@ -659,24 +640,21 @@ class FlaskSandbox():
             model_has_functions = len([x for k, x in self.modelInstance.params.items() if x['function'] is not None]) != 0
             model_is_fully_formed = all([has_model, model_has_impacts, model_has_parameters, model_has_functions])
 
-
             status_object = {
-                'has_model':has_model,
-                'model_has_impacts':model_has_impacts,
-                'model_has_parameters':model_has_parameters,
-                'model_has_functions':model_has_functions,
-                'model_is_runnable':model_is_runnable,
-                'model_is_fully_formed':model_is_fully_formed,
+                'has_model': has_model,
+                'model_has_impacts': model_has_impacts,
+                'model_has_parameters': model_has_parameters,
+                'model_has_functions': model_has_functions,
+                'model_is_runnable': model_is_runnable,
+                'model_is_fully_formed': model_is_fully_formed,
             }
 
             return json.dumps(status_object)
 
-
-        # TODO: Make these responsive
         @app.route('/analyse')
         def analyse_preload():
             
-            args = {'model':{'name': self.modelInstance.name}}
+            args = {'model': {'name': self.modelInstance.name}}
             item = request.args.get('item')
             item_code = request.args.get('item_code')
             #print(request.args)
@@ -687,7 +665,7 @@ class FlaskSandbox():
             #print('PRELOAD {}'.format(args['item_code']))
             
             #self.modelInstance.analyse(item)
-            return render_template('analysis_preload.html', args = args)
+            return render_template('analysis_preload.html', args=args)
         
         @app.route('/analysis')
         def analysis():
@@ -697,11 +675,10 @@ class FlaskSandbox():
 
             self.modelInstance.analyse(item, item_code)
             
-            args = {'model':{'name': self.modelInstance.name}}
+            args = {'model': {'name': self.modelInstance.name}}
             
             args['item'] = item
             args['result_sets'] = self.modelInstance.result_set
-            
             
             #return render_template('analysis.html', args = args)
             #return render_template('testbed.html', args = args)
@@ -716,12 +693,12 @@ class FlaskSandbox():
 
                 item = self.modelInstance.result_set['settings']['item']
 
-                args = {'model':{'name': self.modelInstance.name}}
+                args = {'model': {'name': self.modelInstance.name}}
             
                 args['item'] = item
                 args['latest'] = is_latest
                 args['result_sets'] = self.modelInstance.result_set
-                return render_template('analysis.html', args = args)
+                return render_template('analysis.html', args=args)
             else:
                 return render_template('analysis_fail.html')
 
@@ -735,12 +712,12 @@ class FlaskSandbox():
             
             sorted_parameters = self.parameter_sorting()
                 
-            args = {'title':'Parameter set'}
+            args = {'title': 'Parameter set'}
             args['sorted_parameters'] = sorted_parameters
             args['ps_names'] = [x for x in self.modelInstance.parameter_sets.keys()]
             
             return render_template('parameter_set_table_sorted.html',
-                                 args = args)
+                                   args=args)
         
         @app.route('/methods.json')
         def methods_as_json():
@@ -759,32 +736,24 @@ class FlaskSandbox():
 
             return json.dumps(method_list)
 
-
         @app.route('/settings')
         def settings():
             args = {}
             args['current_methods'] = json.dumps(self.modelInstance.analysis_settings['methods'])
             args['current_amount'] = self.modelInstance.analysis_settings['amount']
-            return render_template('settings.html', args = args)
+            return render_template('settings.html', args=args)
 
         @app.errorhandler(404)
         def page_not_found(e):
             return render_template('404.html'), 404
 
         @app.errorhandler(500)
-        def page_not_found(e):
+        def server_error(e):
             return render_template('500.html'), 500
-
-
-
-        #url = 'http://127.0.0.1:5000/'
-        #webbrowser.open_new(url)
-        #print ("running from the module")
-        #app.run()
 
         return app
 
-    def run(self):                      #pragma: no cover
+    def run(self):                      # pragma: no cover
         app = self.create_app()
 
         url = 'http://127.0.0.1:5000/'

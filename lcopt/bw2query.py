@@ -75,10 +75,10 @@ class Result(object):
         if not self.result:
             return u"Query result:\n\tNo query results found."
         data = list(self.result.items())[:20]
-        return (u"Query result: (total %i)\n" % len(self.result) + \
-            u"\n".join([u"%s: %s" % (k, v.get("name", "Unknown"))
-                        for k, v in data])
-            )
+        return (u"Query result: (total %i)\n" % len(self.result) + 
+                u"\n".join([u"%s: %s" % (k, v.get("name", "Unknown"))
+                            for k, v in data])
+                )
 
     def sort(self, field, reverse=False):
         """Sort the filtered dataset. Operates in place; does not return anything.
@@ -89,7 +89,8 @@ class Result(object):
 
         """
         self.result = collections.OrderedDict(sorted(self.result.items(),
-            key=lambda t: t[1].get(field, None), reverse=reverse))
+                                                     key=lambda t: t[1].get(field, None),
+                                                     reverse=reverse))
 
     # Generic dictionary methods
     def __len__(self):
@@ -100,9 +101,6 @@ class Result(object):
 
     def keys(self):
         return self.result.keys()
-
-    def items(self):
-        return self.result.items()
 
     def items(self):
         return self.result.items()

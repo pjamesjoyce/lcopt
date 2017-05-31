@@ -2,18 +2,18 @@
 IO module
 """
 
-from functools import partial
 import hashlib
 
 defaultDatabase = {
-    'name':'DefaultDatabase',
+    'name': 'DefaultDatabase',
     'items': {}
 }
+
 
 # add an item to a specified database
 def add_to_specified_database(item, database):
     """ add an item to a database"""
-    database['items'][(database['name'],item['code'])] = item
+    database['items'][(database['name'], item['code'])] = item
 
 
 # get an item from the database in the exchange format
@@ -24,6 +24,7 @@ def get_exchange_from_database(name, database):
             return (database.get('name'), item.get('code'))
     return False
 
+
 # check if something already exists
 def exists_in_specific_database(code, database):
     for key in database['items'].keys():
@@ -31,6 +32,7 @@ def exists_in_specific_database(code, database):
         if item['code'] == code:
             return True
     return False
+
 
 # get an item from the database in the exchange format
 def get_exchange_name_from_database(code, database):
@@ -50,8 +52,8 @@ def get_exchange_unit_from_database(code, database):
             return item.get('unit')
     return None
 
-# Create an exchange data structure
 
+# Create an exchange data structure
 def exchange_factory(input, type, amount, uncertainty, comment):
     data_structure = {
         'input': input,
@@ -62,19 +64,17 @@ def exchange_factory(input, type, amount, uncertainty, comment):
     }
     return data_structure
 
-# Create an item data structure
 
+# Create an item data structure
 def item_factory(name, type, unit='kg', exchanges=None, location='GLO', categories=None, **kwargs):
 
     if exchanges is None:
         exchanges = []
 
     if categories is None:
-       categories = []
+        categories = []
         
-        
-
-    to_hash = name + type+ unit + location
+    to_hash = name + type + unit + location
     code = hashlib.md5(to_hash.encode('utf-8')).hexdigest()
     data_structure = {
         'name': name,

@@ -24,49 +24,49 @@
 
 <div class="container-fluid">
 	<div class="row">
-	  <div class="sandboxTitle col-xs-10 col-xs-offset-1">
-		<h2>Flow sheet for {{args.model.name}}</h2>
-		<hr>
-		<p>
-		  You can create or edit the flow sheet for {{args.model.name}} in the box below &nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-xs btn-custom"data-toggle="collapse" href="#moreInfo" aria-expanded="false" aria-controls="moreInfo">More info...</a>
-		</p>
-		<div class="collapse" id="moreInfo">
-		  <div class="well">
+		<div class="sandboxTitle col-xs-10 col-xs-offset-1">
+			<h2>Flow sheet for {{args.model.name}}</h2>
+			<hr>
 			<p>
-			  <strong>Add processes </strong>(actions in the life cycle where material is transformed) to the flow sheet using the 'add process' button on the left
+				You can create or edit the flow sheet for {{args.model.name}} in the box below &nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-xs btn-custom"data-toggle="collapse" href="#moreInfo" aria-expanded="false" aria-controls="moreInfo">More info...</a>
 			</p>
-			<p>
-			  <strong>Drag</strong> items to move them around
-			</p>
-			<p>
-			  <strong>Hover</strong> over an item to see the actions you reveal the action icons
-			</p>
-			<p>
-			  <strong>Connect</strong> processes in the flow sheet by dragging from the 'connect' icon (<i class="material-icons md-18">trending_flat</i>) to the next process in the flow sheet
-			</p>
-			<p>
-			  <strong>Add a 'technosphere' input</strong> (energy or materials) to a process by clicking on the 'techosphere' icon (<i class="material-icons md-18">business</i>)
-			</p>
-			<p>
-			  <strong>Add 'biosphere' exhange</strong> (emissions to the environment, or resources directly from the environment) to a process by clicking on the 'biosphere' icon (<i class="material-icons md-18">local_florist</i>)
-			</p>
-			
-			<p>
-			  <strong>Analyse</strong> a process by clicking on the 'analysis' icon (<i class="material-icons md-18">pie_chart</i>)
-			</p>
+			<div class="collapse" id="moreInfo">
+				<div class="well">
+					<p>
+						<strong>Add processes </strong>(actions in the life cycle where material is transformed) to the flow sheet using the 'add process' button on the left
+					</p>
+					<p>
+						<strong>Drag</strong> items to move them around
+					</p>
+					<p>
+						<strong>Hover</strong> over an item to see the actions you reveal the action icons
+					</p>
+					<p>
+						<strong>Connect</strong> processes in the flow sheet by dragging from the 'connect' icon (<i class="material-icons md-18">trending_flat</i>) to the next process in the flow sheet
+					</p>
+					<p>
+						<strong>Add a 'technosphere' input</strong> (energy or materials) to a process by clicking on the 'techosphere' icon (<i class="material-icons md-18">business</i>)
+					</p>
+					<p>
+						<strong>Add 'biosphere' exhange</strong> (emissions to the environment, or resources directly from the environment) to a process by clicking on the 'biosphere' icon (<i class="material-icons md-18">local_florist</i>)
+					</p>
 
-			<p>
-			  <strong>Remove</strong> a technosphere or biosphere exchange by hovering over it and clicking on the <i class="material-icons md-18">cancel</i> which appears.
-			</p>
+					<p>
+						<strong>Analyse</strong> a process by clicking on the 'analysis' icon (<i class="material-icons md-18">pie_chart</i>)
+					</p>
 
-			<p>
-			  <strong>Unlink</strong> two procesesses by clicking on the arrow that links them.
-			</p>
+					<p>
+						<strong>Remove</strong> a technosphere or biosphere exchange by hovering over it and clicking on the <i class="material-icons md-18">cancel</i> which appears.
+					</p>
 
-			
-		  </div>
+					<p>
+						<strong>Unlink</strong> two procesesses by clicking on the arrow that links them.
+					</p>
+
+
+				</div>
+			</div>
 		</div>
-	  </div>
 	</div>
 	<div class="row">
 		<div class="col-xs-1 controls">
@@ -92,10 +92,10 @@
 
 <!-- dialog -->
 <div id="dialog" title="Export complete">
-  <p>The model has been exported as a SimaPro csv file and an excel file containing the parameter sets</p>
-  <p>The files are in your current working directory</p>
-  <p>The csv file is called "{{args.model.name}}_database_export.csv"</p>
-  <p>The excel file is called "ParameterSet_{{args.model.name}}_input_file.xlsx"</p>
+	<p>The model has been exported as a SimaPro csv file and an excel file containing the parameter sets</p>
+	<p>The files are in your current working directory</p>
+	<p>The csv file is called "{{args.model.name}}_database_export.csv"</p>
+	<p>The excel file is called "ParameterSet_{{args.model.name}}_input_file.xlsx"</p>
 </div>
 
 <!-- jsPlumb sandbox script -->
@@ -104,16 +104,16 @@
 
 <script type="text/javascript">
 
-  jsPlumb.ready(function () {
+	jsPlumb.ready(function () {
 
    // set up variables that need to be passed from template to script
-    var nodes = [];
+   var nodes = [];
 
-    {% for node in args.nodes %}
-    nodes.push({'name':'{{node.name}}','type':'{{node.type}}','id':'{{node.id}}','initX':{{node.initX}},'initY':{{node.initY}}})
-    {% endfor %}
-    
-    
+   {% for node in args.nodes %}
+   nodes.push({'name':'{{node.name}}','type':'{{node.type}}','id':'{{node.id}}','initX':{{node.initX}},'initY':{{node.initY}}})
+   {% endfor %}
+
+
 
     // choices for type are input, output, intermediate
     // need to consider whether amount is still necessary - could use defaults?...
@@ -123,19 +123,19 @@
     {% for link in args.links %}
     links.push({'sourceID':'{{link.sourceID}}', 'targetID':'{{link.targetID}}', 'type':'{{link.type}}', 'amount':{{link.amount}}});
     linklabels['{{link.sourceID}}_{{link.targetID}}'] = '{{link.label}}';
-    {% endfor%}
+    {% endfor %}
 
     var outputlabels = {};
 
     {% for outputlabel in args.outputlabels %}
     outputlabels['{{outputlabel.process_id}}'] = '{{outputlabel.output_name}}';
-    {% endfor%}
+    {% endfor %}
 
 
 
     jsPlumbsetup(nodes, links, linklabels, outputlabels);
 
-  });
+});
 
 </script>
 

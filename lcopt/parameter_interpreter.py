@@ -1,7 +1,8 @@
-from lcopt.bw2_parameter_utils import get_symbols, EXISTING_SYMBOLS, isstr, isidentifier
-
+from lcopt.bw2_parameter_utils import get_symbols, CapitalizationError, ParameterError 
 from asteval import Interpreter
 from collections import OrderedDict
+from pprint import pformat
+
 
 class ParameterInterpreter():
 
@@ -25,8 +26,6 @@ class ParameterInterpreter():
 
         self.order = self.get_order()
 
-
-
     def get_references(self):
         """Create dictionary of parameter references"""
         refs = {key: get_symbols(value['function'])
@@ -34,7 +33,6 @@ class ParameterInterpreter():
                 for key, value in self.params.items()}
         refs.update({key: set() for key in self.global_params})
         return refs
-
 
     def get_order(self):
         """Get a list of parameter name in an order that they can be safely evaluated"""
@@ -63,17 +61,13 @@ class ParameterInterpreter():
                     raise CapitalizationError((
                         u"Possible errors in upper/lower case letters for some parameters.\n"
                         u"Unmatched references:\n{}\nMatched references:\n{}"
-                        ).format(pformat(refs, indent=2), pformat(sorted(seen), indent=2))
+                    ).format(pformat(refs, indent=2), pformat(sorted(seen), indent=2))
                     )
                 raise ParameterError((u"Undefined or circular references for the following:"
-                                      u"\n{}\nExisting references:\n{}").format(
-                                      pformat(refs, indent=2),
-                                      pformat(sorted(order), indent=2)
-                ))
+                                      u"\n{}\nExisting references:\n{}").format(pformat(refs, indent=2), pformat(sorted(order), indent=2)))
 
         return order
 
-        
     def evaluate_parameter_sets(self):
         """ 
         This takes the parameter sets of the model instance and evaluates any formulas using the parameter values to create a 
@@ -105,9 +99,8 @@ class ParameterInterpreter():
                     if key not in ps.keys():
                         ps[key] = 0
                     aeval.symtable[key] = this_ps[key] = ps[key]
-                    
             
-            evaluated_parameter_sets[ps_name]=this_ps
+            evaluated_parameter_sets[ps_name] = this_ps
             
         #print(evaluated_parameter_sets)
         

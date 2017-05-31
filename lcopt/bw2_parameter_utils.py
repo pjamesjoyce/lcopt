@@ -13,6 +13,7 @@ def _get_existing_symbols():
     interpreter = asteval.Interpreter()
     return set(interpreter.symtable)
 
+
 EXISTING_SYMBOLS = _get_existing_symbols()
 
 
@@ -37,14 +38,23 @@ def isidentifier(ident):
     except SyntaxError:
         return False
 
-    if (not isinstance(root, ast.Module)
-        or len(root.body) != 1
-        or not isinstance(root.body[0], ast.Expr)
-        or not isinstance(root.body[0].value, ast.Name)
-        or root.body[0].value.id != ident):
+    if (not isinstance(root, ast.Module) or len(root.body) != 1 or not isinstance(root.body[0], ast.Expr) or not isinstance(root.body[0].value, ast.Name) or root.body[0].value.id != ident):
         return False
     return True
 
 
 def isstr(s):
     return isinstance(s, string_type)
+
+
+class ValidationError(Exception):
+    pass
+
+
+class ParameterError(ValidationError):
+    pass
+
+
+class CapitalizationError(ParameterError):
+    """Parameter(s) names are case-sensitive"""
+    pass
