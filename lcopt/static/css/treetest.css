@@ -28,16 +28,37 @@
 	fill:aliceblue;
 }
 
-.node text { font: 9px sans-serif; }
+.name_label {
+	font-weight: bold; 
+	font:12px sans-serif;
+	text-align: center;
+
+}
+
+.input_label {
+	font-weight: bold; 
+	font:9px sans-serif;
+	text-align: center;
+}
+
+.input_amount{
+	font: 8px sans-serif;
+}
+
+
+.process_amount{
+	font: 10px sans-serif;
+}
+
+/*.node text { font: 10px sans-serif; }
 
 .node--internal text {
   text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
 }
-
+*/
 .link {
   fill: none;
   stroke: red;
-  /*stroke-width: 2px;*/
 }
 
 .impactFalse{
@@ -51,4 +72,10 @@
 	background-color: red;
 }
 
-
+.tree_container{
+	width: 100%;
+}
+#simaProTree{
+	margin: auto;
+	display: block;
+}

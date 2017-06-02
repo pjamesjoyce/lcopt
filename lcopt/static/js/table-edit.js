@@ -65,7 +65,7 @@ $(document).ready(function(){
 	  //          alert("Data: " + data + "\nStatus: " + status);
 	  //      });
 	//	});
-	var url = "/parse_parameters"
+	var url = "/parse_parameters";
 	/*$.ajax(url, {
 	    data : JSON.stringify(data),
 	    contentType : 'application/json',
@@ -76,7 +76,7 @@ $(document).ready(function(){
 	postData ={
 		'action':'parse_parameters',
 		'data' : JSON.stringify(data)
-	}
+	};
    	
    	$.post('/process_post', postData);
 
@@ -92,14 +92,14 @@ $(document).ready(function(){
 
 	$('#btnAddCol').click(function () {
 
-		var count = myTable.find('.ps_name').length
+		var count = myTable.find('.ps_name').length;
 
 		myTable.find('.table_header').append('<th class="ps_name">ParameterSet_'+(count+1)+'</th>');
 
 	     myTable.find('.data_row,.function_row').each(function(){
 	         	var trow = $(this);
 	       
-	         	last_item = trow.find('td:last')
+	         	last_item = trow.find('td:last');
 	         	
 	            trow.append('<td contenteditable="true" class="new_item right_align">'+ last_item.text() +'</td>');
 	         
@@ -107,9 +107,9 @@ $(document).ready(function(){
 
 
 	     myTable.find('.table_section,.table_subsection').each(function(){
-	     	$(this).attr('colspan', count+4)
-	     })
+	     	$(this).attr('colspan', count+4);
+	     });
 	     
 	});
 
-})//end of document.ready
+});//end of document.ready

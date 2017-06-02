@@ -1,7 +1,7 @@
 $(document).ready(function(){
-	console.log('hello from add_parameter.js')
+	console.log('hello from add_parameter.js');
 
-	var formTitle = 'Add global parameter'
+	var formTitle = 'Add global parameter';
 
 	var formHtml = `
                     <form class="form-horizontal">
@@ -31,7 +31,7 @@ $(document).ready(function(){
 	                        </div>
 	                      </div>
                       </div>
-                  `
+                  `;
 
 
 	$('#btn_add_parameter').click(function(){
@@ -44,9 +44,9 @@ $(document).ready(function(){
 		        label:'Add',
 		        cssClass: 'btn-primary',
 		        action:function(dialogRef){
-			            console.log('add parameter')
+			            console.log('add parameter');
 
-			            $message = dialogRef.$modalBody
+			            $message = dialogRef.$modalBody;
 						var param_id = $message.find('#paramName');
 						var param_description = $message.find('#paramDescription');
 						var param_default = $message.find('#paramDefault');
@@ -57,19 +57,19 @@ $(document).ready(function(){
 							param_description:param_description.val(),
 							param_default:param_default.val(),
 						};
-						console.log(postData)
+						console.log(postData);
 
-						$.post('/process_post', postData)
+						$.post('/process_post', postData);
 
 						
 			          //close the dialog
-			          dialogRef.close()
+			          dialogRef.close();
 			          window.location.replace("/parameters");
 			      },
 			    }]
 
-		  })
-	})
+		  });
+	});
 
 
 
@@ -79,9 +79,9 @@ $(document).ready(function(){
 
 	function messageFunction(dialogRef){
 				var $message = $('<div></div>').append(formHtml);
-	    		return $message
+	    		return $message;
 	    	}
 
 	
 
-})
+});

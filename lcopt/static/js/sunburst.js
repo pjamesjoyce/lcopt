@@ -3,19 +3,19 @@
         radius = (Math.min(width, height) / 2) - 10;
   
     var formatNumber = d3.format(",.3r");
-    var formatPercentage = d3.format(",.1%")
+    var formatPercentage = d3.format(",.1%");
 
-    var bound_data
+    var bound_data;
 
 
     d3.json("results.json", function(error, data) {
         if (error) throw error;
-        bound_data = data
-        console.log(bound_data)
-        create_sunburst()
-    })
+        bound_data = data;
+        //console.log(bound_data);
+        create_sunburst();
+    });
 
-    var legend_dimensions = {width:150, height:height}
+    var legend_dimensions = {width:150, height:height};
   
     var x = d3.scaleLinear()
         .range([0, 2 * Math.PI]);
@@ -32,7 +32,7 @@
     var show1 = 0.2,
         show2 = 0.6;
 
-    var rscale 
+    var rscale; 
     rscale = d3.scaleLinear().domain([0, break1*radius, break2*radius, 1.0*radius]).range([0, show1*radius, show2*radius, 1.0*radius]);
   
     var arc = d3.arc()
@@ -48,33 +48,33 @@
   
     function create_sunburst(){
     //var svg = d3.select("body").append("svg")
-      console.log('create sunburst')
-      console.log('bound_data')
-      console.log(bound_data)
+      //console.log('create sunburst');
+      //console.log('bound_data');
+      //console.log(bound_data);
         var svg = d3.select("#sunburst")        
             .attr("width", width)
             .attr("height", height);
             svg.selectAll("*").remove();
-            svg.append('circle').attr('id', 'tipfollowscursor').attr("transform", "translate(" + width * 0.05 + "," + (height * 0.2) + ")");; /*  to debug */;
+            svg.append('circle').attr('id', 'tipfollowscursor').attr("transform", "translate(" + width * 0.05 + "," + (height * 0.2) + ")");
             svg = svg.append("g")
             .attr("transform", "translate(" + (0.45* width) + "," + (height / 2) + ")");
 
         //svg.append('circle').attr('id', 'tipfollowscursor')    .attr('r',5) /*  to debug */
         svg.append("g")
-          .attr("class", "legendNew")
+          .attr("class", "legendNew_sb")
           .attr("transform", 
             "translate(" + (0.35*width) + "," + (-height / 2)+ ")")
           .attr("height", height +"px");
           
 
-        var ps = $('#parameterSetChoice').val() - 1
-        var m = $('#methodChoice').val() - 1
+        var ps = $('#parameterSetChoice').val() - 1;
+        var m = $('#methodChoice').val() - 1;
       
         //d3.json("/results.json", function(error, root) {
           //if (error) throw error;
           
-          root = d3.hierarchy(bound_data.results[ps][m].dropped_graph, function(d){return d.technosphere});
-          unit = bound_data.results[ps][m].unit
+          root = d3.hierarchy(bound_data.results[ps][m].dropped_graph, function(d){return d.technosphere; });
+          unit = bound_data.results[ps][m].unit;
           /* Initialize tooltip */
           tip = d3.tip().attr('class', 'd3-tip').html(function(d) { 
             message = "<span class=\"tip_title\">";
@@ -96,11 +96,11 @@
               message += "</span>";
             }
 
-            total_percent = formatPercentage(d.value/bound_data.results[ps][m].score)
+            total_percent = formatPercentage(d.value/bound_data.results[ps][m].score);
 
-            message += "<br><span class=\"tip_total\">"
-            message += total_percent
-            message += " of total</span>"
+            message += "<br><span class=\"tip_total\">";
+            message += total_percent;
+            message += " of total</span>";
 
 
 
@@ -108,12 +108,12 @@
             });
 
           /* Invoke the tip in the context of your visualization */
-          svg.call(tip)
+          svg.call(tip);
 
           //root = d3.hierarchy(root.results[ps][m].dropped_graph, function(d){return d.technosphere});
           //console.log(root)
           //console.log(partition(root))
-          root.sum(function(d) { if (d.biosphere[0]){bio_impact = d.biosphere[0].impact}else{bio_impact=0}; return d.impact + bio_impact; });
+          root.sum(function(d) { if (d.biosphere[0]){bio_impact = d.biosphere[0].impact;}else{bio_impact=0;} return d.impact + bio_impact; });
           svg.selectAll("path")
               .data(partition(root).descendants())
             .enter().append("path")
@@ -121,14 +121,14 @@
               .style("fill", function(d) { return color(d.data.activity); })//return color((d.children ? d : d.parent).data.activity); })
               .style("stroke", function(d){
                 var startAngle = Math.max(0, Math.min(2 * Math.PI, x(d.x1))),
-                    endAngle = Math.max(0, Math.min(2 * Math.PI, x(d.x0)))
+                    endAngle = Math.max(0, Math.min(2 * Math.PI, x(d.x0)));
                 if(startAngle === Math.PI*2 &&   endAngle === Math.PI*2){
                   return "none";
                 }else{
                   return "black";
                 }
               })
-              .attr("data-legend", function(d){ return d })
+              .attr("data-legend", function(d){ return d ;})
               .on("click", click)
               .on('mouseover', mouseover)
               /*.on('mouseover', function (d) {
@@ -139,7 +139,7 @@
                   tip.show(d, target);
               })*/
               .on('mousemove', mouseover)
-              .on('mouseout', tip.hide)
+              .on('mouseout', tip.hide);
             //.append("title")
               //.text(function(d) { return d.data.activity + "\n" + formatNumber(d.value); });
         //});
@@ -149,11 +149,11 @@
           .title("")
           .titleWidth(100)
           .scale(color)
-          .labels(function(d){console.log(d); return d.domain[d.i].split("'")[1]})
+          .labels(function(d){return d.domain[d.i].split("'")[1];});
           //.cellFilter(function(d){ console.log(d);return d.data.depth == 1})
           //.orient('horizontal');
 
-        svg.select(".legendNew")
+        svg.select(".legendNew_sb")
           .call(legend);
 
       
@@ -169,18 +169,18 @@
             })
           .selectAll("path")
             .attrTween("d", function(d) { return function() { return arc(d); }; })
-            .styleTween("stroke", function() { return fix_strokes })
+            .styleTween("stroke", function() { return fix_strokes; })
             //.style("stroke", "black")
-            .on("end", fix_strokes)
+            .on("end", fix_strokes);
             
             
         
       }
 
       function strokeTween(d){
-        console.log(d);
+        //console.log(d);
 
-        return "green"
+        return "green";
       }
 
       function fix_strokes(d){
@@ -188,14 +188,14 @@
         svg.selectAll("path")
             .style("stroke", function(d){
                   var startAngle = Math.max(0, Math.min(2 * Math.PI, x(d.x1))),
-                      endAngle = Math.max(0, Math.min(2 * Math.PI, x(d.x0)))
+                      endAngle = Math.max(0, Math.min(2 * Math.PI, x(d.x0)));
                   if(startAngle === endAngle){
                     return "none";
                   }else{
                     //console.log(startAngle, endAngle)
                     return "black";
                   }
-                })
+                });
       }
 
       function mouseover(d){
@@ -212,7 +212,7 @@
       }
       function mouseout(d){
         
-        tip.hide()
+        tip.hide();
       }
     
       d3.select(self.frameElement).style("height", height + "px");
@@ -222,71 +222,57 @@
   //create_sunburst()
 
   $('#parameterSetChoice').change(function(){
-    create_sunburst()
+    create_sunburst();
     //create_force_layout()
-  })
+  });
 
   $('#methodChoice').change(function(){
-    create_sunburst()
+    create_sunburst();
     //create_force_layout()
-  })
+  });
 
   $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-    var target = $(e.target).attr("href") // activated tab
+    var target = $(e.target).attr("href"); // activated tab
     if (target=="#tab-hotspots"){
-      create_sunburst()
-    };
+      create_sunburst();
+    }
+    else if(target=="#tab-table"){
+      update_table();
+    }
+    else if(target=="#tab-stackedbar"){
+      update_stack_bar();
+    }
   });
 
   $('.radio').change(function(){
-    if($("#radio_small").prop("checked") == true){
-      console.log("small")
-      break1 = 0.4,
+    if($("#radio_small").prop("checked") === true){
+      //console.log("small");
+      break1 = 0.4;
       break2 = 0.6;
-      show1 = 0.1,
+      show1 = 0.1;
       show2 = 0.9;
-    }else if($("#radio_large").prop("checked") == true){
-      console.log("large")
-      break1 = 0.5,
+    }else if($("#radio_large").prop("checked") === true){
+      //console.log("large");
+      break1 = 0.5;
       break2 = 0.6;
-      show1 = 0.2,
+      show1 = 0.2;
       show2 = 0.6;
-    }else if($("#radio_tiny").prop("checked") == true){
-      console.log("tiny")
-      break1 = 0.4,
+    }else if($("#radio_tiny").prop("checked") === true){
+      //console.log("tiny");
+      break1 = 0.4;
       break2 = 0.6;
-      show1 = 0.1,
+      show1 = 0.1;
       show2 = 0.98;
     }else{
-      console.log("hidden")
-      break1 = 0.4,
+      //console.log("hidden");
+      break1 = 0.4;
       break2 = 0.6;
-      show1 = 0.1,
+      show1 = 0.1;
       show2 = 1;
     }
     rscale = d3.scaleLinear().domain([0, break1*radius, break2*radius, 1.0*radius]).range([0, show1*radius, show2*radius, 1.0*radius]);
-    create_sunburst()
-  })
+    create_sunburst();
+  });
 
-  })
-
-
- /*
-
-
-
-
-
-vis.selectAll('rect')
-  .data(data)
-  .enter()
-  .append('rect')
-  .attr('width', function() { return x.rangeBand() })
-  .attr('height', function(d) { return h - y(d) })
-  .attr('y', function(d) { return y(d) })
-  .attr('x', function(d, i) { return x(i) })
-  .on('mouseover', tip.show)
-  .on('mouseout', tip.hide)
- */
-
+  });
  

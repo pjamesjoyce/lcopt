@@ -12,10 +12,10 @@
   stroke-width: 1.5px;
 }
 
-.node text {
+/*.node text {
   pointer-events: none;
   font: 10px sans-serif;
-}
+}*/
 
 polyline{
 	opacity: .3;
@@ -43,6 +43,21 @@ polyline{
 .table>tbody>tr>td{
   vertical-align: middle;
 }
+
+.table-nonfluid {
+   width: auto !important;
+   min-width: 50%;
+   margin: auto;
+}
+
+.data_cell{
+  min-width: 100px;
+}
+
+.row_title{
+  min-width: 200px;
+}
+
 .unit{
   font-size: 8px;
   color:#999;
@@ -123,4 +138,13 @@ polyline{
   font-size: 10px;
   color: black;
   font-style: italic;
+}
+
+#pie{
+  width: 100%;
+}
+
+.svg_container{
+  margin: auto;
+  display: block;
 }

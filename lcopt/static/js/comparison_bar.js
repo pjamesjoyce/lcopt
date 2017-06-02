@@ -12,9 +12,9 @@ var yScale = d3.scaleLinear()
           .range([bar_height, 0]);
 
 //set the colour scale
-var color = d3.scaleOrdinal(d3.schemeCategory20)
+var color = d3.scaleOrdinal(d3.schemeCategory20);
 
-var svg
+var svg;
 
 function setup_bar(){
 
@@ -47,7 +47,7 @@ function setup_bar(){
 	    .attr("transform", "rotate(-90)")
 	    .text("");  
 
-	update_bar()
+	update_bar();
 
 }
 
@@ -56,16 +56,16 @@ function update_bar(){
 	//read the data
 	//console.log('updating the bar chart')
 
-	var bar_data = []
+	var bar_data = [];
 
-	var m = $('#methodChoice').val() - 1
+	var m = $('#methodChoice').val() - 1;
 
 	for (i=0; i < bound_data.results.length; i++){
 		this_bar = {
-			value: bound_data.results[i][m]['score'],
-			label: bound_data.results[i][m]['ps_name'],
-		}
-		bar_data.push(this_bar)
+			value: bound_data.results[i][m].score,
+			label: bound_data.results[i][m].ps_name,
+		};
+		bar_data.push(this_bar);
 	}
 
 	// Scale the range of the data in the domains
@@ -80,7 +80,7 @@ function update_bar(){
 
 	bars.enter().append("rect")
 	    .attr("class", "bar")
-	    .attr("fill", function(d){return color(d.label)})
+	    .attr("fill", function(d){return color(d.label);})
 	    .attr("x", function(d) { return xScale(d.label); })
 	    .attr("width", xScale.bandwidth())
 	    .attr("y", function(d) { return yScale(d.value); })
@@ -99,9 +99,9 @@ function update_bar(){
 	svg.select('.yAxis')
 		.call(d3.axisLeft(yScale));
 
-	console.log(bound_data.results[0][m].unit)
-	console.log(i)
-	console.log(m)
+	//console.log(bound_data.results[0][m].unit);
+	//console.log(i);
+	//console.log(m);
 
 	svg.select('#c_bar_label')
 		.text(bound_data.results[0][m].unit);

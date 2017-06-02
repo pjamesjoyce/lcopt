@@ -7,11 +7,13 @@
 <script src="{{ url_for('static', filename = 'js/cdn_cache/d3.min.js') }}"></script>
 <script src="{{ url_for('static', filename = 'js/cdn_cache/d3-legend.min.js') }}"></script>
 <script src="{{ url_for('static', filename = 'js/cdn_cache/d3-tip.js') }}"></script>
+<script src="{{ url_for('static', filename = 'js/cdn_cache/d3-textwrap.JJ.js') }}"></script>
 
 <!--<script src="{{ url_for('static', filename = 'js/analysis.js') }}"></script>-->
 <script src="{{ url_for('static', filename = 'js/pie2.js') }}"></script>
 <script src="{{ url_for('static', filename = 'js/comparison_bar.js') }}"></script>
 
+<script src = "{{ url_for('static', filename = 'js/result_table.js') }}"></script>
 <script src = "{{ url_for('static', filename = 'js/treetest2.js') }}"></script>
 <script src = "{{ url_for('static', filename = 'js/stacked_bar.js') }}"></script>
 <script src = "{{ url_for('static', filename = 'js/sunburst.js') }}"></script>
@@ -78,12 +80,14 @@
         
         <div class = "tab-content">
             <div class="tab-pane fade in active" id="tab-stackedbar">
-                <div id="bar" class = "col-xs-6">
-                    
-                </div>
+                <div class="bottom-padding">
+                    <div id="bar" class = "col-xs-6 bottom-padding">
+                        
+                    </div>
 
-                <div id = "stackedbar" class = "col-xs-6">
+                    <div id = "stackedbar" class = "col-xs-6 bottom-padding">
 
+                    </div>
                 </div>
             </div>
 
@@ -93,91 +97,40 @@
             
 
             <div class="tab-pane fade" id="tab-table">
-                <!--<div class="col-xs-10 col-xs-offset-1">-->
+                
                 <div class="row">
                     <div class="col-xs-12">
-                     <div id="table" class="top-padding">
-                        <table id="myTable" class="table table-bordered table-condensed table-hover">
-                          <thead>
-                              <tr class ="table_header">
-                                <th rowspan="2">Process</th>
-                                {% for i in range(no_methods) %}
-                                <th colspan="{{colspan}}">{{args.result_sets.settings.method_names[i] | capitalize}} </br><span class = "unit">{{args.result_sets.settings.method_units[i]}}</span></th>
-                                {% endfor %}
-                              </tr>
-                              <tr class ="table_header">
-                                
-                                {% for i in range(no_methods) %}
-                                    {% for j in args.result_sets.settings.ps_names %}
-                                        <th>{{j}}</th>
-                                    {% endfor %}
-                                {% endfor %}
-                              </tr>
-                            </thead>
-
-                            <tbody>
-
-                                <tr class = "total_row">
-                                    <td>TOTAL</td>
-                                    {% for j in range(no_methods) %}
-                                        {% for i in range(colspan) %}
-                                            
-                                                <td class="right_align">{{"%0.2g" | format(args.result_sets.results[i][j].score)}}</td>
-                                            {% endfor %}
-                                        {% endfor %}
-                                </tr>
-
-                                
-                                {% for f in args.result_sets.results[0][0].foreground_results %}
-                                    <!-- calculate the row total, to see if its zero -->
-                                    {% set running_total = [0] %}
-
-                                    {% for i in range(colspan) %}
-                                        {% for j in range(no_methods) %}
-                                            {% if running_total.append(running_total.pop() + args.result_sets.results[i][j].foreground_results[f]) %}{% endif %}
-                                        {% endfor %}
-                                    {% endfor %}
-                                    <!-- done -->
-
-                                    
-                                    {% if running_total[0] != 0 %}  
-
-                                     <tr>
-                                        <td class="row_title">{{f}}</td>
-                                        {% for j in range(no_methods) %}
-                                        {% for i in range(colspan) %}
-                                            
-                                                <td class="right_align">{{"%0.2g" | format(args.result_sets.results[i][j].foreground_results[f])}}</td>
-                                            {% endfor %}
-                                        {% endfor %}
-                                    </tr>
-                                    
-
-                                    {% endif %}
-
-                                {% endfor %}
-
-                                
-                            </tbody>
-                            
-                        </table>
-                        </div>
-                      </div>
+                        <div id="dynamic_table" class="top-padding bottom-padding"></div>
+                    </div>
                 </div>
             </div>
 
             <div class="tab-pane fade" id="tab-tree">
-                
-                <div class="col-xs-12">
-                    <svg id='simaProTree'></svg>
+                <div class="row top-padding">
+                    <div class="col-xs-12">
+                    <p>
+                        <label for="cutoff">Cutoff : </label><input id="cutoff" type="number" value=5 max=100 min=0 step=0.1 oninput="draw_tree()">%    
+                    </p>
+                    </div>
+                </div>
+                <div class="row top-padding bottom-padding">
+                    <div class="col-xs-12" id="tree_container">
+                        <svg id='simaProTree'></svg>
+                    </div>
                 </div>
             </div>
 
             <div class="tab-pane fade" id="tab-pie">
-
-                <div id="pie" class = "col-xs-6">
-                    
+                <div class="row top-padding bottom-padding">
+                    <div class="col-xs-12">
+                    <p>
+                        <label for="cutoff_pie">Cutoff : </label><input id="cutoff_pie" type="number" value=5 max=100 min=0 step=0.1>%    
+                    </p>
+                    </div>
                 </div>
+                    <div class="row"><div id="pie" class = "col-xs-12"></div>
+                </div>
+                
 
             </div>
 
@@ -197,7 +150,7 @@
                 </div>
                 
                 
-                <div class="row">
+                <div class="row bottom-padding">
 
                     <div id = "sb_div" class = "col-xs-6">
                         <svg id = "sunburst"></svg>

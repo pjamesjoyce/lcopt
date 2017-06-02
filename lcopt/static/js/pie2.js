@@ -199,18 +199,19 @@ function change2() {
 
 		
 		////console.log(ps)
-		var data = bound_data
-		var ps = $('#parameterSetChoice').val() - 1
-	    var m = $('#methodChoice').val() - 1
+		var data = bound_data;
+		var ps = $('#parameterSetChoice').val() - 1;
+	    var m = $('#methodChoice').val() - 1;
 
 	    console.log(ps, m)
 
-	    var pre_pie_data = data['results'][ps][m]['foreground_results']
-	    var total_score = data['results'][ps][m]['score']
-	    var pie_cutoff = data['settings']['pie_cutoff']
-	    var pie_data = []
+	    var pre_pie_data = data['results'][ps][m]['foreground_results'];
+	    var total_score = data['results'][ps][m]['score'];
+	    //var pie_cutoff = data['settings']['pie_cutoff']
+	    var pie_cutoff = $('#cutoff_pie').val() / 100;
+	    var pie_data = [];
 	    
-	    var remaining_processes = 0
+	    var remaining_processes = 0;
 
 	    for (p in pre_pie_data){
 	    	if (pre_pie_data[p]/total_score > pie_cutoff){
@@ -223,6 +224,11 @@ function change2() {
 	    //console.log(remaining_processes)
 	    percent = remaining_processes/total_score*100
 	    //console.log(percent)
+
+	    pie_data.sort(function(a, b) {
+		    return parseFloat(b.value) - parseFloat(a.value);
+		});
+
 	    pie_data.push({value:remaining_processes, label:"Remaining processes", percent_label : percent.toFixed(1) + '%'})	
 
 	    //console.log(pie_data)
@@ -457,8 +463,14 @@ $('#methodChoice').change(function(){
 	update_bar()
 	draw_tree()
 	update_stack_bar()
+	update_table()
 	//create_force_layout()
 })
+
+$('#cutoff_pie')[0].oninput =  function(){
+	console.log('pie!')
+	change2()
+}
 //create the initial force layout
 //create_force_layout()
 

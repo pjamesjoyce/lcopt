@@ -1,14 +1,13 @@
-console.log('hello from analysis.js')
-
+console.log('hello from analysis.js');
 
 
 function create_force_layout(){
 
-var ps = $('#parameterSetChoice').val() - 1
-var m = $('#methodChoice').val() - 1
+var ps = $('#parameterSetChoice').val() - 1;
+var m = $('#methodChoice').val() - 1;
 
 // declare the svg container as svg, get width and height
-d3.select('#force').select('svg').remove()
+d3.select('#force').select('svg').remove();
 
 var svg = d3.select("#force")
 	.append("svg")
@@ -22,8 +21,8 @@ var color = d3.scaleOrdinal(d3.schemeCategory20c);
 
 // start the simulation - still need to read the docs on this
 var simulation = d3.forceSimulation()
-    .force("link", d3.forceLink().id(function(d) { return d.id; }).distance(function(d){return 50}))
-    .force("charge", d3.forceManyBody().strength(function(d){ return -50 }))
+    .force("link", d3.forceLink().id(function(d) { return d.id; }).distance(function(d){return 50;}))
+    .force("charge", d3.forceManyBody().strength(function(d){ return -50;}))
     .force("center", d3.forceCenter(width / 2, height / 2));
 
 // read the json file, graph is the json data we get back from the file
@@ -31,8 +30,8 @@ d3.json("results.json", function(error, data) {
   // if theres an error reading the data, say so
   if (error) throw error;
 
-  graph = data[ps][m]['graph']
-  console.log(graph)
+  graph = data[ps][m].graph;
+  console.log(graph);
 
   // create the links as their own group with the class 'links'
   var link = svg.append("g")
@@ -59,7 +58,7 @@ d3.json("results.json", function(error, data) {
 	// create the circles 
     node.append("circle")
       .attr("r",  function(d) { return Math.max(1,d.radius); })
-      .attr("fill", function(d) { return color(d.group); })
+      .attr("fill", function(d) { return color(d.group); });
     
     // add the alt text  
 	node.append("title")
@@ -69,7 +68,7 @@ d3.json("results.json", function(error, data) {
 	node.append("text")
 		.attr("dx", 12)
 	    .attr("dy", ".35em")
-	    .text(function(d) { return d.data.name });
+	    .text(function(d) { return d.data.name; });
 
 
 // link the data to the simulation
@@ -80,7 +79,7 @@ d3.json("results.json", function(error, data) {
       .on("tick", ticked);
 // the links get attached to the link data in the json (graph.links)
   simulation.force("link")
-      .links(graph.links)
+      .links(graph.links);
       //.distance(function(d){return 50});
 
 
@@ -97,7 +96,7 @@ d3.json("results.json", function(error, data) {
     	// the nodes get updated with a transform/translate function (the original was just for circles and didnt take the label with it)
         //.attr("cx", function(d) { return d.x; })
         //.attr("cy", function(d) { return d.y; });
-        .attr("transform", function(d) { return "translate(" + middle(d.x,d.radius,width-d.radius) + "," + middle(d.y,d.radius,height-d.radius) + ")"})
+        .attr("transform", function(d) { return "translate(" + middle(d.x,d.radius,width-d.radius) + "," + middle(d.y,d.radius,height-d.radius) + ")";});
         //.attr("cx", function(d) { return d.x = Math.max(function(d) { return Math.max(1,d.radius); }, Math.min(width - function(d) { return Math.max(1,d.radius); }, d.x)); })
         //.attr("cy", function(d) { return d.y = Math.max(function(d) { return Math.max(1,d.radius); }, Math.min(height - function(d) { return Math.max(1,d.radius); }, d.y)); });
   }

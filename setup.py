@@ -26,6 +26,7 @@ def package_files(directory):
             paths.append(os.path.join('..', path, filename))
     return paths
 
+
 my_package_files = []
 my_package_files.extend(package_files(os.path.join('lcopt', 'assets')))
 my_package_files.extend(package_files(os.path.join('lcopt', 'static')))
@@ -34,7 +35,7 @@ print(my_package_files)
 
 setup(
     name='lcopt',
-    version="0.3.1",
+    version="0.3.2",
     packages=packages,
     author="P. James Joyce",
     author_email="pjamesjoyce@gmail.com",
@@ -73,5 +74,3 @@ setup(
 
 # Also consider:
 # http://code.activestate.com/recipes/577025-loggingwebmonitor-a-central-logging-server-and-mon/
-
-
