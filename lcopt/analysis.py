@@ -167,7 +167,7 @@ class Bw2Analysis():
                     'settings': {
                         'pie_cutoff': pie_cutoff,
                         'methods': [str(method) for method in methods],
-                        'method_names': [method[1] for method in methods],
+                        'method_names': [', '.join(method[1:]) for method in methods],
                         'method_units': [bw2.methods[method]['unit'] for method in methods],
                         'item': demand_item,
                         'item_code': demand_item_code,

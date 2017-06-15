@@ -546,10 +546,15 @@ class FlaskSandbox():
         #print (self.modelInstance.analysis_settings)
 
         return "OK"
-            
+
     def create_app(self):
 
         app = Flask(__name__)
+
+        def uc_first(string):
+            return string[0].upper() + string[1:]
+
+        app.jinja_env.filters['uc_first'] = uc_first
 
         @app.route('/')
         def index():

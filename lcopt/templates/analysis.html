@@ -61,7 +61,7 @@
                 <div class = "form-group col-xs-3">
                     <label for="methodChoice">Method</label>
                     <select id = "methodChoice"  class="form-control input-sm">
-                        {% for item in args.result_sets.settings.method_names %}<option value = {{loop.index}}>{{item | capitalize}}</option>{% endfor %}
+                        {% for item in args.result_sets.settings.method_names %}<option value = {{loop.index}}>{{item | uc_first}}</option>{% endfor %}
                     </select>
                 </div>
             </div>
@@ -70,6 +70,7 @@
         <div class="row">
             <ul class="nav nav-tabs top-padding">
                 <li class="active"><a data-toggle="tab" href="#tab-stackedbar">Bar Charts</a></li>
+                <li><a data-toggle="tab" href="#tab-summary">Summary</a></li>
                 <li><a data-toggle="tab" href="#tab-table">Table</a></li>
                 <li><a data-toggle="tab" href="#tab-tree">Tree</a></li>
                 <li><a data-toggle="tab" href="#tab-pie">Pie Chart</a></li>
@@ -101,6 +102,15 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <div id="dynamic_table" class="top-padding bottom-padding"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="tab-summary">
+                
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="dynamic_summary_table" class="top-padding bottom-padding"></div>
                     </div>
                 </div>
             </div>

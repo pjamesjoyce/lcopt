@@ -46,10 +46,12 @@ d3.json("results.json", function(error, data) {
     if (error) throw error;
     bound_data = data
     //draw_pie(data)
-    draw_pie()
-    setup_bar()
-    draw_tree()
-    setup_stack_bar()
+    draw_pie();
+    setup_bar();
+    draw_tree();
+    setup_stack_bar();
+	update_summary_table();
+
     //draw_sunburst()
 
 })

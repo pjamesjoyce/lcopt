@@ -29,10 +29,10 @@ function update_table(){
 			var running_total=0;
 
 			for(var p=0; p<ps_length; p++){
-				console.log(bound_data.results[p][m].foreground_results[data_row]);
+				//console.log(bound_data.results[p][m].foreground_results[data_row]);
 				running_total += Math.abs(bound_data.results[p][m].foreground_results[data_row]);
 			}
-			console.log(running_total);
+			//console.log(running_total);
 			if(running_total != 0){
 				row_data.push({name: data_row, value:foreground_results[data_row], rt:running_total});	
 			}
@@ -67,11 +67,11 @@ function update_table(){
 	$table_div.find('.total_row').append('<td>TOTAL</td>');
 
 	for(var j = 0; j<ps_length; j++){
-		console.log(bound_data.settings.ps_names[j]);
-		$table_div.find('.total_row').append('<th class="text-right data_cell">'+ bound_data.results[j][m].score.toPrecision(2) +'</th>');
+		//console.log(bound_data.settings.ps_names[j]);
+		$table_div.find('.total_row').append('<th class="text-right data_cell">'+ bound_data.results[j][m].score.toPrecision(3) +'</th>');
 	}
 	
-	console.log(table_data);
+	//console.log(table_data);
 
 	no_rows = table_data[0].length;
 
@@ -82,7 +82,7 @@ function update_table(){
 			if(table_data[d][k].value == 0){
 				html += '<td class="text-muted text-right data_cell">-</td>';	
 			}else{
-				html += '<td class="text-right data_cell">' + table_data[d][k].value.toPrecision(2) + '</td>';	
+				html += '<td class="text-right data_cell">' + table_data[d][k].value.toPrecision(3) + '</td>';	
 			}
 		}
 		html += '</tr>';
@@ -96,73 +96,41 @@ function update_table(){
 }
 
 
-/*
-<div id="table" class="top-padding">
-                        <table id="myTable" class="table table-bordered table-condensed table-hover">
-                          <thead>
-                              <tr class ="table_header">
-                                <th rowspan="2">Process</th>
-                                {% for i in range(no_methods) %}
-                                <th colspan="{{colspan}}">{{args.result_sets.settings.method_names[i] | capitalize}} </br><span class = "unit">{{args.result_sets.settings.method_units[i]}}</span></th>
-                                {% endfor %}
-                              </tr>
-                              <tr class ="table_header">
-                                
-                                {% for i in range(no_methods) %}
-                                    {% for j in args.result_sets.settings.ps_names %}
-                                        <th>{{j}}</th>
-                                    {% endfor %}
-                                {% endfor %}
-                              </tr>
-                            </thead>
 
-                            <tbody>
+function update_summary_table(){
 
-                                <tr class = "total_row">
-                                    <td>TOTAL</td>
-                                    {% for j in range(no_methods) %}
-                                        {% for i in range(colspan) %}
-                                            
-                                                <td class="right_align">{{"%0.2g" | format(args.result_sets.results[i][j].score)}}</td>
-                                            {% endfor %}
-                                        {% endfor %}
-                                </tr>
+	ps_length = bound_data.results.length;
+	m_length = bound_data.settings.methods.length;
 
-                                
-                                {% for f in args.result_sets.results[0][0].foreground_results %}
-                                    <!-- calculate the row total, to see if its zero -->
-                                    {% set running_total = [0] %}
+	var table_data = [];
+	var cell_width = 100;
 
-                                    {% for i in range(colspan) %}
-                                        {% for j in range(no_methods) %}
-                                            {% if running_total.append(running_total.pop() + args.result_sets.results[i][j].foreground_results[f]) %}{% endif %}
-                                        {% endfor %}
-                                    {% endfor %}
-                                    <!-- done -->
+	
+	var $table_div = $('<div id="table" class="top-padding"><table id="myTable" class="table table-bordered table-condensed table-hover table-nonfluid"><thead></thead><tbody>');
+	
+	$table_div.find('thead').append('<tr class ="table_header" id="parameter_row">');
 
-                                    
-                                    {% if running_total[0] != 0 %}  
+	$table_div.find('#parameter_row').append('<th>Impact</th>');
 
-                                     <tr>
-                                        <td class="row_title">{{f}}</td>
-                                        {% for j in range(no_methods) %}
-                                        {% for i in range(colspan) %}
-                                            
-                                                <td class="right_align">{{"%0.2g" | format(args.result_sets.results[i][j].foreground_results[f])}}</td>
-                                            {% endfor %}
-                                        {% endfor %}
-                                    </tr>
-                                    
+	for(var p = 0; p<ps_length; p++){
+		$table_div.find('#parameter_row').append('<th>' + bound_data.settings.ps_names[p] + '</th>');
+	}
 
-                                    {% endif %}
+	for(var r = 0; r<m_length; r++){
+		html = '<tr class="item_row">';
+		for(var c = -1; c<ps_length; c++){
+			if(c == -1){
+				method_name = bound_data.settings.method_names[r];
+				display_method_name = method_name.charAt(0).toUpperCase() + method_name.slice(1);
+				html += '<td class="row_title">'+ display_method_name + ' <span class = "unit">(' + bound_data.settings.method_units[r] + ')</span></td>';
+			}else{
+				html += '<td class="text-right data_cell">' + bound_data.results[c][r].score.toPrecision(3) + '</td>';
+			}
+		}
+		html += '</tr>';
+		var $item_row = $table_div.find('tbody').append(html);
+	}
 
-                                {% endfor %}
+	$("#dynamic_summary_table").html($table_div);
 
-                                
-                            </tbody>
-                            
-                        </table>
-                        </div>
-                      </div>
-
-*/
+}
