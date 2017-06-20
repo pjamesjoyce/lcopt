@@ -134,3 +134,26 @@ function update_summary_table(){
 	$("#dynamic_summary_table").html($table_div);
 
 }
+
+
+$(document).ready(function() {
+	$("#table_export_button").click(function(e) {
+
+	  var ps = $('#parameterSetChoice').val() - 1;
+  	  var m = $('#methodChoice').val() - 1;
+
+	  window.location.replace("/excel_export?type=method&ps=" + ps + "&m=" + m);
+
+	});
+
+
+	$("#summary_excel_button").click(function(e){
+
+	  var ps = $('#parameterSetChoice').val() - 1;
+  	  var m = $('#methodChoice').val() - 1;
+
+	  window.location.replace("/excel_export?type=summary&ps=" + ps + "&m=" + m);
+
+	});
+
+});

@@ -15,6 +15,9 @@ var pieDimensions = {
 	labelRadius:200,
 };
 
+ $('#pie_export_button').click(function(){
+    export_StyledSVG('pie_svg', 'pie.png', pieDimensions.height , pieDimensions.width);
+  });
 
 
 var color = d3.scaleOrdinal(d3.schemeCategory20)
@@ -33,6 +36,7 @@ var pointerArc = d3.arc()
 
 var svg = d3.select("#pie")
 	.append("svg")
+	.attr("id", "pie_svg")
 	.attr("width", pieDimensions.width)
 	.attr("height", pieDimensions.height)
 		.append("g")
