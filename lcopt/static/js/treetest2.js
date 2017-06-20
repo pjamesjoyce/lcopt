@@ -6,6 +6,8 @@ var margin = {top: 50, right: 20, bottom: 100, left: 20},
 
 var max_stroke_width = 20;
 
+var height, width;
+
 var nodeSizes = {
   'input': [50,85],
   'intermediate' : [0,0],
@@ -173,8 +175,8 @@ function draw_tree(){
   //console.log(widths)
   var max_width = Math.max(...widths);
 
-  var height = level_height * max_depth - margin.top - margin.bottom;
-  var width = level_width * max_width  - margin.left - margin.right;
+  height = level_height * max_depth - margin.top - margin.bottom;
+  width = level_width * max_width  - margin.left - margin.right;
 
   // declares a tree layout and assigns the size
   var treemap = d3.tree()
@@ -356,6 +358,18 @@ function draw_tree(){
 
     d3.selectAll('.input_label').call(wrap_input);
 
+    
+
+
 }
+
+$(document).ready(function(){
+
+  ////console.log ('hello world')
+  $('#tree_export_button').click(function(){
+    export_StyledSVG('simaProTree', 'tree.png', height + margin.top + margin.bottom, width);
+  });
+
+});
 
 

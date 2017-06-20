@@ -22,6 +22,7 @@ function setup_bar(){
 	// append a 'group' element to 'svg'
 	// moves the 'group' element to the top left margin
 	svg = d3.select("#bar").append("svg")
+		.attr("id", "bar_svg")
 	    .attr("width", bar_width + bar_margin.left + bar_margin.right)
 	    .attr("height", bar_height + bar_margin.top + bar_margin.bottom)
 	  .append("g")
@@ -108,3 +109,8 @@ function update_bar(){
 
 }
 
+$(document).ready(function(){
+	 $('#bar_export_button').click(function(){
+    export_StyledSVG('bar_svg', 'bar.png', bar_height + bar_margin.top + bar_margin.bottom , bar_width + bar_margin.left + bar_margin.right);
+  });
+})

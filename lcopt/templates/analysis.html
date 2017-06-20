@@ -16,7 +16,9 @@
 <script src = "{{ url_for('static', filename = 'js/result_table.js') }}"></script>
 <script src = "{{ url_for('static', filename = 'js/treetest2.js') }}"></script>
 <script src = "{{ url_for('static', filename = 'js/stacked_bar.js') }}"></script>
-<script src = "{{ url_for('static', filename = 'js/sunburst.js') }}"></script>
+<!-- <script src = "{{ url_for('static', filename = 'js/sunburst.js') }}"></script> -->
+<script src = "{{ url_for('static', filename = 'js/export_chart.js') }}"></script>
+<script src = "{{ url_for('static', filename = 'js/hotspot.js') }}"></script>
 
 
 <link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/analysis.css') }}" />
@@ -81,15 +83,27 @@
         
         <div class = "tab-content">
             <div class="tab-pane fade in active" id="tab-stackedbar">
-                <div class="bottom-padding">
-                    <div id="bar" class = "col-xs-6 bottom-padding">
+                
+
+                <div class="row bottom-padding">
+                    <div id="bar" class = "col-xs-6 top-padding">
                         
                     </div>
 
-                    <div id = "stackedbar" class = "col-xs-6 bottom-padding">
+                    <div id = "stackedbar" class = "col-xs-6 top-padding">
 
                     </div>
                 </div>
+
+                <div class="row bottom-padding">
+                    <div class="col-xs-6">
+                        <button id="bar_export_button" class="btn btn-muted pull-right"><i class="material-icons">file_download</i></button>
+                    </div>
+                    <div class="col-xs-6">
+                        <button id="stacked_bar_export_button" class="btn btn-muted pull-right"><i class="material-icons">file_download</i></button>
+                    </div>
+                </div>
+
             </div>
 
             
@@ -104,6 +118,11 @@
                         <div id="dynamic_table" class="top-padding bottom-padding"></div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class=col-xs-12>
+                        <button id="table_export_button" class="btn btn-muted pull-right"><i class="material-icons">file_download</i></button>
+                    </div>
+                </div>
             </div>
 
             <div class="tab-pane fade" id="tab-summary">
@@ -113,14 +132,22 @@
                         <div id="dynamic_summary_table" class="top-padding bottom-padding"></div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class=col-xs-12>
+                        <button id="summary_excel_button" class="btn btn-muted pull-right"><i class="material-icons">file_download</i></button>
+                    </div>
+                </div>
             </div>
 
             <div class="tab-pane fade" id="tab-tree">
                 <div class="row top-padding">
-                    <div class="col-xs-12">
+                    <div class="col-xs-6">
                     <p>
                         <label for="cutoff">Cutoff : </label><input id="cutoff" type="number" value=5 max=100 min=0 step=0.1 oninput="draw_tree()">%    
                     </p>
+                    </div>
+                    <div class=col-xs-6>
+                        <button id="tree_export_button" class="btn btn-muted pull-right"><i class="material-icons">file_download</i></button>
                     </div>
                 </div>
                 <div class="row top-padding bottom-padding">
@@ -132,10 +159,13 @@
 
             <div class="tab-pane fade" id="tab-pie">
                 <div class="row top-padding bottom-padding">
-                    <div class="col-xs-12">
-                    <p>
-                        <label for="cutoff_pie">Cutoff : </label><input id="cutoff_pie" type="number" value=5 max=100 min=0 step=0.1>%    
-                    </p>
+                    <div class="col-xs-6">
+                        <p>
+                            <label for="cutoff_pie">Cutoff : </label><input id="cutoff_pie" type="number" value=5 max=100 min=0 step=0.1>%    
+                        </p>
+                    </div>
+                    <div class=col-xs-6>
+                        <button id="pie_export_button" class="btn btn-muted pull-right"><i class="material-icons">file_download</i></button>
                     </div>
                 </div>
                     <div class="row"><div id="pie" class = "col-xs-12"></div>
@@ -145,8 +175,8 @@
             </div>
 
             <div class="tab-pane fade" id="tab-hotspots">
-                <div class="row">
-                    <div class="col-xs-12">
+                <div class="row top-padding">
+                    <div class="col-xs-6">
                         <form class="form-inline">
                             <div class="form-group">
                                 <span class="bold top-padding"><strong>Outer ring : </strong></span>
@@ -157,12 +187,15 @@
                             </div>
                           </form>  
                     </div>
+                    <div class=col-xs-6>
+                        <button id="hotspot_export_button" class="btn btn-muted pull-right"><i class="material-icons">file_download</i></button>
+                    </div>
                 </div>
-                
+               
                 
                 <div class="row bottom-padding">
 
-                    <div id = "sb_div" class = "col-xs-6">
+                    <div id = "sb_div" class = "col-xs-12">
                         <svg id = "sunburst"></svg>
                     </div>
                     <div id = "hovertext_div" class = "col-xs-6">
@@ -170,12 +203,22 @@
                     </div>
 
                 </div>
+
+                 
+                
             </div>
 
         </div>
       </div>
     </div>
   </div>
+
+  <div class="row">
+    <div class="col-xs-12">
+        <canvas id="export_canvas"></canvas>
+    </div>
+  </div>
+
 </div>
 
 {% endblock %}

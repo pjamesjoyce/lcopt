@@ -27,6 +27,7 @@ function setup_stack_bar(){
 	// append a 'group' element to 'stack_svg'
 	// moves the 'group' element to the top left margin
 	stack_svg = d3.select("#stackedbar").append("svg")
+		.attr("id", "stackedbar_svg")
 	    .attr("width", stack_bar_dimensions.width)
 	    .attr("height", stack_bar_dimensions.height)
 	  .append("g")
@@ -319,3 +320,8 @@ function update_stack_bar(){
 
 }
 
+$(document).ready(function(){
+	 $('#stacked_bar_export_button').click(function(){
+    export_StyledSVG('stackedbar_svg', 'stacked_bar.png', stack_bar_dimensions.height , stack_bar_dimensions.width);
+  });
+})

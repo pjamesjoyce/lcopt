@@ -148,3 +148,12 @@ polyline{
   margin: auto;
   display: block;
 }
+
+.legend_subtitle{
+    fill:grey;
+}
+
+#export_canvas{
+  display: none;
+}
+
