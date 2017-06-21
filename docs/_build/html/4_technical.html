@@ -1,0 +1,278 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Technical Documentation &#8212; lcopt  documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Examples" href="3_examples.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="3_examples.html" title="Examples"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lcopt  documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-lcopt.model">
+<span id="technical-documentation"></span><h1>Technical Documentation<a class="headerlink" href="#module-lcopt.model" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="lcopt-model">
+<h2>lcopt.model<a class="headerlink" href="#lcopt-model" title="Permalink to this headline">¶</a></h2>
+<p>Module containing the LcoptModel class.</p>
+</div>
+<dl class="class">
+<dt id="lcopt.model.LcoptModel">
+<em class="property">class </em><code class="descclassname">lcopt.model.</code><code class="descname">LcoptModel</code><span class="sig-paren">(</span><em>name=[randomly_generated_string], load=False</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the base model class.</p>
+<p>To create a new model, enter a name e.g. <code class="docutils literal"><span class="pre">model</span> <span class="pre">=</span> <span class="pre">LcoptModel('My_Model')</span></code></p>
+<p>To load an existing model use the <code class="docutils literal"><span class="pre">load</span></code> option e.g. <code class="docutils literal"><span class="pre">model</span> <span class="pre">=</span> <span class="pre">LcoptModel(load</span> <span class="pre">=</span> <span class="pre">'My_Model')</span></code></p>
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.add_parameter">
+<code class="descname">add_parameter</code><span class="sig-paren">(</span><em>param_name</em>, <em>description=None</em>, <em>default=0</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.add_parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a global parameter to the database that can be accessed by functions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.analyse">
+<code class="descname">analyse</code><span class="sig-paren">(</span><em>demand_item</em>, <em>demand_item_code</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.analyse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the analyis of the model
+Doesn&#8217;t return anything, but creates a new item <code class="docutils literal"><span class="pre">LcoptModel.result_set</span></code> containing the results</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.create_process">
+<code class="descname">create_process</code><span class="sig-paren">(</span><em>name</em>, <em>exchanges</em>, <em>location='GLO'</em>, <em>unit='kg'</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.create_process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new process, including all new exchanges (in brightway2&#8217;s exchange format) in the model database.</p>
+<p>Exchanges must have at least a name, type and unit field</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.create_product">
+<code class="descname">create_product</code><span class="sig-paren">(</span><em>name</em>, <em>location='GLO'</em>, <em>unit='kg'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.create_product" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new product in the model database</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.database_to_SimaPro_csv">
+<code class="descname">database_to_SimaPro_csv</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.database_to_SimaPro_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export the lcopt model as a SimaPro csv file.</p>
+<p>The file will be called &#8220;&lt;ModelName&gt;_database_export.csv&#8221;</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.export_to_bw2">
+<code class="descname">export_to_bw2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.export_to_bw2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export the lcopt model in the native brightway 2 format</p>
+<p>returns name, database</p>
+<p>to use it to export, then import to brightway:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">name</span><span class="p">,</span> <span class="n">db</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">export_to_bw2</span><span class="p">()</span>
+<span class="kn">import</span> <span class="nn">brightway2</span> <span class="k">as</span> <span class="nn">bw</span>
+<span class="n">bw</span><span class="o">.</span><span class="n">projects</span><span class="o">.</span><span class="n">set_current</span><span class="p">(</span><span class="s1">&#39;MyProject&#39;</span><span class="p">)</span>
+<span class="n">new_db</span> <span class="o">=</span> <span class="n">bw</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+<span class="n">new_db</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+<span class="n">new_db</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.generate_parameter_set_excel_file">
+<code class="descname">generate_parameter_set_excel_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.generate_parameter_set_excel_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate an excel file containing the parameter sets in a format you can import into SimaPro Developer.</p>
+<p>The file will be called &#8220;ParameterSet_&lt;ModelName&gt;_input_file.xlsx&#8221;</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.import_external_db">
+<code class="descname">import_external_db</code><span class="sig-paren">(</span><em>db_file</em>, <em>db_type=None</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.import_external_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import an external database for use in lcopt</p>
+<p>db_type must be one of <code class="docutils literal"><span class="pre">technosphere</span></code> or <code class="docutils literal"><span class="pre">biosphere</span></code></p>
+<p>The best way to &#8216;obtain&#8217; an external database is to &#8216;export&#8217; it from brightway as a pickle file</p>
+<p>e.g.:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">brightway2</span> <span class="k">as</span> <span class="nn">bw</span>
+<span class="n">bw</span><span class="o">.</span><span class="n">projects</span><span class="o">.</span><span class="n">set_current</span><span class="p">(</span><span class="s1">&#39;MyModel&#39;</span><span class="p">)</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">bw</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;MyDatabase&#39;</span><span class="p">)</span>
+<span class="n">db_as_dict</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;MyExport.pickle&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">db_as_dict</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>NOTE: The Ecoinvent cutoff 3.3 database and the full biosphere database are included in the lcopt model as standard - no need to import those</p>
+<p>This can be useful if you have your own methods which require new biosphere flows that you want to analyse using lcopt</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.launch_interact">
+<code class="descname">launch_interact</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.launch_interact" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is probably the most important method in the model - you use it to launch the GUI</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.list_parameters_as_df">
+<code class="descname">list_parameters_as_df</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.list_parameters_as_df" title="Permalink to this definition">¶</a></dt>
+<dd><p>Only really useful when running from a jupyter notebook.</p>
+<p>Lists the parameters in the model in a pandas dataframe</p>
+<p>Columns: id, matrix coordinates, description, function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.load">
+<code class="descname">load</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>load data from a saved .lcopt file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.parameter_scan">
+<code class="descname">parameter_scan</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.parameter_scan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scan the database of the model instance to generate and expose parameters.</p>
+<p>This is called by other functions when items are added/removed from the model, but can be run by itself if you like</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.remove_input_link">
+<code class="descname">remove_input_link</code><span class="sig-paren">(</span><em>process_code</em>, <em>input_code</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.remove_input_link" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove an input (technosphere or biosphere exchange) from a process, resolving all parameter issues</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.rename">
+<code class="descname">rename</code><span class="sig-paren">(</span><em>newname</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.rename" title="Permalink to this definition">¶</a></dt>
+<dd><p>change the name of the model (i.e. what the .lcopt file will be saved as)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.save">
+<code class="descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>save the instance as a .lcopt file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.search_databases">
+<code class="descname">search_databases</code><span class="sig-paren">(</span><em>search_term</em>, <em>location=None</em>, <em>markets_only=False</em>, <em>databases_to_search=None</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.search_databases" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search external databases linked to your lcopt model.</p>
+<p>To restrict the search to particular databases (e.g. technosphere or biosphere only) use a list of database names in the <code class="docutils literal"><span class="pre">database_to_search</span></code> variable</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lcopt.model.LcoptModel.unlink_intermediate">
+<code class="descname">unlink_intermediate</code><span class="sig-paren">(</span><em>sourceId</em>, <em>targetId</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.unlink_intermediate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a link between two processes</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-lcopt.utils"></span><div class="section" id="lcopt-utils">
+<h2>lcopt.utils<a class="headerlink" href="#lcopt-utils" title="Permalink to this headline">¶</a></h2>
+<p>Module containing the utility function to set up brightway2 to work with lcopt</p>
+<dl class="function">
+<dt id="lcopt.utils.lcopt_bw2_setup">
+<code class="descclassname">lcopt.utils.</code><code class="descname">lcopt_bw2_setup</code><span class="sig-paren">(</span><em>ecospold_path</em>, <em>overwrite=False</em>, <em>db_name='LCOPT_Setup'</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.utils.lcopt_bw2_setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function to set up brightway2 to work correctly with lcopt.</p>
+<p>It requires the path to the ecospold files containing the Ecoinvent 3.3 cutoff database.</p>
+<p>If you don&#8217;t have these files, log into <a class="reference external" href="http://www.ecoinvent.org/login-databases.html">ecoinvent.org</a> and go to the Files tab</p>
+<p>Download the file called <code class="docutils literal"><span class="pre">ecoinvent</span> <span class="pre">3.3_cutoff_ecoSpold02.7z</span></code></p>
+<p>Extract the file somewhere sensible on your machine, you might need to download <a class="reference external" href="http://www.7-zip.org/download.html">7-zip</a> to extract the files.</p>
+<p>Make a note of the path of the folder that contains the .ecospold files, its probably <code class="docutils literal"><span class="pre">&lt;path/extracted/to&gt;/datasets/</span></code></p>
+<p>Use this path (as a string) as the first parameter in this function</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Technical Documentation</a><ul>
+<li><a class="reference internal" href="#lcopt-model">lcopt.model</a></li>
+<li><a class="reference internal" href="#lcopt-utils">lcopt.utils</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="3_examples.html"
+                        title="previous chapter">Examples</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/4_technical.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="3_examples.html" title="Examples"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lcopt  documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, P. James Joyce.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.5.
+    </div>
+  </body>
+</html>
