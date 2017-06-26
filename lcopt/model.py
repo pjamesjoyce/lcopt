@@ -130,6 +130,9 @@ class LcoptModel(object):
                                   'gt_cutoff': 0.01, 
                                   'pie_cutoff': 0.05
                                   }
+
+        # initialise with a blank result set
+        self.result_set = None
          
         if load is not None:
             self.load(load)
@@ -169,35 +172,31 @@ class LcoptModel(object):
             filename += ".lcopt"
         savedInstance = pickle.load(open("{}".format(filename), "rb"))
         
-        try:
-            # name the instance
-            self.name = savedInstance.name
+        attributes = ['name',
+                      'database',
+                      'params',
+                      'ext_params',
+                      'matrix',
+                      'names',
+                      'parameter_sets',
+                      'model_matrices',
+                      'technosphere_matrices',
+                      'leontif_matrices',
+                      'external_databases',
+                      'parameter_map',
+                      'sandbox_positions',
+                      'ecoinventName',
+                      'biosphereName',
+                      'analysis_settings',
+                      'technosphere_databases',
+                      'biosphere_databases',
+                      'result_set'
+                      ]
 
-            # set up the database, parameter dictionaries, the matrix and the names of the exchanges
-            self.database = savedInstance.database
-            self.params = savedInstance.params
-            self.ext_params = savedInstance.ext_params
-            self.matrix = savedInstance.matrix
-            self.names = savedInstance.names
-            self.parameter_sets = savedInstance.parameter_sets
-            self.model_matrices = savedInstance.model_matrices
-            self.technosphere_matrices = savedInstance.technosphere_matrices
-            self.leontif_matrices = savedInstance.leontif_matrices
-            self.external_databases = savedInstance.external_databases
-            self.parameter_map = savedInstance.parameter_map
+        for attr in attributes:
 
-            self.sandbox_positions = savedInstance.sandbox_positions
-
-            self.ecoinventName = savedInstance.ecoinventName
-            self.biosphereName = savedInstance.biosphereName
-
-            self.analysis_settings = savedInstance.analysis_settings
-
-            self.technosphere_databases = savedInstance.technosphere_databases
-            self.biosphere_databases = savedInstance.biosphere_databases
-
-        except Exception:
-            pass
+            if hasattr(savedInstance, attr):
+                setattr(self, attr, getattr(savedInstance, attr))
 
     def create_product (self, name, location='GLO', unit='kg', **kwargs):
 

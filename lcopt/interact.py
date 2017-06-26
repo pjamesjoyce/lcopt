@@ -855,7 +855,8 @@ class FlaskSandbox():
             
         @app.route('/results')
         def analysis_shortcut():
-            if hasattr(self.modelInstance, 'result_set'):
+            #if hasattr(self.modelInstance, 'result_set'):
+            if self.modelInstance.result_set is not None:
 
                 is_latest = request.args.get('latest')
 
