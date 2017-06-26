@@ -19,7 +19,7 @@ var stack_yScale = d3.scaleLinear()
 //set the colour scale
 var stack_color = d3.scaleOrdinal(d3.schemeCategory20)
 
-var stack_svg
+var stack_svg;
 
 function setup_stack_bar(){
 

@@ -46,9 +46,8 @@ var svg = d3.select("#pie")
 
 
 //set up the pie chart for the first time
-d3.json("results.json", function(error, data) {
-    if (error) throw error;
-    bound_data = data
+d3.json("results.json", function(data) {
+    bound_data = data;
     //draw_pie(data)
     draw_pie();
     setup_bar();

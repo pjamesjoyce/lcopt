@@ -409,7 +409,11 @@
 
  
   $('#hotspot_export_button').click(function(){
-    export_StyledSVG('sunburst', 'hotspot_chart.png', height, width);
+
+    var ps = $('#parameterSetChoice option:selected').text();
+    var m = $('#methodChoice option:selected').text();
+
+    export_StyledSVG('sunburst', 'hotspot_chart_' + ps + '_' + m + '.png', height, width);
   });
 
 

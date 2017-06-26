@@ -116,15 +116,20 @@ function postOrder(d, total_score, cutoff){
   d.eachAfter(function(n){
     if(splice_dict[n.data.activity]){
       for(j in splice_dict[n.data.activity]){
-        remove_index = splice_dict[n.data.activity][j]
-        ////console.log("removing child " + remove_index + " of " + n.data.activity)
-        ////console.log(n.children[remove_index].data.activity)
-        ////console.log(n.children[remove_index])
-        
-        n.children.splice(remove_index,1)
+        remove_index = splice_dict[n.data.activity][j];
+        //console.log("removing child " + remove_index + " of " + n.data.activity)
+        //console.log(n.children[remove_index].data.activity)
+        //console.log(n.children[remove_index])
+        n.children.splice(remove_index,1);
+
+        if (n.children.length == 0){
+          //console.log('no children left')
+          n.children = null;
+        }
+        //console.log(n.children);
       }
     }
-  })
+  });
 }
 
 
@@ -156,6 +161,8 @@ function draw_tree(){
   var nodes = d3.hierarchy(treeData, function(d) {
     return d.technosphere;
     });
+  //console.log(treeData);
+  //console.log(nodes);
 
   ////console.log(nodes)
   postOrder(nodes, total_score, cutoff);
@@ -182,6 +189,7 @@ function draw_tree(){
   var treemap = d3.tree()
     .size([width, height]);
   // maps the node data to the tree layout
+  console.log(nodes);
   nodes = treemap(nodes);
   //console.log(nodes)
 
