@@ -74,6 +74,7 @@
 				<button type="button" name="button" class="btn btn-xs btn-custom processButton" id="addProcess"><div><i class="material-icons">add</i></div>Add process</button>
 				<button type="button" name="button" class="btn btn-xs btn-custom processButton" id="saveModel"><div><i class="material-icons">save</i></div>Save model</button>
 				<button type="button" name="button" class="btn btn-xs btn-custom processButton" id="simaPro_export"><div><i class="material-icons">launch</i></div><span class="bit_smaller">SimaPro Export</span></button>
+				<button type="button" name="button" class="btn btn-xs btn-custom processButton" id="exportView"><div><i class="material-icons">file_download</i></div><span class="bit_smaller">Export view file</span></button>
 			</div>
 			
 		</div>
@@ -96,6 +97,13 @@
 	<p>The files are in your current working directory</p>
 	<p>The csv file is called "{{args.model.name}}_database_export.csv"</p>
 	<p>The excel file is called "ParameterSet_{{args.model.name}}_input_file.xlsx"</p>
+</div>
+
+<!-- viewfile dialog -->
+<div id="viewfile_dialog" title="Export complete">
+	<p>The model has been exported as a .lcoptview file</p>
+	<p>The file is in your current working directory</p>
+	<p>Go to <a href="http://lcoptview-pjjoyce.rhcloud.com/" target="_blank">lcoptview online</a> to upload and share your model</p>
 </div>
 
 <!-- jsPlumb sandbox script -->

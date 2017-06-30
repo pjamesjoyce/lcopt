@@ -190,7 +190,8 @@ class LcoptModel(object):
                       'analysis_settings',
                       'technosphere_databases',
                       'biosphere_databases',
-                      'result_set'
+                      'result_set',
+                      'evaluated_parameter_sets'
                       ]
 
         for attr in attributes:

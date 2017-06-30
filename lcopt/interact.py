@@ -10,6 +10,7 @@ from io import BytesIO
 
 
 from lcopt.bw2_export import Bw2Exporter
+from lcopt.export_view import LcoptView
 
 
 class FlaskSandbox():
@@ -37,6 +38,7 @@ class FlaskSandbox():
             'removeInput': self.removeInput,
             'unlinkIntermediate': self.unlinkIntermediate,
             'update_settings': self.update_settings,
+            'export_view_file': self.export_view_file
         }
         
         #print (self.modelInstance.newVariable)
@@ -546,6 +548,16 @@ class FlaskSandbox():
         self.modelInstance.analysis_settings['methods'] = [tuple(x) for x in myjson]
 
         #print (self.modelInstance.analysis_settings)
+
+        return "OK"
+
+    def export_view_file(self, postData):
+
+        model = self.modelInstance
+
+        exporter = LcoptView(model)
+
+        exporter.export()
 
         return "OK"
 

@@ -256,6 +256,17 @@ var jsPlumbsetup = function (nodes, links,linklabels, outputlabels) {
       }
     }
   });
+
+  $( "#viewfile_dialog" ).dialog({
+    dialogClass: "no-close",
+    autoOpen: false,
+    modal: true,
+    buttons: {
+      Ok: function() {
+        $( this ).dialog( "close" );
+      }
+    }
+  });
    
 
   $('#simaPro_export').click(function(e){
@@ -263,6 +274,13 @@ var jsPlumbsetup = function (nodes, links,linklabels, outputlabels) {
     $.post('/process_post', {action:'simaPro_export'})
     console.log('dialog?')
     $( "#dialog" ).dialog( "open" );
+  })
+
+  $('#exportView').click(function(e){
+    console.log('exporting to viewfile');
+    $.post('/process_post', {action:'export_view_file'});
+    console.log('dialog?');
+    $( "#viewfile_dialog" ).dialog( "open" );
   })
 	
 } // end of jsPlumbSetup
