@@ -1,5 +1,5 @@
 from lcopt.bw2_export import Bw2Exporter
-from lcopt.utils import DEFAULT_DB_NAME
+from lcopt.utils import DEFAULT_DB_NAME, FORWAST_DB_NAME
 import brightway2 as bw2
 from bw2analyzer.tagged import recurse_tagged_database, aggregate_tagged_graph
 from copy import deepcopy
@@ -17,21 +17,31 @@ class Bw2Analysis():
         self.bw2_project_name = self.modelInstance.name
         
     def setup_bw2(self):
+
         if self.bw2_project_name in bw2.projects:
             bw2.projects.set_current(self.bw2_project_name)
             print('Switched to existing bw2 project - {}'.format(self.bw2_project_name))
             return True
-            
-        elif DEFAULT_DB_NAME in bw2.projects:                                       # pragma: no cover
-            bw2.projects.set_current(DEFAULT_DB_NAME)
-            bw2.projects.copy_project(self.bw2_project_name, switch=True)
-            print('Created new bw2 project - {}'.format(self.bw2_project_name))
-            return True
+
+        else:
         
-        else:                                                                       # pragma: no cover
-            print ("bw2 project setup failed, please create the 'LCOPT_Setup' project in advance with the biosphere and necessary external databases (e.g. 'Ecoinvent_3_3_cutoff') ")
-            print ("To do this, run lcopt_bw_setup in lcopt.utils")
-            return False
+            if self.modelInstance.useForwast:
+                if FORWAST_DB_NAME in bw2.projects:
+                    bw2.projects.set_current(FORWAST_DB_NAME)
+                    bw2.projects.copy_project(self.bw2_project_name, switch=True)
+                    print('Created new bw2 project - {}'.format(self.bw2_project_name))
+                    return True
+
+            elif DEFAULT_DB_NAME in bw2.projects:                                       # pragma: no cover
+                bw2.projects.set_current(DEFAULT_DB_NAME)
+                bw2.projects.copy_project(self.bw2_project_name, switch=True)
+                print('Created new bw2 project - {}'.format(self.bw2_project_name))
+                return True
+        
+            else:                                                                       # pragma: no cover
+                print ("bw2 project setup failed, please create the 'LCOPT_Setup' or 'LCOPT_Setup_Forwast' project in advance with the biosphere and necessary external databases (e.g. 'Ecoinvent_3_3_cutoff') ")
+                print ("To do this, run lcopt_bw_setup in lcopt.utils")
+                return False
         
     def update_exchange_amounts(self, database, parameter_set):
         for i in database:

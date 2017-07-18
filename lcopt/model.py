@@ -94,7 +94,7 @@ class LcoptModel(object):
 
     """
 
-    def __init__(self, name=hex(random.getrandbits(128))[2:-1], load=None):
+    def __init__(self, name=hex(random.getrandbits(128))[2:-1], load=None, useForwast=False):
         super(LcoptModel, self).__init__()
         
         # name the instance
@@ -120,7 +120,15 @@ class LcoptModel(object):
         self.biosphereName = "biosphere3"
         self.ecoinventFilename = "ecoinvent3_3"
         self.biosphereFilename = "biosphere3"
-        self.technosphere_databases = [self.ecoinventName]
+        self.forwastName = "forwast"
+        self.forwastFilename = "forwast"
+        self.useForwast = useForwast
+        
+        if self.useForwast:
+            self.technosphere_databases = [self.forwastName]
+        else:
+            self.technosphere_databases = [self.ecoinventName]
+
         self.biosphere_databases = [self.biosphereName]
 
         # default settings for bw2 analysis
@@ -140,10 +148,18 @@ class LcoptModel(object):
         asset_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'assets')
         ecoinventPath = os.path.join(asset_path, self.ecoinventFilename)
         biospherePath = os.path.join(asset_path, self.biosphereFilename)
+        forwastPath = os.path.join(asset_path, self.forwastFilename)
 
         # Try and initialise the external databases if they're not there already
-        if self.ecoinventName not in [x['name'] for x in self.external_databases]:
-            self.import_external_db(ecoinventPath, 'technosphere')
+        if self.useForwast:
+            if self.ecoinventName not in [x['name'] for x in self.external_databases]:
+                self.import_external_db(forwastPath, 'technosphere')
+            
+        else:
+            if self.ecoinventName not in [x['name'] for x in self.external_databases]:
+                self.import_external_db(ecoinventPath, 'technosphere')
+
+
         if self.biosphereName not in [x['name'] for x in self.external_databases]:
             self.import_external_db(biospherePath, 'biosphere')
 
@@ -187,6 +203,7 @@ class LcoptModel(object):
                       'sandbox_positions',
                       'ecoinventName',
                       'biosphereName',
+                      'forwastName'
                       'analysis_settings',
                       'technosphere_databases',
                       'biosphere_databases',
