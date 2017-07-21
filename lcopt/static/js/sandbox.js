@@ -233,6 +233,7 @@ var jsPlumbsetup = function (nodes, links,linklabels, outputlabels) {
     $('#saveModel').click(function(e){
     	//console.log('saving the model');
     	saveModel();
+      update_status();
     });
 
     //This one is the add process button

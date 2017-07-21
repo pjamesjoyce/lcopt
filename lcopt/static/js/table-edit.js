@@ -32,21 +32,26 @@ $(document).ready(function(){
 	    form.submit();
 	}
 
-	$BTN.click(function () {
-	  var $rows = $TABLE.find('tr:not(:hidden)');
+	//$BTN.click(function () {
+
+	function save_parameters(){
+	  var $rows = $TABLE.find('tr');
 	  var headers = [];
 	  var data = [];
 	  
 	  // Get the headers (add special header logic here)
-	  $($rows.shift()).find('th:not(:empty)').each(function () {
+	  $($rows.shift()).find('th').each(function () {
 	    headers.push($(this).text());
 	  });
 	  
+	  console.log($rows)
+
 	  // Turn all existing rows into a loopable array
 	  $rows.each(function () {
+	  	var $td, h;
 	  	if ($(this).hasClass('data_row')){
-		    var $td = $(this).find('td');
-		    var h = {};
+		    $td = $(this).find('td');
+		    h = {};
 		    
 		    // Use the headers from earlier to name our hash keys
 		    headers.forEach(function (header, i) {
@@ -54,24 +59,25 @@ $(document).ready(function(){
 		    });
 		    
 		    data.push(h);
+
+		}else if($(this).hasClass('function_row')){
+			$td = $(this).find('td');
+		    h = {};
+		    
+		    // Use the headers from earlier to name our hash keys
+		    headers.forEach(function (header, i) {
+		      if(i<=2){
+		        h[header] = $td.eq(i).text();  
+		  	  }else{
+		  	  	h[header] = "[FUNCTION]"; //$td.eq(i).text();  	
+		  	  }
+		    });
+		    
+		    data.push(h);
 		}
 	  });
 	  
-	  // Output the result
-	  //$EXPORT.text(JSON.stringify(data));
-	  //$.post("/",
-	  //     JSON.stringify(data),
-	  //      function(data,status){
-	  //          alert("Data: " + data + "\nStatus: " + status);
-	  //      });
-	//	});
-	var url = "/parse_parameters";
-	/*$.ajax(url, {
-	    data : JSON.stringify(data),
-	    contentType : 'application/json',
-	    type : 'POST',
-	    success: function(data) { alert('data: ' + data); }
-		});*/
+	console.log(JSON.stringify(data));
 
 	postData ={
 		'action':'parse_parameters',
@@ -80,7 +86,14 @@ $(document).ready(function(){
    	
    	$.post('/process_post', postData);
 
-   	window.location.replace("/parameters");
+   	update_status();
+   	
+   	
+	}
+
+	$BTN.click(function() {
+		save_parameters();
+		window.location.replace("/parameters");
 
 	});
 
@@ -94,7 +107,7 @@ $(document).ready(function(){
 
 		var count = myTable.find('.ps_name').length;
 
-		myTable.find('.table_header').append('<th class="ps_name">ParameterSet_'+(count+1)+'</th>');
+		myTable.find('.table_header').append('<th contenteditable="true" class="ps_name">ParameterSet_'+(count+1)+'</th>');
 
 	     myTable.find('.data_row,.function_row').each(function(){
 	         	var trow = $(this);
@@ -111,5 +124,89 @@ $(document).ready(function(){
 	     });
 	     
 	});
+
+	var formTitle = 'Add global parameter';
+
+	var formHtml = `
+                    <form class="form-horizontal">
+                      <div class="form-group">
+                        <label for="paramName" class="control-label col-xs-3">Parameter ID</label> 
+                        <div class="col-xs-9">
+                          <input class="form-control" name = "paramName", id="paramName">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="paramDescription" class="control-label col-xs-3">Description</label> 
+                        <div class="col-xs-9">
+                          <input class="form-control" name = "paramDescription", id="paramDescription">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="paramUnit" class="control-label col-xs-3">Unit (optional)</label> 
+                        <div class="col-xs-9">
+                          <input class="form-control" name = "paramUnit", id="paramUnit">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="paramDefault" class="control-label col-xs-3">Default value</label> 
+                        <div class="col-xs-9">
+                          <input class="form-control" name = "paramDefault", id="paramDefault">
+                        </div>
+                      </div>
+                      </form>
+                      <div class = "row">
+	                      <div class="col-xs-12">
+	                        <div id="paramButton" class="col-xs-3 pull-right">
+	                         <!--Button goes here--> 
+	                        </div>
+	                      </div>
+                      </div>
+                  `;
+
+
+	$('#btn_add_parameter').click(function(){
+		save_parameters();
+		var inputModal = BootstrapDialog.show({
+	    	title:formTitle,
+	    	message: messageFunction,
+	    	nl2br: false,
+
+	    	buttons:[{
+		        label:'Add',
+		        cssClass: 'btn-primary',
+		        action:function(dialogRef){
+			            console.log('add parameter');
+
+			            $message = dialogRef.$modalBody;
+						var param_id = $message.find('#paramName');
+						var param_description = $message.find('#paramDescription');
+						var param_default = $message.find('#paramDefault');
+						var param_unit = $message.find('#paramUnit');
+
+						var postData = {
+							action: 'add_parameter',
+							param_id: param_id.val(),
+							param_description: param_description.val(),
+							param_default: param_default.val(),
+							param_unit: param_unit.val(),
+						};
+						console.log(postData);
+
+						$.post('/process_post', postData);
+
+						
+			          //close the dialog
+			          dialogRef.close();
+			          window.location.replace("/parameters");
+			      },
+			    }]
+
+		  });
+	});
+
+	function messageFunction(dialogRef){
+				var $message = $('<div></div>').append(formHtml);
+	    		return $message;
+	    	}
 
 });//end of document.ready

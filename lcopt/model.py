@@ -152,7 +152,7 @@ class LcoptModel(object):
 
         # Try and initialise the external databases if they're not there already
         if self.useForwast:
-            if self.ecoinventName not in [x['name'] for x in self.external_databases]:
+            if self.forwastName not in [x['name'] for x in self.external_databases]:
                 self.import_external_db(forwastPath, 'technosphere')
             
         else:
@@ -455,18 +455,21 @@ class LcoptModel(object):
        
         return p_set_name
         
-    def add_parameter(self, param_name, description=None, default=0):
+    def add_parameter(self, param_name, description=None, default=0, unit=None):
         """
         Add a global parameter to the database that can be accessed by functions
         """
 
         if description is None:
             description = "Parameter called {}".format(param_name)
+
+        if unit is None:
+            unit = "-"
         
         name_check = lambda x: x['name'] == param_name
         name_check_list = list(filter(name_check, self.ext_params))
         if len(name_check_list) == 0:
-            self.ext_params.append({'name': param_name, 'description': description, 'default': default})
+            self.ext_params.append({'name': param_name, 'description': description, 'default': default, 'unit': unit})
         else:
             print('{} already exists - choose a different name'.format(param_name))
 

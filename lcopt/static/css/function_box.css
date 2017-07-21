@@ -33,3 +33,21 @@
 .item_global{
 	background-color: #FEF9F9;
 }
+
+.selectize-control.plugin-clear_button .clearAll {
+    font-size: 26px;
+    position: absolute;
+    cursor: pointer;
+    top: -2px;
+    right: 5px;
+    
+    z-index: 10;
+    
+}
+
+.selectize-input{
+	padding-right: 25px !important;
+}
+/*.selectize-control.plugin-clear_button .clearAll:hover {
+    text-decoration: underline;
+}*/

@@ -38,3 +38,11 @@
 	font-style: italic;
 	color: #bbb;
 }
+
+.table-hover tbody tr:hover td .edit_function {
+	visibility: visible;
+}
+.edit_function{
+	visibility: hidden;
+	cursor: pointer;
+}

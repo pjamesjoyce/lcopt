@@ -203,6 +203,8 @@ var initNode = function(el, instance) {
                 //console.log('TODO: Fix this for Flask implentation')
               
             }); 
+
+            update_status();
             
 };
       
@@ -229,6 +231,7 @@ var saveModel = function(){
     'action' : 'saveModel'
   }
   $.post('/process_post', postData);
+  
 }
 
 // This function sends the information required to the python side to create a new process in the loaded model instance
@@ -538,7 +541,7 @@ var addInput = function(e, instance){
 
         $button.on('click', function(){
           // search_ecoinvent_dialog now takes a callback function which gets run when the user clicks ok
-          search_external_dialog('Search ecoinvent database', logResult, 'searchEcoinvent')
+          search_external_dialog('Search for LCI data', logResult, 'searchEcoinvent')
 
         })
         $message.find('#ext_data_button').append($button)
@@ -994,7 +997,9 @@ var search_external_dialog = function(title, callback, action){
     var formHtml = `
                     <form class="form-horizontal">
                       <div class="form-group">
-                        <label for="searchTerm" class="control-label col-xs-3">Search for:</label> 
+                        <label for="searchTerm" class="control-label col-xs-3"
+                        data-toggle="popover" data-placement= "left" data-trigger="hover" title="Search term" 
+                            data-content="What are you looking for?">Search for:</label> 
                         <div class="col-xs-9">
                           <input class="form-control ecoinventSearchTrigger" name = "searchTerm", id="searchTerm" autocomplete="off">
                           <input name="hidden_control_to_stop_submission" style="{display:none}" class = "hidden">
@@ -1003,15 +1008,19 @@ var search_external_dialog = function(title, callback, action){
                       `
     if(action == 'searchEcoinvent'){
       formHtml +=`<div class="form-group">
-                        <label for="location" class="control-label col-xs-3">Location</label> 
+                        <label for="location" class="control-label col-xs-3"
+                          data-toggle="popover" data-placement= "left" data-trigger="hover" title="Location" 
+                            data-content="You can filter your search by location - This is particularly useful for electricity. Leave this blank to search everywhere">Location</label> 
                         <div class="col-xs-9">
-                          <input class="form-control ecoinventSearchTrigger" name = "location", id="location" autocomplete="off">
+                          <select multiple class="ecoinventSearchTrigger" name = "location", id="location" autocomplete="off"></select>
                         </div>
                       </div>
                       <div class="form-group">
-                        <label for="marketsOnly" class="control-label col-xs-3">Markets only:</label> 
+                        <label for="marketsOnly" class="control-label col-xs-3"
+                            data-toggle="popover" data-placement= "left" data-trigger="hover" title="Market processes" 
+                            data-content="<strong>Recommended if using ecoinvent 3</strong><br>In ecoinvent, market processes represent the mix of technologies/sources for the production of products used in the chosen location. If you don't know where or how an input is made, use markets processes. If you do, you can leave this unticked and search for production processes. If you're not using ecoinvent 3 (e.g. using FORWAST) leave this unticked">Only show market processes (ecoinvent):</label> 
                         <div class="col-xs-6">
-                          <input type="checkbox" class="checkbox-inline ecoinventSearchTrigger" name = "marketsOnly", id="marketsOnly" checked="checked">
+                          <input type="checkbox" class="checkbox-inline ecoinventSearchTrigger" name = "marketsOnly", id="marketsOnly">
                         </div>
                         <div id = "button_goes_here" class="col-xs-3">
                           
@@ -1046,11 +1055,27 @@ var search_external_dialog = function(title, callback, action){
       title:formTitle,
       message:function(){
         var $message = $('<div></div>').append(formHtml);
+
+        $message.find('[data-toggle="popover"]').popover({
+          //container: '#sandbox_container',
+          html: true,
+          delay: {
+             show: "0",
+             hide: "50"
+          },
+        })
+
         var $buttonDiv = $message.find('#button_goes_here');
         var $button = $('<button type="button" id="search_button" class="pull-right btn btn-primary">Search</button>')
         $button.on('click', function(){
           var search_term = $('#searchTerm').val()
-          var location = $('#location').val()
+          var location;
+           if ($('#location').val()){
+            location = $('#location').val()[0]
+           }else{
+            location = null;
+           }
+          console.log(location)
           var markets_only = $('#marketsOnly').is(':checked');
           //var action = 'searchEcoinvent'
 
@@ -1070,6 +1095,10 @@ var search_external_dialog = function(title, callback, action){
 
 
         return $message
+      },
+      onshown: function(dialogRef){
+        console.log('showing the search box now');
+        setup_location_box();
       },
       nl2br: false,
       //autodestroy:false,
@@ -1372,7 +1401,46 @@ var createModal = function(title, body){
 
 
 function start_analysis(id, name){
-  console.log('starting analysis for ' + name)
-  console.log(id)
-  window.location.replace("/analyse?item=" + name + "&item_code=" + id);
+
+  $.getJSON( "/status.json", function(data) {
+      can_analyse = data.model_is_runnable;
+      console.log(can_analyse)
+      if(can_analyse){
+        console.log('starting analysis for ' + name)
+        console.log(id)
+        window.location.replace("/analyse?item=" + name + "&item_code=" + id);
+      }else{
+
+        items = {
+          'model_has_impacts': '<div class="row"><div class="col-xs-12 bg-info"><h4>The model needs at least one link to a technosphere or biosphere exchange, otherwise the total impact of the system will be zero</h4> <p>Go to a process and click on the  <i class="material-icons md-18">business</i> icon to add a technoshere exchange or the <i class="material-icons md-18">local_florist</i>icon to add a biosphere exchange</p></div></div><div class="row"><div class="col-xs-12"><br></div></div>',
+          'model_has_parameters': "<div class='row'><div class=' col-xs-12 bg-success'><h4>At least one of the links in the model needs to be specified with a number (that isn't zero!)</h4><p> Go to the <a href='/parameters'>Parameter Sets</a> tab and add some numbers/functions.</p></div></div>"
+        }
+        
+        formTitle = "Can't run analysis yet..."
+        popupHtml = "<div>"
+
+        for (item in items) {
+          if(!data[item]){
+            popupHtml += items[item];
+          }
+        }
+
+        popupHtml += '</div>'
+
+        var inputModal = BootstrapDialog.show({
+          title:formTitle,
+          message: popupHtml,
+          type: 'type-danger',
+          buttons: [{
+                label: 'OK',
+                action: function(dialogItself){
+                    dialogItself.close();
+                }
+            }]
+        });
+
+
+      
+      }
+  });
 }

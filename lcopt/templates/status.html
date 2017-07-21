@@ -1,0 +1,38 @@
+
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/status.css') }}" />
+
+<div id="status_box_outer_small" class="status_box container-fluid">
+
+	<div class="status_box_item row" id="status_model_is_runnable" data-toggle="popover" data-container="body" data-placement="left" data-trigger="hover" title="" data-content="The model contains enough information for an analysis to be run - click on the analysis (pie chart) icon on a process to analyse it." data-original-title="The model can be analysed">
+        <div class="status_title col-xs-6"><i class="material-icons">equalizer</i></div>
+        <div class="status_item col-xs-6"><i class="material-icons is_false">close</i></div>
+    </div>
+
+    <div class="status_box_item row" id="status_has_model" data-toggle="popover" data-container="body" data-placement="left" data-trigger="hover" title="" data-content="The model contains at least one process." data-original-title="The model exists">
+        <div class="status_title col-xs-6"><i class="material-icons">wb_iridescent</i></div>
+        <div class="status_item col-xs-6"><i class="material-icons is_false">close</i></div>
+    </div>
+
+    <div class="status_box_item row" id="status_model_has_impacts" data-toggle="popover" data-container="body" data-placement="left" data-trigger="hover" title="" data-content="At least one process has an external link to an inventory or biosphere database. If the total impact is 0 the analysis will fail." data-original-title="The model has impacts">
+        <div class="status_title col-xs-6"><i class="material-icons">link</i></div>
+        <div class="status_item col-xs-6"><i class="material-icons is_false">close</i></div>
+    </div>
+
+    <div class="status_box_item row" id="status_model_has_parameters" data-toggle="popover" data-container="body" data-placement="left" data-trigger="hover" title="" data-content="The model has at least one parameter set that can be analysed. At least one of the parameters has to be a non-zero value." data-original-title="The model has parameters">
+        <div class="status_title col-xs-6"><i class="material-icons">format_list_numbered</i></div>
+        <div class="status_item col-xs-6"><i class="material-icons is_false">close</i></div>
+    </div>
+
+    <div class="status_box_item row" id="status_model_has_functions" data-toggle="popover" data-container="body" data-placement="left" data-trigger="hover" title="" data-content="The model contains at least one function - this is not required to run the model." data-original-title="The model has functions">
+        <div class="status_title col-xs-6"><i class="material-icons">functions</i></div>
+        <div class="status_item col-xs-6"><i class="material-icons is_false">close</i></div>
+    </div>
+    
+    <div class="status_box_item row" id="status_model_is_fully_formed" data-toggle="popover" data-container="body" data-placement="left" data-trigger="hover" title="" data-content="The model contains all of the information required to run, plus functions" data-original-title="The model is 'fully formed'">
+        <div class="status_title col-xs-6"><i class="material-icons">language</i></div>
+        <div class="status_item col-xs-6"><i class="material-icons is_false">close</i></div>
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename = 'js/status_update.js') }}"></script>

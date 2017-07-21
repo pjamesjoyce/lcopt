@@ -2,8 +2,9 @@
 /*.lcopt
 /*.lcoptview
 /*.csv
-*.json
 *.xlsx
 /static/
 /templates/
 *.pyc
+/htmlcov/*
+report.html

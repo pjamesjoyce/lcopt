@@ -57,7 +57,7 @@ def lcopt_bw2_setup(ecospold_path, overwrite=False, db_name=DEFAULT_DB_NAME):  #
     return True
 
 
-def forwast_autodownload(FORWAST_URL):
+def forwast_autodownload(FORWAST_URL):      # pragma: no cover 
     dirpath = tempfile.mkdtemp()
     r = requests.get(FORWAST_URL)
     z = zipfile.ZipFile(io.BytesIO(r.content))
@@ -65,7 +65,7 @@ def forwast_autodownload(FORWAST_URL):
     return os.path.join(dirpath, 'forwast.bw2package')
 
 
-def lcopt_bw2_forwast_setup(use_autodownload=True, forwast_path=None, db_name=FORWAST_DB_NAME, overwrite=False):
+def lcopt_bw2_forwast_setup(use_autodownload=True, forwast_path=None, db_name=FORWAST_DB_NAME, overwrite=False):        # pragma: no cover 
 
     """
     Utility function to set up brightway2 to work correctly with lcopt using the FORWAST database instead of ecoinvent.

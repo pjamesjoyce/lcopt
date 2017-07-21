@@ -7,6 +7,7 @@ from collections import OrderedDict
 from itertools import groupby
 import xlsxwriter
 from io import BytesIO
+import os
 
 
 from lcopt.bw2_export import Bw2Exporter
@@ -291,8 +292,8 @@ class FlaskSandbox():
 
         for k, v in alt_id_sandbox_positions.items():
 
-            print (k)
-            print(id_components)
+            #print (k)
+            #print(id_components)
 
             if len(k) == 1:
                 new_sandbox_positions['{}'.format(*k)] = v
@@ -401,6 +402,7 @@ class FlaskSandbox():
         new_function = postData['my_function']
         parameter = self.modelInstance.params[postData['for']]
         parameter['function'] = new_function
+        parameter['description'] = postData['description']
 
         return "OK"
 
@@ -410,7 +412,7 @@ class FlaskSandbox():
         # create a default parameter set if there isn't one yet
         if len(self.modelInstance.parameter_sets) == 0:
             print ('No parameter sets - creating a default set')
-            self.modelInstance.parameter_sets['ParameterSet_1'] = {}
+            self.modelInstance.parameter_sets['ParameterSet_1'] = OrderedDict()
             for param in parameters:
                 self.modelInstance.parameter_sets['ParameterSet_1'][param] = 0
 
@@ -469,7 +471,7 @@ class FlaskSandbox():
         ext_section = {'name': 'Global Parameters', 'my_items': [{'name': 'User created', 'my_items': []}]}
         for e_p in self.modelInstance.ext_params:
             values = [ps[e_p['name']] if e_p['name'] in ps.keys() else e_p['default'] for ps_name, ps in self.modelInstance.parameter_sets.items()]
-            ext_section['my_items'][0]['my_items'].append({'id': e_p['name'], 'name': e_p['description'], 'existing_values': values, 'unit': '', 'isFunction': False})
+            ext_section['my_items'][0]['my_items'].append({'id': e_p['name'], 'name': e_p['description'], 'existing_values': values, 'unit': e_p.get('unit', ''), 'isFunction': False})
 
         sorted_parameters.append(ext_section)
 
@@ -492,15 +494,18 @@ class FlaskSandbox():
                             if k not in current_parameter_sets:
                                 current_parameter_sets.append(k)
                             print (k, line['id'], line[k])
+
                             if line[k] == '':
                                 line[k] = 0
                                 
                             if k in self.modelInstance.parameter_sets.keys():
-                                self.modelInstance.parameter_sets[k][line_id] = float(line[k])
+                                if line[k] != '[FUNCTION]':
+                                    self.modelInstance.parameter_sets[k][line_id] = float(line[k])
                             else:
                                 self.modelInstance.parameter_sets[k] = OrderedDict()
                                 #print ('created {}'.format(k))
-                                self.modelInstance.parameter_sets[k][line_id] = float(line[k])
+                                if line[k] != '[FUNCTION]':
+                                    self.modelInstance.parameter_sets[k][line_id] = float(line[k])
 
             new_parameter_sets = OrderedDict()
 
@@ -520,10 +525,11 @@ class FlaskSandbox():
 
     def add_parameter(self, postData):
 
-        self.modelInstance.add_parameter(postData['param_id'], postData['param_description'], float(postData['param_default']))
+        self.modelInstance.add_parameter(postData['param_id'], postData['param_description'], float(postData['param_default']), postData['param_unit'])
         #print ('Added {} (default {}) added to global parameters'.format(postData['param_id'], postData['param_default']))
 
         return "OK"
+
 
     def simaPro_export(self, postData):
 
@@ -804,6 +810,11 @@ class FlaskSandbox():
             sorted_parameters = self.parameter_sorting()
             return json.dumps(sorted_parameters)
 
+        @app.route('/parameter_<param_id>.json')
+        def param_query(param_id):
+            param = self.modelInstance.params[param_id]
+            return json.dumps(param)
+
         @app.route('/status.json')
         def status():
 
@@ -811,11 +822,28 @@ class FlaskSandbox():
             products = OrderedDict((k, v) for k, v in db.items() if v['type'] == 'product')
             inputs = OrderedDict((k, v) for k, v in products.items() if v['lcopt_type'] == 'input')
             ext_linked_inputs = OrderedDict((k, v) for k, v in inputs.items() if v.get('ext_link'))
+            #print(ext_linked_inputs)
             biosphere = OrderedDict((k, v) for k, v in products.items() if v['lcopt_type'] == 'biosphere')
+
+            exporter = Bw2Exporter(self.modelInstance)
+            exporter.evaluate_parameter_sets()
+            evaluated_parameters = self.modelInstance.evaluated_parameter_sets
+
+            totals = []
+            
+            for _, ps in evaluated_parameters.items():
+                running_total = 0
+                for k, v in ps.items():
+                    running_total += abs(v)
+                totals.append(running_total)
+
+            non_zero = sum(totals) > 0
+
+            #print(evaluated_parameters)
 
             has_model = len(db) != 0
             model_has_impacts = len(ext_linked_inputs) + len(biosphere) != 0
-            model_has_parameters = len (self.modelInstance.parameter_sets) != 0
+            model_has_parameters = len (self.modelInstance.parameter_sets) != 0 and non_zero
             model_is_runnable = all([has_model, model_has_impacts, model_has_parameters])
             model_has_functions = len([x for k, x in self.modelInstance.params.items() if x['function'] is not None]) != 0
             model_is_fully_formed = all([has_model, model_has_impacts, model_has_parameters, model_has_functions])
@@ -907,10 +935,10 @@ class FlaskSandbox():
             from lcopt.utils import DEFAULT_DB_NAME
 
             if self.modelInstance.name in bw2.projects:
-                print('getting custom methods')
+                #print('getting custom methods')
                 bw2.projects.set_current(self.modelInstance.name)
             else:
-                print('getting default methods')
+                #print('getting default methods')
                 bw2.projects.set_current(DEFAULT_DB_NAME)
 
             method_list = list(bw2.methods)
@@ -957,6 +985,23 @@ class FlaskSandbox():
 
             #finally return the file
             return send_file(output, attachment_filename=filename, as_attachment=True)
+
+        @app.route('/locations.json')
+        def locations_as_json():
+            asset_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'assets')
+            filename = 'locations.json'
+            with open(os.path.join(asset_path, filename), 'r', encoding='utf-8') as f:
+                locations = json.load(f)
+
+            all_items = [x['items'] for x in self.modelInstance.external_databases if x['name'] in self.modelInstance.technosphere_databases]
+
+            used_locations = set([x['location'] for item in all_items for _, x in item.items()])
+
+            filtered_locations = [x for x in locations if x['code'] in used_locations]
+
+            #print(filtered_locations)
+
+            return json.dumps(filtered_locations)
 
         return app
 

@@ -23,6 +23,14 @@
 
 .status_box_item{
 	border-bottom: 1px solid #aaa;
+	cursor: pointer;
+}
+
+.popover-title {
+    font-size: 11px;
+}
+.popover-content {
+    font-size: 10px;
 }
 /*
 

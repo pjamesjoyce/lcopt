@@ -1,6 +1,7 @@
 function setUpSelectize(external_data, current_methods){
 	////console.log('Hello from setUpSelectize')
 	console.log(external_data);
+	console.log(current_methods);
 
 	// set up the operators in the options and optgroups
 	var my_optgroups = [],
