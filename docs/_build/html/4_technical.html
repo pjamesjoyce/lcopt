@@ -36,6 +36,7 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="lcopt  documentation" href="index.html"/>
+        <link rel="next" title="Contact" href="5_contact.html"/>
         <link rel="prev" title="Video runthrough" href="3_video_runthrough.html"/> 
 
   
@@ -96,6 +97,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#lcopt-utils">lcopt.utils</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="5_contact.html">Contact</a></li>
 </ul>
 
             
@@ -173,7 +175,7 @@
 <p>To load an existing model use the <code class="docutils literal"><span class="pre">load</span></code> option e.g. <code class="docutils literal"><span class="pre">model</span> <span class="pre">=</span> <span class="pre">LcoptModel(load</span> <span class="pre">=</span> <span class="pre">'My_Model')</span></code></p>
 <dl class="method">
 <dt id="lcopt.model.LcoptModel.add_parameter">
-<code class="descname">add_parameter</code><span class="sig-paren">(</span><em>param_name</em>, <em>description=None</em>, <em>default=0</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.add_parameter" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_parameter</code><span class="sig-paren">(</span><em>param_name</em>, <em>description=None</em>, <em>default=0</em>, <em>unit=None</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.model.LcoptModel.add_parameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a global parameter to the database that can be accessed by functions</p>
 </dd></dl>
 
@@ -311,6 +313,21 @@ Doesn&#8217;t return anything, but creates a new item <code class="docutils lite
 <h2>lcopt.utils<a class="headerlink" href="#lcopt-utils" title="Permalink to this headline">¶</a></h2>
 <p>Module containing the utility function to set up brightway2 to work with lcopt</p>
 <dl class="function">
+<dt id="lcopt.utils.forwast_autodownload">
+<code class="descclassname">lcopt.utils.</code><code class="descname">forwast_autodownload</code><span class="sig-paren">(</span><em>FORWAST_URL</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.utils.forwast_autodownload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Autodowloader for forwast database package for brightway. Used by <cite>lcopt_bw2_forwast_setup</cite> to get the database data. Not designed to be used on its own</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="lcopt.utils.lcopt_bw2_forwast_setup">
+<code class="descclassname">lcopt.utils.</code><code class="descname">lcopt_bw2_forwast_setup</code><span class="sig-paren">(</span><em>use_autodownload=True</em>, <em>forwast_path=None</em>, <em>db_name='LCOPT_Setup_Forwast'</em>, <em>overwrite=False</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.utils.lcopt_bw2_forwast_setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function to set up brightway2 to work correctly with lcopt using the FORWAST database instead of ecoinvent</p>
+<p>By default it&#8217;ll try and download the forwast database as a .bw2package file from lca-net</p>
+<p>If you&#8217;ve downloaded the forwast .bw2package file already you can set use_autodownload=False and forwast_path to point to the downloaded file</p>
+<p>To overwrite an existing version, set overwrite=True</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="lcopt.utils.lcopt_bw2_setup">
 <code class="descclassname">lcopt.utils.</code><code class="descname">lcopt_bw2_setup</code><span class="sig-paren">(</span><em>ecospold_path</em>, <em>overwrite=False</em>, <em>db_name='LCOPT_Setup'</em><span class="sig-paren">)</span><a class="headerlink" href="#lcopt.utils.lcopt_bw2_setup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Utility function to set up brightway2 to work correctly with lcopt.</p>
@@ -320,6 +337,7 @@ Doesn&#8217;t return anything, but creates a new item <code class="docutils lite
 <p>Extract the file somewhere sensible on your machine, you might need to download <a class="reference external" href="http://www.7-zip.org/download.html">7-zip</a> to extract the files.</p>
 <p>Make a note of the path of the folder that contains the .ecospold files, its probably <code class="docutils literal"><span class="pre">&lt;path/extracted/to&gt;/datasets/</span></code></p>
 <p>Use this path (as a string) as the first parameter in this function</p>
+<p>To overwrite an existing version, set overwrite=True</p>
 </dd></dl>
 
 </div>
@@ -334,6 +352,8 @@ Doesn&#8217;t return anything, but creates a new item <code class="docutils lite
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="5_contact.html" class="btn btn-neutral float-right" title="Contact" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="3_video_runthrough.html" class="btn btn-neutral" title="Video runthrough" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

@@ -62,6 +62,9 @@ Lcopt needs to set up its own brightway project template so that it can create a
 Step 1. Download the Ecoinvent 3.3 cutoff database (Ecoinvent license required)
 --------------------------------------------------------------------------------------
 
+.. note:: Note - if you don't have an ecoinvent license but want to try out lcopt, it can also be used with the freely available FORWAST database :ref:`forwast_setup_step`.
+
+
 Log into `ecoinvent.org  <http://www.ecoinvent.org/login-databases.html>`_ and go to the Files tab
 
 Download the file called ``ecoinvent 3.3_cutoff_ecoSpold02.7z``
@@ -98,3 +101,35 @@ At the command line type::
 	python lcopt_bw2_setup.py path/to/ecospold/files # use "" if there are spaces in your path
 
 
+.. _forwast_setup_step:
+
+---------------------------
+Alternative setup - FORWAST
+---------------------------
+
+Lcopt can be used without an ecoinvent license by using the `FORWAST <http://forwast.brgm.fr/>`_ database instead.
+
+Option 1. Run the setup utility in a jupyter notebook/python shell
+-----------------------------------------------------------------
+
+.. highlight:: python
+
+Fire up your chosen python shell, then use::
+
+	from lcopt.utils import lcopt_bw2_setup_forwast
+	lcopt_bw2_setup_forwast()
+
+It'll take a while, but once its done it'll return ``True`` if it worked properly
+
+
+Option 2. Download lcopt_bw2_setup.py and use that instead
+---------------------------------------------------------
+
+Download the helper script from `here <https://raw.githubusercontent.com/pjamesjoyce/lcopt/master/lcopt_bw2_setup_forwast.py>`_
+
+.. highlight:: console
+
+At the command line type::
+
+	cd folder/you/downloaded/it/to
+	python lcopt_bw2_setup_forwast.py

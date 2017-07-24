@@ -101,6 +101,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="3_video_runthrough.html">Video runthrough</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_technical.html">Technical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_contact.html">Contact</a></li>
 </ul>
 
             
@@ -191,6 +192,10 @@ Create a new notebook, give it a meaningful name.</p>
 <p>or load an existing one:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">LcoptModel</span><span class="p">(</span><span class="n">load</span> <span class="o">=</span> <span class="s1">&#39;MyFirstModel&#39;</span><span class="p">)</span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you are using FORWAST instead of ecoinvent, you need to add the argument <cite>useForwast=True</cite> e.g. <cite>model = LcoptModel(load = &#8216;MyFirstModel&#8217;, useForwast=True)</cite></p>
 </div>
 <p>Then launch the interactive model creator/analyser:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">launch_interact</span><span class="p">()</span>

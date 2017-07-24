@@ -30,7 +30,7 @@ import os
 #From bw2 - edited to reinsert capitalisation of units
 
 UNITS_NORMALIZATION = {
-    "a": "year",  # Common in LCA circles; could be confused with are
+    "a": "year",  # Common in LCA circles; could be confused with acre
     "Bq": "Becquerel",
     "g": "gram",
     "Gj": "gigajoule",

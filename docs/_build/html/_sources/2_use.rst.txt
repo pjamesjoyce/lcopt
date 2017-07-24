@@ -38,6 +38,8 @@ or load an existing one::
 
 	model = LcoptModel(load = 'MyFirstModel')
 
+.. note::  If you are using FORWAST instead of ecoinvent, you need to add the argument `useForwast=True` e.g. `model = LcoptModel(load = 'MyFirstModel', useForwast=True)`
+
 Then launch the interactive model creator/analyser::
 
 	model.launch_interact()

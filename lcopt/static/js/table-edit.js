@@ -50,7 +50,7 @@ $(document).ready(function(){
 	  $rows.each(function () {
 	  	var $td, h;
 	  	if ($(this).hasClass('data_row')){
-		    $td = $(this).find('td');
+		    $td = $(this).find('.export');
 		    h = {};
 		    
 		    // Use the headers from earlier to name our hash keys
@@ -61,7 +61,7 @@ $(document).ready(function(){
 		    data.push(h);
 
 		}else if($(this).hasClass('function_row')){
-			$td = $(this).find('td');
+			$td = $(this).find('.export');
 		    h = {};
 		    
 		    // Use the headers from earlier to name our hash keys
@@ -114,7 +114,7 @@ $(document).ready(function(){
 	       
 	         	last_item = trow.find('td:last');
 	         	
-	            trow.append('<td contenteditable="true" class="new_item right_align">'+ last_item.text() +'</td>');
+	            trow.append('<td contenteditable="true" class="new_item right_align export">'+ last_item.text() +'</td>');
 	         
 	     });
 

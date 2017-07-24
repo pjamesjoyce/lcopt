@@ -7,7 +7,7 @@
 Overview
 ========
 
-lcopt - An interactive Life Cycle OPTions appraisal tool
+lcopt - An interactive tool for creating fully parameterised Life Cycle Assessment (LCA) foreground models
 --------------------------------------------------------
 
 .. image:: https://travis-ci.org/pjamesjoyce/lcopt.svg?branch=master

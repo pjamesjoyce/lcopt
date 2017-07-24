@@ -37,13 +37,13 @@
                     <tbody>
                         {% for item in subsection.my_items %} {% set row_type = 'function' if item.isFunction else 'data' %}
                         <tr class="{{row_type}}_row">
-                            <td><span class='hide_text'>{{item.id}}</span>{% if section.name != 'Global Parameters' %}<a href="/functions?preload={{item.id}}"><i class="material-icons pull-right edit_function">functions</i></a>{% endif %}</td>
-                            <td>{{item.name}}</td>
-                            <td>{{item.unit}}</td>
+                            <td><span class='hide_text export'>{{item.id}}</span>{% if section.name != 'Global Parameters' %}<a href="/functions?preload={{item.id}}"><i class="material-icons pull-right edit_function">functions</i></a>{% endif %}</td>
+                            <td class='export'>{{item.name}}</td>
+                            <td class='export'>{{item.unit}}</td>
                             {% for v in item.existing_values %} {% if item.isFunction%}
-                            <td class="function right_align">{{v}}</td>
+                            <td class="function right_align export">{{v}}</td>
                             {% else %}
-                            <td contenteditable="true" class="right_align">{{'%0.4g'| format(v|float)}}</td>
+                            <td contenteditable="true" class="right_align export">{{'%0.4g'| format(v|float)}}</td>
                             {% endif %} {% endfor %}
                         </tr>
                         {% endfor %}

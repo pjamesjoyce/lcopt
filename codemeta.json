@@ -1,0 +1,23 @@
+{
+  "@context": "https://raw.githubusercontent.com/codemeta/codemeta/master/codemeta.jsonld",
+  "@type": "Code",
+  "author": [
+    {
+      "@id": "http://orcid.org/0000-0002-9560-3132",
+      "@type": "Person",
+      "email": "pjamesjoyce@gmail.com",
+      "name": "James Joyce",
+      "affiliation": "KTH Royal Institute of Technology"
+    }
+  ],
+  "identifier": "",
+  "codeRepository": "https://github.com/pjamesjoyce/lcopt/",
+  "datePublished": "2017-07-24",
+  "dateModified": "2017-07-24",
+  "dateCreated": "2017-07-24",
+  "description": "An interactive Life Cycle options appraisal tool",
+  "keywords": "Life cycle assessment, foreground model, LCA",
+  "license": "BSD 3-Clause",
+  "title": "lcopt",
+  "version": "v0.4.0"
+}

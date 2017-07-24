@@ -1,5 +1,5 @@
 # lcopt
-Life cycle options appraisal module
+An interactive tool for creating fully parameterised Life Cycle Assessment (LCA) foreground models
 
 [![Build Status](https://travis-ci.org/pjamesjoyce/lcopt.svg?branch=master)](https://travis-ci.org/pjamesjoyce/lcopt)
 

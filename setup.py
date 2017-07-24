@@ -35,7 +35,7 @@ print(my_package_files)
 
 setup(
     name='lcopt',
-    version="0.3.2",
+    version="0.4.0",
     packages=packages,
     author="P. James Joyce",
     author_email="pjamesjoyce@gmail.com",
@@ -52,8 +52,8 @@ setup(
     url="https://github.com/pjamesjoyce/lcopt/",
     download_url="https://github.com/pjamesjoyce/lcopt/archive/0.1.tar.gz",
     long_description=open('README.md').read(),
-    description='Life cycle optimisation module',
-    keywords=['LCA'],
+    description='An interactive tool for creating fully parameterised Life Cycle Assessment (LCA) foreground models',
+    keywords=['LCA', 'Life Cycle Assessment', 'Foreground system', 'Background system', 'Foreground model', 'Fully parameterised'],
     classifiers=[
         'Intended Audience :: End Users/Desktop',
         'Intended Audience :: Developers',
