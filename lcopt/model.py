@@ -203,7 +203,7 @@ class LcoptModel(object):
                       'sandbox_positions',
                       'ecoinventName',
                       'biosphereName',
-                      'forwastName'
+                      'forwastName',
                       'analysis_settings',
                       'technosphere_databases',
                       'biosphere_databases',

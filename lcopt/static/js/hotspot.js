@@ -211,46 +211,81 @@
 
         var last_item_level = -1;
         var downshift = 0;
-        var shift = 30;
+        var shift = 16;
+        var level_shift = shift + 32;
+
+        var legend_object = [];
 
         var legenditems_d3 = d3.select('#legend_box').selectAll('.cell');
 
         legenditems_d3.each(function(d,i){
-          
+
           var this_item = d3.select(this);
 
+          var text = this_item.select("text").html();
+          var bits = text.split(".");
 
-          bits = this_item.select("text")
-            //.attr("style", "font-family: 'Muli', sans-serif; font-size: 75%;")
-            .html().split(".");
-          
           var item_level = parseInt(bits[0]);
           
           var translation_bits = this_item.attr("transform").split(/\(|, |\)/);
 
+          legend_object.push({text: text, bits: bits, item_level: item_level, translation_bits: translation_bits, this_item: this_item});
+
+          });
+
+        var sorted_legend_object = legend_object.sort(function(a, b){
+          var alpha = 0;
+          if(a.bits[1] < b.bits[1]) alpha = -1;
+          if(a.bits[1] > b.bits[1]) alpha = 1;
+          
+          return a.item_level - b.item_level || alpha;
+
+        });
+
+        var x_translation = legend_object[0].translation_bits[1];
+        var y_translation = legend_object[0].translation_bits[2];
+
+        var first_ring = legend_object[0].item_level;
+
+        for(var legend_item in sorted_legend_object){
+          var i = legend_object[legend_item];
+          console.log(this_item);
+
+          var item_level = i.item_level;
+          var text = i.text;
+          var this_item = i.this_item;
+          var bits = i.bits;
+          var translation_bits = i.translation_bits;
+        
+        
           if(item_level != last_item_level){
             //console.log("new level at " + bits[1]);
-            downshift += shift;
-            new_translation = translation_bits[0] + "(" + translation_bits[1] + ", " + (parseInt(translation_bits[2]) + downshift) + ")";
-            title_translation = "translate(0,-5)";
+            downshift += level_shift;
+            new_translation = translation_bits[0] + "(" + x_translation + ", " + (parseInt(y_translation) + downshift) + ")";
+            title_translation = "translate(0,-7)";
             this_item.attr("transform", new_translation);
 
             var text_g = this_item.append("text")
-              .text('Level ' + (item_level + 1))
+              .text('Ring ' + (item_level - first_ring + 1))
               .attr("transform", title_translation)
               //.attr("style", "fill:grey; font-family: 'Muli', sans-serif; font-size: 75%;")
               .attr("class", "label legend_subtitle");
 
           }else{
-            new_translation = translation_bits[0] + "(" + translation_bits[1] + ", " + (parseInt(translation_bits[2]) + downshift) + ")";
+            downshift += shift;
+            new_translation = translation_bits[0] + "(" + x_translation + ", " + (parseInt(y_translation) + downshift) + ")";
             this_item.attr("transform", new_translation);
           }
 
           last_item_level = item_level;
 
           this_item.select("text").html(bits[1]);
-
+        }
+        /*
         });
+
+        console.log(legend_object.sort(function(a, b){return a.item_level - b.item_level}));
+        */
 
       }
 
