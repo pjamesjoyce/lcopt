@@ -116,8 +116,8 @@ Option 1. Run the setup utility in a jupyter notebook/python shell
 
 Fire up your chosen python shell, then use::
 
-	from lcopt.utils import lcopt_bw2_setup_forwast
-	lcopt_bw2_setup_forwast()
+	from lcopt.utils import lcopt_bw2_forwast_setup
+	lcopt_bw2_forwast_setup()
 
 It'll take a while, but once its done it'll return ``True`` if it worked properly
 
