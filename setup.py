@@ -41,11 +41,13 @@ setup(
     author_email="pjamesjoyce@gmail.com",
     license=open('LICENSE.txt').read(),
     package_data={'lcopt': my_package_files},
-    #entry_points = {
-    #    'console_scripts': [
-    #        'ocelot-cli = ocelot.bin.ocelot_cli:main',
-    #    ]
-    #},
+    entry_points = {
+        'console_scripts': [
+            'lcopt-launcher = lcopt.bin.lcopt_launcher:main',
+            'lcopt-bw2-setup = lcopt.bin.lcopt_bw2_setup:main',
+            'lcopt-bw2-setup-forwast = lcopt.bin.lcopt_bw2_setup_forwast:main',
+        ]
+    },
     #install_requires=[
     #],
     include_package_data=True, 

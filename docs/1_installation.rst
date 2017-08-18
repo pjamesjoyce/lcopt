@@ -73,8 +73,18 @@ Extract the file somewhere sensible on your machine, you might need to download 
 
 Make a note of the path of the folder that contains the .ecospold files, its probably ``<path/extracted/to>/datasets/``
 
-Step 2a. Run the setup utility in a jupyter notebook/python shell
------------------------------------------------------------------
+Step 2a. lcopt-bw2-setup at the command line
+--------------------------------------------
+
+.. highlight:: console
+
+At the command line type::
+
+	lcopt-bw2-setup path/to/ecospold/files # use "" if there are spaces in your path
+
+
+Step 2b. Or run the setup utility in a jupyter notebook/python shell
+--------------------------------------------------------------------
 
 .. highlight:: python
 
@@ -84,22 +94,9 @@ Fire up your chosen python shell, then use::
 	ecospold_path = r'path/to/ecospold/files' # put your own path in here
 	lcopt_bw2_setup(ecospold_path)
 
-It'll take a while, but once its done it'll return ``True`` if it worked properly
+It'll take a while, but once its done it'll return ``True`` if it worked properly.
 
-
-Step 2b. Download lcopt_bw2_setup.py and use that instead
----------------------------------------------------------
-
-Download the helper script from `here <https://raw.githubusercontent.com/pjamesjoyce/lcopt/master/lcopt_bw2_setup.py>`_
-
-
-.. highlight:: console
-
-At the command line type::
-
-	cd folder/you/downloaded/it/to
-	python lcopt_bw2_setup.py path/to/ecospold/files # use "" if there are spaces in your path
-
+Running the setup utility in a python shell also allows you to overwrite your existing configuration if something has gone wrong by using ``lcopt_bw2_setup(ecospold_path, overwrite=True)``
 
 .. _forwast_setup_step:
 
@@ -109,7 +106,16 @@ Alternative setup - FORWAST
 
 Lcopt can be used without an ecoinvent license by using the `FORWAST <http://forwast.brgm.fr/>`_ database instead.
 
-Option 1. Run the setup utility in a jupyter notebook/python shell
+Option 1. Download lcopt_bw2_setup.py and use that instead
+----------------------------------------------------------
+
+.. highlight:: console
+
+At the command line type::
+
+	lcopt-bw2-setup-forwast
+
+Option 2. Run the setup utility in a jupyter notebook/python shell
 ------------------------------------------------------------------
 
 .. highlight:: python
@@ -119,17 +125,6 @@ Fire up your chosen python shell, then use::
 	from lcopt.utils import lcopt_bw2_forwast_setup
 	lcopt_bw2_forwast_setup()
 
-It'll take a while, but once its done it'll return ``True`` if it worked properly
+It'll take a while, but once its done it'll return ``True`` if it worked properly.
 
-
-Option 2. Download lcopt_bw2_setup.py and use that instead
-----------------------------------------------------------
-
-Download the helper script from `here <https://raw.githubusercontent.com/pjamesjoyce/lcopt/master/lcopt_bw2_setup_forwast.py>`_
-
-.. highlight:: console
-
-At the command line type::
-
-	cd folder/you/downloaded/it/to
-	python lcopt_bw2_setup_forwast.py
+As above, you can overwrite an existing configuration using ``overwrite=True``

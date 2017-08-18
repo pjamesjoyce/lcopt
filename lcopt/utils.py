@@ -41,12 +41,11 @@ def lcopt_bw2_setup(ecospold_path, overwrite=False, db_name=DEFAULT_DB_NAME):  #
 
     To overwrite an existing version, set overwrite=True
     """
-
     if db_name in bw2.projects:
         if overwrite:                                           
             bw2.projects.delete_project(name=db_name, delete_dir=True)
         else:
-            print('Looks like bw2 is already set up - if you want to overwrite the existing version, use overwrite = True')
+            print('Looks like bw2 is already set up - if you want to overwrite the existing version run lcopt.utils.lcopt_bw2_setup in a python shell using overwrite = True')
             return False
 
     bw2.projects.set_current(db_name)
@@ -100,7 +99,7 @@ def lcopt_bw2_forwast_setup(use_autodownload=True, forwast_path=None, db_name=FO
         if overwrite:                                           
             bw2.projects.delete_project(name=db_name, delete_dir=True)
         else:
-            print('Looks like bw2 is already set up for the FORWAST database - if you want to overwrite the existing version, use overwrite = True')
+            print('Looks like bw2 is already set up for the FORWAST database - if you want to overwrite the existing version run lcopt.utils.lcopt_bw2_forwast_setup in a python shell using overwrite = True')
             return False
 
     bw2.projects.set_current(db_name)

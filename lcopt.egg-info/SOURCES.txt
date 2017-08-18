@@ -17,6 +17,7 @@ lcopt/utils.py
 lcopt.egg-info/PKG-INFO
 lcopt.egg-info/SOURCES.txt
 lcopt.egg-info/dependency_links.txt
+lcopt.egg-info/entry_points.txt
 lcopt.egg-info/top_level.txt
 lcopt/assets/biosphere3.pickle
 lcopt/assets/ecoinvent3_3.pickle

@@ -65,6 +65,10 @@
           
             
             
+              <div class="version">
+                0.4.0
+              </div>
+            
           
 
           
@@ -93,13 +97,13 @@
 <li class="toctree-l2"><a class="reference internal" href="#basic-installation">Basic Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#setting-up-brightway2-for-lcopt">Setting up brightway2 for lcopt</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#step-1-download-the-ecoinvent-3-3-cutoff-database-ecoinvent-license-required">Step 1. Download the Ecoinvent 3.3 cutoff database (Ecoinvent license required)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#step-2a-run-the-setup-utility-in-a-jupyter-notebook-python-shell">Step 2a. Run the setup utility in a jupyter notebook/python shell</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#step-2b-download-lcopt-bw2-setup-py-and-use-that-instead">Step 2b. Download lcopt_bw2_setup.py and use that instead</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-2a-lcopt-bw2-setup-at-the-command-line">Step 2a. lcopt-bw2-setup at the command line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-2b-or-run-the-setup-utility-in-a-jupyter-notebook-python-shell">Step 2b. Or run the setup utility in a jupyter notebook/python shell</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#alternative-setup-forwast">Alternative setup - FORWAST</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#option-1-run-the-setup-utility-in-a-jupyter-notebook-python-shell">Option 1. Run the setup utility in a jupyter notebook/python shell</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#option-2-download-lcopt-bw2-setup-py-and-use-that-instead">Option 2. Download lcopt_bw2_setup.py and use that instead</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#option-1-download-lcopt-bw2-setup-py-and-use-that-instead">Option 1. Download lcopt_bw2_setup.py and use that instead</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#option-2-run-the-setup-utility-in-a-jupyter-notebook-python-shell">Option 2. Run the setup utility in a jupyter notebook/python shell</a></li>
 </ul>
 </li>
 </ul>
@@ -193,16 +197,16 @@ This will make sure most of lcopts dependencies are satisfied.</p>
 <div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">conda install -y -q -c conda-forge -c cmutel -c haasad brightway2 jupyter</span>
 </pre></div>
 </div>
-<p>On windows there’s an extra dependency:</p>
+<p>On windows there&#8217;s an extra dependency:</p>
 <div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">conda install -y -q pywin32</span>
 </pre></div>
 </div>
-<p>Once brightway2 is ready to go, theres two more steps before installing lcopt itself…</p>
+<p>Once brightway2 is ready to go, theres two more steps before installing lcopt itself...</p>
 <p>Install pandas:</p>
 <div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">conda install -y -q pandas</span>
 </pre></div>
 </div>
-<p>Update werkzeug (this is a python 3.6 thing…):</p>
+<p>Update werkzeug (this is a python 3.6 thing...):</p>
 <div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">pip install -U werkzeug</span>
 </pre></div>
 </div>
@@ -219,53 +223,51 @@ This will make sure most of lcopts dependencies are satisfied.</p>
 <h3>Step 1. Download the Ecoinvent 3.3 cutoff database (Ecoinvent license required)<a class="headerlink" href="#step-1-download-the-ecoinvent-3-3-cutoff-database-ecoinvent-license-required" title="Permalink to this headline">¶</a></h3>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Note - if you don’t have an ecoinvent license but want to try out lcopt, it can also be used with the freely available FORWAST database <a class="reference internal" href="#forwast-setup-step"><span class="std std-ref">Alternative setup - FORWAST</span></a>.</p>
+<p class="last">Note - if you don&#8217;t have an ecoinvent license but want to try out lcopt, it can also be used with the freely available FORWAST database <a class="reference internal" href="#forwast-setup-step"><span class="std std-ref">Alternative setup - FORWAST</span></a>.</p>
 </div>
 <p>Log into <a class="reference external" href="http://www.ecoinvent.org/login-databases.html">ecoinvent.org</a> and go to the Files tab</p>
 <p>Download the file called <code class="docutils literal"><span class="pre">ecoinvent</span> <span class="pre">3.3_cutoff_ecoSpold02.7z</span></code></p>
 <p>Extract the file somewhere sensible on your machine, you might need to download <a class="reference external" href="http://www.7-zip.org/download.html">7-zip</a> to extract the files.</p>
 <p>Make a note of the path of the folder that contains the .ecospold files, its probably <code class="docutils literal"><span class="pre">&lt;path/extracted/to&gt;/datasets/</span></code></p>
 </div>
-<div class="section" id="step-2a-run-the-setup-utility-in-a-jupyter-notebook-python-shell">
-<h3>Step 2a. Run the setup utility in a jupyter notebook/python shell<a class="headerlink" href="#step-2a-run-the-setup-utility-in-a-jupyter-notebook-python-shell" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="step-2a-lcopt-bw2-setup-at-the-command-line">
+<h3>Step 2a. lcopt-bw2-setup at the command line<a class="headerlink" href="#step-2a-lcopt-bw2-setup-at-the-command-line" title="Permalink to this headline">¶</a></h3>
+<p>At the command line type:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">lcopt-bw2-setup path/to/ecospold/files # use &quot;&quot; if there are spaces in your path</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-2b-or-run-the-setup-utility-in-a-jupyter-notebook-python-shell">
+<h3>Step 2b. Or run the setup utility in a jupyter notebook/python shell<a class="headerlink" href="#step-2b-or-run-the-setup-utility-in-a-jupyter-notebook-python-shell" title="Permalink to this headline">¶</a></h3>
 <p>Fire up your chosen python shell, then use:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lcopt.utils</span> <span class="kn">import</span> <span class="n">lcopt_bw2_setup</span>
 <span class="n">ecospold_path</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;path/to/ecospold/files&#39;</span> <span class="c1"># put your own path in here</span>
 <span class="n">lcopt_bw2_setup</span><span class="p">(</span><span class="n">ecospold_path</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>It’ll take a while, but once its done it’ll return <code class="docutils literal"><span class="pre">True</span></code> if it worked properly</p>
-</div>
-<div class="section" id="step-2b-download-lcopt-bw2-setup-py-and-use-that-instead">
-<h3>Step 2b. Download lcopt_bw2_setup.py and use that instead<a class="headerlink" href="#step-2b-download-lcopt-bw2-setup-py-and-use-that-instead" title="Permalink to this headline">¶</a></h3>
-<p>Download the helper script from <a class="reference external" href="https://raw.githubusercontent.com/pjamesjoyce/lcopt/master/lcopt_bw2_setup.py">here</a></p>
-<p>At the command line type:</p>
-<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">cd folder/you/downloaded/it/to</span>
-<span class="go">python lcopt_bw2_setup.py path/to/ecospold/files # use &quot;&quot; if there are spaces in your path</span>
-</pre></div>
-</div>
+<p>It&#8217;ll take a while, but once its done it&#8217;ll return <code class="docutils literal"><span class="pre">True</span></code> if it worked properly.</p>
+<p>Running the setup utility in a python shell also allows you to overwrite your existing configuration if something has gone wrong by using <code class="docutils literal"><span class="pre">lcopt_bw2_setup(ecospold_path,</span> <span class="pre">overwrite=True)</span></code></p>
 </div>
 </div>
 <div class="section" id="alternative-setup-forwast">
 <span id="forwast-setup-step"></span><h2>Alternative setup - FORWAST<a class="headerlink" href="#alternative-setup-forwast" title="Permalink to this headline">¶</a></h2>
 <p>Lcopt can be used without an ecoinvent license by using the <a class="reference external" href="http://forwast.brgm.fr/">FORWAST</a> database instead.</p>
-<div class="section" id="option-1-run-the-setup-utility-in-a-jupyter-notebook-python-shell">
-<h3>Option 1. Run the setup utility in a jupyter notebook/python shell<a class="headerlink" href="#option-1-run-the-setup-utility-in-a-jupyter-notebook-python-shell" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="option-1-download-lcopt-bw2-setup-py-and-use-that-instead">
+<h3>Option 1. Download lcopt_bw2_setup.py and use that instead<a class="headerlink" href="#option-1-download-lcopt-bw2-setup-py-and-use-that-instead" title="Permalink to this headline">¶</a></h3>
+<p>At the command line type:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">lcopt-bw2-setup-forwast</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="option-2-run-the-setup-utility-in-a-jupyter-notebook-python-shell">
+<h3>Option 2. Run the setup utility in a jupyter notebook/python shell<a class="headerlink" href="#option-2-run-the-setup-utility-in-a-jupyter-notebook-python-shell" title="Permalink to this headline">¶</a></h3>
 <p>Fire up your chosen python shell, then use:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lcopt.utils</span> <span class="kn">import</span> <span class="n">lcopt_bw2_forwast_setup</span>
 <span class="n">lcopt_bw2_forwast_setup</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>It’ll take a while, but once its done it’ll return <code class="docutils literal"><span class="pre">True</span></code> if it worked properly</p>
-</div>
-<div class="section" id="option-2-download-lcopt-bw2-setup-py-and-use-that-instead">
-<h3>Option 2. Download lcopt_bw2_setup.py and use that instead<a class="headerlink" href="#option-2-download-lcopt-bw2-setup-py-and-use-that-instead" title="Permalink to this headline">¶</a></h3>
-<p>Download the helper script from <a class="reference external" href="https://raw.githubusercontent.com/pjamesjoyce/lcopt/master/lcopt_bw2_setup_forwast.py">here</a></p>
-<p>At the command line type:</p>
-<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">cd folder/you/downloaded/it/to</span>
-<span class="go">python lcopt_bw2_setup_forwast.py</span>
-</pre></div>
-</div>
+<p>It&#8217;ll take a while, but once its done it&#8217;ll return <code class="docutils literal"><span class="pre">True</span></code> if it worked properly.</p>
+<p>As above, you can overwrite an existing configuration using <code class="docutils literal"><span class="pre">overwrite=True</span></code></p>
 </div>
 </div>
 </div>

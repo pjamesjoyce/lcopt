@@ -8,7 +8,25 @@ Launching the lcopt GUI
 
 There are 2 options for using lcopt's GUI (LCOPT INTERACT)
 
-Option 1. Jupyter notebooks *(More complicated, more powerful)*
+Option 1. lcopt-launcher command line entry point *(Simpler, only access to GUI)*
+---------------------------------------------------------------------------------
+
+Using this option, you can launch lcopt from the command line/console and use the GUI from then on.
+
+Open the console/command line.
+
+.. highlight:: console
+
+Activate your *lcopt* environment, ``cd`` into the folder you want to store your model in then simply use ``lcopt-launcher`` ::
+
+	activate lcopt
+	cd C:\Users\pjjoyce\Documents\01_Lcopt_models
+	lcopt-launcher
+
+
+You'll get an option to either create a new model or open an exising one. Make your choice and the GUI will open in your default browser.
+
+Option 2. Jupyter notebooks *(More complicated, more powerful)*
 ---------------------------------------------------------------
 
 Probably the best way to use lcopt is via a jupyter notebook. This gives you more access to the inner workings if you need to get at something you can't see in the GUI.
@@ -43,28 +61,6 @@ or load an existing one::
 Then launch the interactive model creator/analyser::
 
 	model.launch_interact()
-
-Option 2. lcopt_launcher.py *(Simpler, only access to GUI)*
------------------------------------------------------------
-
-Using this option, you can type a couple of commands into the command line/console and use the GUI from then on
-
-First, download ``lcopt_launcher.py`` from `here <https://raw.githubusercontent.com/pjamesjoyce/lcopt/master/lcopt_launcher.py>`_
-
-Save it in the folder you want to store your models in
-
-Open the console/command line
-
-.. highlight:: console
-
-``cd`` into your chosen folder and run `lcopt_launcher.py`::
-
-	activate lcopt
-	cd C:\Users\pjjoyce\Documents\01_Lcopt_models
-	python lcopt_launcher.py
-
-
-You'll get an option to either create a new model or open an exising one. Make your choice and the GUI will open in your default browser.
 
 ------------------------
 LCOPT INTERACT - the GUI

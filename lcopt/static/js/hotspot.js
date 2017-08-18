@@ -23,9 +23,11 @@
     var color30_default = ["#1abd44", "#923bc1", "#94d957", "#317dff", "#4f9100", "#d28aff", "#006f0c", "#a20083", "#00bf7a", "#c60040",
                            "#49dcc4", "#ed373b", "#01a6ed", "#d44805", "#469aff", "#be6b00", "#62d3ff", "#9f1d3a", "#009c90", "#ff5fa0",
                            "#bfcf5f", "#55498a", "#ffad58", "#8c3063", "#abd19c", "#ffa2e2", "#784810", "#fab87f", "#936343", "#d38a89"];
+    
     var color30_fancy =  ["#80deb3", "#f794a4", "#52e4e3", "#f9a089", "#5ef1ff", "#d699bf", "#8cffeb", "#dab8ff", "#e0f3a6", "#97a9f1",
                           "#e9e597", "#71b6f9", "#ffd9a0", "#41d1fc", "#d79d98", "#2dd4e5", "#ffceed", "#81cf9b", "#bea0d7", "#e0ffc4",
                           "#72b4d8", "#93b67c", "#c4e1ff", "#8ab59a", "#ffd1d4", "#58bbb6", "#f7ffe2", "#97aec8", "#baffe7", "#aef5ff"];
+    
     var color30_intense = ["#008da0", "#ff6c2a", "#7b4af8", "#cbc900", "#cf40f3", "#00b040", "#6f00a2", "#e3c53b", "#0044a2", "#ff9517", 
                            "#8495ff", "#bd9e00", "#ff66ef", "#576c00", "#e601a2", "#78d6ca", "#ff455a", "#0176c6", "#b90034", "#aad0a1",
                            "#520055", "#e1bbda", "#731000", "#c386ff", "#431911", "#b3b8ff", "#8a004b", "#006590", "#ff5fae", "#321b48"];
@@ -34,9 +36,14 @@
                           "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#fdb462", "#b3de69", "#fccde5", "#d9d9d9]", "#fbb4ae", "#b3cde3",
                           "#ccebc5", "#decbe4", "#fed9a6", "#ffffcc", "#e5d8bd", "#fddaec", "#f2f2f2", "#a6cee3", "#1f78b4", "#b2df8a"];
 
-    var color30_d3v4 = ["#1f77b4", "#aec7e8", "#ff7f0e", "#ffbb78", "#2ca02c", "#98df8a", "#d62728", "#ff9896", "#9467bd", "#c5b0d5", 
+    var color30_d3v4 = ["#1f77b4", "#aec7e8", "#ff7f0e", "#ffbb78", "#2ca02c", "#98df8a", "#d62728", "#ff9896", "#9467bd", "#c5b0d5",
                         "#8c564b", "#c49c94", "#e377c2", "#f7b6d2", "#7f7f7f", "#c7c7c7", "#bcbd22", "#dbdb8d", "#17becf", "#9edae5",
                         "#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#ffff33", "#a65628", "#f781bf", "#999999", "#8dd3c7"];
+
+    var color30_firing = ["#1f77b4", "#aec7e8", "#ff7f0e", "#ffbb78", "#ff9896", "#9467bd", "#c5b0d5", "#2ca02c", "#98df8a", "#d62728", 
+                        "#8c564b", "#c49c94", "#e377c2", "#f7b6d2", "#7f7f7f", "#c7c7c7", "#bcbd22", "#dbdb8d", "#17becf", "#9edae5",
+                        "#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#ffff33", "#a65628", "#f781bf", "#999999", "#8dd3c7",
+                        "#1abd44", "#923bc1", "#94d957", "#317dff", "#4f9100", "#d28aff", "#006f0c", "#a20083", "#00bf7a", "#c60040",];
 
     var color = d3.scaleOrdinal();
     color.range(color30_d3v4);
