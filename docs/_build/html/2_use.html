@@ -169,10 +169,10 @@
 <h1>Using LCOPT<a class="headerlink" href="#using-lcopt" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="launching-the-lcopt-gui">
 <h2>Launching the lcopt GUI<a class="headerlink" href="#launching-the-lcopt-gui" title="Permalink to this headline">¶</a></h2>
-<p>There are 2 options for using lcopt&#8217;s GUI (LCOPT INTERACT)</p>
+<p>There are 2 options for using lcopt’s GUI (LCOPT INTERACT)</p>
 <div class="section" id="option-1-jupyter-notebooks-more-complicated-more-powerful">
 <h3>Option 1. Jupyter notebooks <em>(More complicated, more powerful)</em><a class="headerlink" href="#option-1-jupyter-notebooks-more-complicated-more-powerful" title="Permalink to this headline">¶</a></h3>
-<p>Probably the best way to use lcopt is via a jupyter notebook. This gives you more access to the inner workings if you need to get at something you can&#8217;t see in the GUI.</p>
+<p>Probably the best way to use lcopt is via a jupyter notebook. This gives you more access to the inner workings if you need to get at something you can’t see in the GUI.</p>
 <p><code class="docutils literal"><span class="pre">cd</span></code> into whatever folder you want your notebooks and lcopt models to be stored in, then start jupyter e.g.:</p>
 <div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">activate lcopt</span>
 <span class="go">cd C:\Users\pjjoyce\Documents\01_Lcopt_models</span>
@@ -195,7 +195,7 @@ Create a new notebook, give it a meaningful name.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">If you are using FORWAST instead of ecoinvent, you need to add the argument <cite>useForwast=True</cite> e.g. <cite>model = LcoptModel(load = &#8216;MyFirstModel&#8217;, useForwast=True)</cite></p>
+<p class="last">If you are using FORWAST instead of ecoinvent, you need to add the argument <cite>useForwast=True</cite> e.g. <cite>model = LcoptModel(load = ‘MyFirstModel’, useForwast=True)</cite></p>
 </div>
 <p>Then launch the interactive model creator/analyser:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">launch_interact</span><span class="p">()</span>
@@ -214,24 +214,24 @@ Create a new notebook, give it a meaningful name.</p>
 <span class="go">python lcopt_launcher.py</span>
 </pre></div>
 </div>
-<p>You&#8217;ll get an option to either create a new model or open an exising one. Make your choice and the GUI will open in your default browser.</p>
+<p>You’ll get an option to either create a new model or open an exising one. Make your choice and the GUI will open in your default browser.</p>
 </div>
 </div>
 <div class="section" id="lcopt-interact-the-gui">
 <h2>LCOPT INTERACT - the GUI<a class="headerlink" href="#lcopt-interact-the-gui" title="Permalink to this headline">¶</a></h2>
-<p>Running the GUI via each of the options above launches a Flask server that gives you a nice UI to interact with the models. You can add processes, link them together, add biosphere and technosphere exchanges, and create parameter sets and functions using your parameters. It should be pretty intuitive, if you get stuck, try the &#8216;more info...&#8217; buttons.</p>
-<p>When your model&#8217;s ready you can export it to SimaPro as a .csv file and the parameter sets you&#8217;ve created as an Excel file (Note: you need SimaPro developer to import the parameter sets from the Excel file).</p>
-<p>To run the analyses interactively using brightway2, make sure you&#8217;ve completed the additional setup step (<a class="reference internal" href="1_installation.html#bw2-setup-step"><span class="std std-ref">Setting up brightway2 for lcopt</span></a>).</p>
-<p>The &#8216;QUIT&#8217; button in the top right hand corner will shut down the Flask server and tell you to close the window.</p>
-<p>If you&#8217;re running from a jupyter notebook, this frees up the notebook again so you can run any commands you need to.</p>
+<p>Running the GUI via each of the options above launches a Flask server that gives you a nice UI to interact with the models. You can add processes, link them together, add biosphere and technosphere exchanges, and create parameter sets and functions using your parameters. It should be pretty intuitive, if you get stuck, try the ‘more info…’ buttons.</p>
+<p>When your model’s ready you can export it to SimaPro as a .csv file and the parameter sets you’ve created as an Excel file (Note: you need SimaPro developer to import the parameter sets from the Excel file).</p>
+<p>To run the analyses interactively using brightway2, make sure you’ve completed the additional setup step (<a class="reference internal" href="1_installation.html#bw2-setup-step"><span class="std std-ref">Setting up brightway2 for lcopt</span></a>).</p>
+<p>The ‘QUIT’ button in the top right hand corner will shut down the Flask server and tell you to close the window.</p>
+<p>If you’re running from a jupyter notebook, this frees up the notebook again so you can run any commands you need to.</p>
 <p>One useful command is <code class="docutils literal"><span class="pre">model.save()</span></code> which will save any unsaved changes (you can also save by clicking on the save button in LcoptInteract, but in case you forget you can use <code class="docutils literal"><span class="pre">model.save()</span></code>)</p>
 <p>The model is saved as a .lcopt file in your working directory (its really a .pickle file, but the .lcopt extension makes it easier to filter on in the lcopt_launcher file picker)</p>
 <p>NOTE: The next time you run the GUI from a notebook you need to use:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">LcoptModel</span><span class="p">(</span><span class="n">load</span> <span class="o">=</span> <span class="s1">&#39;MyFirstModel&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>If you don&#8217;t it&#8217;ll create a new blank model called &#8216;MyFirstModel&#8217;. If you do do this by accident fear not - it won&#8217;t overwrite your .lcopt file until you save it.
-Quit interact by hitting the QUIT button and go back and change your command (just don&#8217;t click the save button or run <cite>model.save()</cite> in the meantime)</p>
+<p>If you don’t it’ll create a new blank model called ‘MyFirstModel’. If you do do this by accident fear not - it won’t overwrite your .lcopt file until you save it.
+Quit interact by hitting the QUIT button and go back and change your command (just don’t click the save button or run <cite>model.save()</cite> in the meantime)</p>
 </div>
 </div>
 

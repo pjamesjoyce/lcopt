@@ -90,7 +90,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#what-does-it-do">What does it do?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#what-s-a-life-cycle-inventory-foreground-model">What&#8217;s a Life Cycle Inventory foreground model?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-s-a-life-cycle-inventory-foreground-model">What’s a Life Cycle Inventory foreground model?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#why-use-lcopt-for-creating-foreground-models">Why use LCOPT for creating foreground models?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#how-do-you-create-foreground-models-in-lcopt">How do you create foreground models in LCOPT?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#what-does-fully-parameterised-mean">What does <em>fully parameterised</em> mean?</a></li>
@@ -103,6 +103,7 @@
 <li class="toctree-l1"><a class="reference internal" href="2_use.html">Using LCOPT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="3_video_runthrough.html">Video runthrough</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_technical.html">Technical Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5_contact.html">Contact</a></li>
 </ul>
 
             
@@ -170,12 +171,12 @@
 <h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="what-does-it-do">
 <h2>What does it do?<a class="headerlink" href="#what-does-it-do" title="Permalink to this headline">¶</a></h2>
-<p>LCOPT is designed to provide a simple and intuitive way to create &#8216;fully parameterised&#8217; Life Cycle Inventory foreground models.</p>
+<p>LCOPT is designed to provide a simple and intuitive way to create ‘fully parameterised’ Life Cycle Inventory foreground models.</p>
 </div>
 <div class="section" id="what-s-a-life-cycle-inventory-foreground-model">
-<h2>What&#8217;s a Life Cycle Inventory foreground model?<a class="headerlink" href="#what-s-a-life-cycle-inventory-foreground-model" title="Permalink to this headline">¶</a></h2>
+<h2>What’s a Life Cycle Inventory foreground model?<a class="headerlink" href="#what-s-a-life-cycle-inventory-foreground-model" title="Permalink to this headline">¶</a></h2>
 <p>To conduct a Life Cycle Assessment (LCA) we need to create a model of the life cycle of a given product or process which we can then use to estimate the potential environmental impact which results. This includes extraction of raw materials, processing, transport, use, disposal etc. etc.</p>
-<p>Because each item used in a life cycle has it&#8217;s own set upstream processes the LCA model tends to be split into the <em>foreground system</em> - the processes under the control of the person doing the LCA - and the <em>background system</em> - the rest of the industrial economy which provides the materials and services required by the foreground system.</p>
+<p>Because each item used in a life cycle has it’s own set upstream processes the LCA model tends to be split into the <em>foreground system</em> - the processes under the control of the person doing the LCA - and the <em>background system</em> - the rest of the industrial economy which provides the materials and services required by the foreground system.</p>
 <p>Background system models are either determined by data providers (e.g. <a class="reference external" href="http://www.ecoinvent.org/database/system-models-in-ecoinvent-3/system-models-in-ecoinvent-3.html">ecoinvent</a>) or can be customised using <a class="reference external" href="https://ocelot.space/">Ocelot</a>.</p>
 <p>The foreground model is a set of linked <em>unit processes</em>. A unit process describes a stage in the life cycle. It is basically a list of the <em>exchanges</em> required to produce one unit of an intermediate (or final) product. These exchanges can either be inputs from the <em>technosphere</em> - the human constructed industrial economy - or resources from or emissions to the <em>biosphere</em>. Technosphere exchanges can either come from the background system or other processes in the foreground system.</p>
 <p>For example, when you make a cup of tea you <em>make</em> some boiling water, add this to some tea leaves, add some milk, then use/drink it.</p>
@@ -185,7 +186,7 @@
 </div>
 <p>The boiling water is created in the unit process <em>kettle</em> which takes inputs from the background system of <em>water</em> and <em>electricity</em> and emits a small amount of <em>water vapour</em> to the biosphere.</p>
 <p>The next unit process is <em>teapot</em>. This takes an input of <em>boiling water</em> from our first process, and <em>tea leaves</em> from the background system to produce <em>black tea</em>.</p>
-<p>Finally, <em>teacup</em> takes an input of <em>black tea</em> from the <em>teapot</em> process and <em>milk</em> from the background system <em>Note : we&#8217;re making a proper British cup of tea!</em></p>
+<p>Finally, <em>teacup</em> takes an input of <em>black tea</em> from the <em>teapot</em> process and <em>milk</em> from the background system <em>Note : we’re making a proper British cup of tea!</em></p>
 <p>We now have a foreground model for our cup of tea LCA.</p>
 </div>
 <div class="section" id="why-use-lcopt-for-creating-foreground-models">
@@ -193,51 +194,51 @@
 <p>How you create your foreground model is up to you.</p>
 <p>Simple models can be constructed in Excel. More complex models can be created in commercially available softwares such as <a class="reference external" href="https://simapro.com/">SimaPro</a> or <a class="reference external" href="http://www.gabi-software.com/international/index/">GaBi</a>, or freeware such as <a class="reference external" href="http://www.openlca.org">OpenLCA</a>.</p>
 <p>These fully featured software packages have a steep learning curve, can cost a lot of money, or require administrator rights to run (which can be an issue with university or company owned computers).</p>
-<p>Lcopt is free, open source and written in Python. You can install it without admin rights and it runs in a normal web browser. It&#8217;s designed to be simple and intuitive, but powerful enough to conduct <em>proper</em> LCAs.</p>
+<p>Lcopt is free, open source and written in Python. You can install it without admin rights and it runs in a normal web browser. It’s designed to be simple and intuitive, but powerful enough to conduct <em>proper</em> LCAs.</p>
 </div>
 <div class="section" id="how-do-you-create-foreground-models-in-lcopt">
 <h2>How do you create foreground models in LCOPT?<a class="headerlink" href="#how-do-you-create-foreground-models-in-lcopt" title="Permalink to this headline">¶</a></h2>
-<p>When you start an LCA, its usually a good idea to draw out a flow diagram of the system you&#8217;re modelling on a piece of paper. This helps you identify the unit processes involved, the inputs they use and the extent of the <em>foreground system</em> you might be able to get primary data for.</p>
+<p>When you start an LCA, its usually a good idea to draw out a flow diagram of the system you’re modelling on a piece of paper. This helps you identify the unit processes involved, the inputs they use and the extent of the <em>foreground system</em> you might be able to get primary data for.</p>
 <p>Creating foreground models in Lcopt is as simple as drawing out your flow chart.</p>
-<p>Instead of having to write out lists of exchanges to describe each unit process, you simply draw out a flow sheet of your process. You can add processes, link them together and add inputs and outputs. In the background Lcopt compiles these exchange lists, and gives each link a parameter. When you&#8217;ve finished your drawing you have a <em>fully parameterised</em> foreground model.</p>
+<p>Instead of having to write out lists of exchanges to describe each unit process, you simply draw out a flow sheet of your process. You can add processes, link them together and add inputs and outputs. In the background Lcopt compiles these exchange lists, and gives each link a parameter. When you’ve finished your drawing you have a <em>fully parameterised</em> foreground model.</p>
 </div>
 <div class="section" id="what-does-fully-parameterised-mean">
 <h2>What does <em>fully parameterised</em> mean?<a class="headerlink" href="#what-does-fully-parameterised-mean" title="Permalink to this headline">¶</a></h2>
 <p>In order to analyse your LCA model, you need to know how much of each exchange is required by each unit process. In most softwares the default is to <em>hard code</em> these values in the unit process itself. This is great for a one-off model, but can be a real hassle if there are multiple variants of your system which you want to assess and compare.</p>
-<p>Taking the example from above, some people like their tea with milk, some like it black. Some people like strong tea (with more tea leaves) others like it weaker. If you want to compare weak milky tea with strong black tea you&#8217;d need to create two different <em>teapot</em> processes (one for weak, one for strong) and two different <em>teacup</em> processes (one for milky, one for black), with the correct exchange amounts, and links to the version of <em>teapot</em> with the correct output.</p>
-<p>If you then decide you want to model strong milky tea or weak black tea you need to create more unit processes...</p>
-<p>Most LCA softwares allow you to replace the values in the unit processes with parameters, which you can then vary externally to create scenarios. Choosing, typing out and remembering parameters can be a boring and time consuming task though. With Lcopt it&#8217;s all done automatically in the background. Every link in the model is given a parameter instead of a value. By default, the model is &#8216;fully parameterised&#8217;.</p>
+<p>Taking the example from above, some people like their tea with milk, some like it black. Some people like strong tea (with more tea leaves) others like it weaker. If you want to compare weak milky tea with strong black tea you’d need to create two different <em>teapot</em> processes (one for weak, one for strong) and two different <em>teacup</em> processes (one for milky, one for black), with the correct exchange amounts, and links to the version of <em>teapot</em> with the correct output.</p>
+<p>If you then decide you want to model strong milky tea or weak black tea you need to create more unit processes…</p>
+<p>Most LCA softwares allow you to replace the values in the unit processes with parameters, which you can then vary externally to create scenarios. Choosing, typing out and remembering parameters can be a boring and time consuming task though. With Lcopt it’s all done automatically in the background. Every link in the model is given a parameter instead of a value. By default, the model is ‘fully parameterised’.</p>
 <p>This makes creating the model a lot quicker and the modelling and analysis a lot more flexible.</p>
 </div>
 <div class="section" id="how-do-you-go-from-a-flow-sheet-to-a-model">
 <h2>How do you go from a flow sheet to a model?<a class="headerlink" href="#how-do-you-go-from-a-flow-sheet-to-a-model" title="Permalink to this headline">¶</a></h2>
 <p>To go from an unquantified flow sheet to a meaningful LCA model, the first thing you need to do is create a <em>parameter set</em>. This provides a value for each link in a given scenario.</p>
 <p>You can either enter an explicit value, or you can tell the model to generate its own value based on a function/formula. To help this you can also create <em>global parameters</em> to use in these functions.</p>
-<p>For example, the amount of electrity (kWh) a kettle uses to boil a litre of water can be determined by it&#8217;s power rating (kW) and the amount of time it takes to boil (minutes).</p>
+<p>For example, the amount of electrity (kWh) a kettle uses to boil a litre of water can be determined by it’s power rating (kW) and the amount of time it takes to boil (minutes).</p>
 <p>You can create a global parameter for <em>power rating</em> and another one for <em>boil minutes</em>. You can then tell the model to generate a value for the input of <em>electricity</em> to <em>kettle</em> using the function <code class="docutils literal"><span class="pre">power_rating</span> <span class="pre">*</span> <span class="pre">boil_mins</span> <span class="pre">/</span> <span class="pre">60</span></code>.</p>
 <p>Now you can easily compare different kettles in your cup of tea LCA.</p>
-<p>You can use any parameter in a function, including inputs to any process. For example, if you want to add transport of an input (in units of kg.km) you could create a &#8216;transport distance&#8217; parameter, and tell Lcopt to work out the amount of &#8216;transport&#8217; required by multiplying the amount of your input (kg) by the distance (km). Now whenever you change the amount of your input, the transport of that input automatically changes too.</p>
-<p>Once you have a &#8216;default&#8217; parameter set you can duplicate it and edit whichever parameters you need to describe a new scenario.</p>
+<p>You can use any parameter in a function, including inputs to any process. For example, if you want to add transport of an input (in units of kg.km) you could create a ‘transport distance’ parameter, and tell Lcopt to work out the amount of ‘transport’ required by multiplying the amount of your input (kg) by the distance (km). Now whenever you change the amount of your input, the transport of that input automatically changes too.</p>
+<p>Once you have a ‘default’ parameter set you can duplicate it and edit whichever parameters you need to describe a new scenario.</p>
 <p>For example you can change the parameter for the input of <em>milk</em> to <em>teacup</em> to zero to model a black tea scenario, or increase the input of <em>tea leaves</em> to <em>teapot</em> to model a strong tea scenario.</p>
 </div>
 <div class="section" id="how-do-you-analyse-a-model">
 <h2>How do you analyse a model?<a class="headerlink" href="#how-do-you-analyse-a-model" title="Permalink to this headline">¶</a></h2>
 <div class="sidebar">
 <p class="first sidebar-title">Hotspot chart</p>
-<img alt="_images/hotspot_chart_tea.png" class="last" src="_images/hotspot_chart_tea.png" />
+<img alt="_images/hotspot_chart_tea_sm.png" class="last" src="_images/hotspot_chart_tea_sm.png" />
 </div>
 <p>To analyse the model you have two options.</p>
 <p>If you have a copy of SimaPro and are using lcopt as an easy way to generate a fully parameterised foreground model, you can export the model as a SimaPro .csv file and the parameter sets as an .xlsx file.</p>
 <p>The second option is to run the analysis directly from Lcopt. This uses <a class="reference external" href="https://brightwaylca.org/">Brightway</a> to do the calcuations. Brightway is an open source LCA software also written in Python.</p>
-<p>When you analyse a model from within Lcopt for the first time it creates a Brightway project. The foreground model is stored as it&#8217;s own separate database within the project, with links to the biosphere and technosphere databases.</p>
+<p>When you analyse a model from within Lcopt for the first time it creates a Brightway project. The foreground model is stored as it’s own separate database within the project, with links to the biosphere and technosphere databases.</p>
 <p>Lcopt calculates all of the parameters for each parameter set and then modifies the exchanges in the Brightway database before running the LCA calculations for that scenario.</p>
 <div class="sidebar">
 <p class="first sidebar-title">Tree diagram</p>
-<img alt="_images/tree.png" class="last" src="_images/tree.png" />
+<img alt="_images/tree_sm.png" class="last" src="_images/tree_sm.png" />
 </div>
-<p>You can choose from over 700 different impact assessment methods (don&#8217;t worry, there is a search function), and use as many as you like in one go. The default set is climate change (IPCC 2013 100a) and human toxicity (USEtox).</p>
-<p>Lcopt&#8217;s results screens contain bar charts, pie charts, tree diagrams, hotspot charts and tables. Charts can be exported to image files (300 dpi .png with transparent backgrounds) and the tables exported as Excel files.</p>
-<p>Once the analysis has been run you can open the model in Brightway as you would any other project if you need to conduct a more detailed analysis. Note however that Brightway will only &#8216;remember&#8217; the last scenario you ran so to do this it might be best to create your model with only one parameter set.</p>
+<p>You can choose from over 700 different impact assessment methods (don’t worry, there is a search function), and use as many as you like in one go. The default set is climate change (IPCC 2013 100a) and human toxicity (USEtox).</p>
+<p>Lcopt’s results screens contain bar charts, pie charts, tree diagrams, hotspot charts and tables. Charts can be exported to image files (300 dpi .png with transparent backgrounds) and the tables exported as Excel files.</p>
+<p>Once the analysis has been run you can open the model in Brightway as you would any other project if you need to conduct a more detailed analysis. Note however that Brightway will only ‘remember’ the last scenario you ran so to do this it might be best to create your model with only one parameter set.</p>
 </div>
 <div class="section" id="how-do-i-get-started">
 <h2>How do I get started?<a class="headerlink" href="#how-do-i-get-started" title="Permalink to this headline">¶</a></h2>

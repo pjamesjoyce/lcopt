@@ -110,7 +110,7 @@ Alternative setup - FORWAST
 Lcopt can be used without an ecoinvent license by using the `FORWAST <http://forwast.brgm.fr/>`_ database instead.
 
 Option 1. Run the setup utility in a jupyter notebook/python shell
------------------------------------------------------------------
+------------------------------------------------------------------
 
 .. highlight:: python
 
@@ -123,7 +123,7 @@ It'll take a while, but once its done it'll return ``True`` if it worked properl
 
 
 Option 2. Download lcopt_bw2_setup.py and use that instead
----------------------------------------------------------
+----------------------------------------------------------
 
 Download the helper script from `here <https://raw.githubusercontent.com/pjamesjoyce/lcopt/master/lcopt_bw2_setup_forwast.py>`_
 

@@ -89,7 +89,7 @@ How do you analyse a model?
 
 .. sidebar:: Hotspot chart
 
-    .. image:: assets/hotspot_chart_tea.png
+    .. image:: assets/hotspot_chart_tea_sm.png
 
 To analyse the model you have two options. 
 
@@ -103,7 +103,7 @@ Lcopt calculates all of the parameters for each parameter set and then modifies 
 
 .. sidebar:: Tree diagram
 
-    .. image:: assets/tree.png
+    .. image:: assets/tree_sm.png
 
 You can choose from over 700 different impact assessment methods (don't worry, there is a search function), and use as many as you like in one go. The default set is climate change (IPCC 2013 100a) and human toxicity (USEtox).
 

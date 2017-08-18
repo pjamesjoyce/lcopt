@@ -37,7 +37,8 @@ print(os.path.abspath('..'))
 # ones.
 extensions = ['sphinx.ext.todo',
     'sphinx.ext.coverage',
-    'sphinx.ext.autodoc']
+    'sphinx.ext.autodoc',
+    'rst2pdf.pdfbuilder']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -61,7 +62,7 @@ author = 'P. James Joyce'
 # built documents.
 #
 # The short X.Y version.
-version = ''
+version = '0.4.0'
 # The full version, including alpha/beta/rc tags.
 release = ''
 
@@ -160,5 +161,6 @@ texinfo_documents = [
      'Miscellaneous'),
 ]
 
+# -- Options for pdf output -----------------------------------------------
 
-
+pdf_documents = [('index', u'lcoptDocs', u'Lcopt - Documentation', u'P James Joyce')]
