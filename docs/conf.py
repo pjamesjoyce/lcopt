@@ -37,8 +37,8 @@ print(os.path.abspath('..'))
 # ones.
 extensions = ['sphinx.ext.todo',
     'sphinx.ext.coverage',
-    'sphinx.ext.autodoc',
-    'rst2pdf.pdfbuilder']
+    'sphinx.ext.autodoc']
+#    'rst2pdf.pdfbuilder']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -163,4 +163,4 @@ texinfo_documents = [
 
 # -- Options for pdf output -----------------------------------------------
 
-pdf_documents = [('index', u'lcoptDocs', u'Lcopt - Documentation', u'P James Joyce')]
+#pdf_documents = [('index', u'lcoptDocs', u'Lcopt - Documentation', u'P James Joyce')]

@@ -7,4 +7,3 @@ jinja2
 brightway2
 bw2analyzer
 eight
-rst2pdf
