@@ -31,6 +31,7 @@ my_package_files = []
 my_package_files.extend(package_files(os.path.join('lcopt', 'assets')))
 my_package_files.extend(package_files(os.path.join('lcopt', 'static')))
 my_package_files.extend(package_files(os.path.join('lcopt', 'templates')))
+my_package_files.extend(package_files(os.path.join('lcopt', 'bin')))
 print(my_package_files)
 
 setup(

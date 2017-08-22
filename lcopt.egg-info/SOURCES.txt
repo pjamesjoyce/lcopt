@@ -21,7 +21,9 @@ lcopt.egg-info/entry_points.txt
 lcopt.egg-info/top_level.txt
 lcopt/assets/biosphere3.pickle
 lcopt/assets/ecoinvent3_3.pickle
+lcopt/assets/ecoinvent_example.lcopt
 lcopt/assets/forwast.pickle
+lcopt/assets/forwast_example.lcopt
 lcopt/assets/locations.json
 lcopt/static/THIS IS SYMLINKED TO THE NOTEBOOK TEST PATH
 lcopt/static/css/analysis.css
