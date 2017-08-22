@@ -36,7 +36,7 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="lcopt  documentation" href="index.html"/>
-        <link rel="next" title="Using LCOPT" href="2_use.html"/>
+        <link rel="next" title="Getting Started" href="2_Getting_Started.html"/>
         <link rel="prev" title="Introduction" href="0_introduction.html"/> 
 
   
@@ -94,7 +94,10 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="0_introduction.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#basic-installation">Basic Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-installation">Basic Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#recommended-installation">Recommended Installation</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#setting-up-brightway2-for-lcopt">Setting up brightway2 for lcopt</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#step-1-download-the-ecoinvent-3-3-cutoff-database-ecoinvent-license-required">Step 1. Download the Ecoinvent 3.3 cutoff database (Ecoinvent license required)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#step-2a-lcopt-bw2-setup-at-the-command-line">Step 2a. lcopt-bw2-setup at the command line</a></li>
@@ -108,8 +111,8 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="2_use.html">Using LCOPT</a></li>
-<li class="toctree-l1"><a class="reference internal" href="3_video_runthrough.html">Video runthrough</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_Getting_Started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_use.html">Using Lcopt</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_technical.html">Technical Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="5_contact.html">Contact</a></li>
 </ul>
@@ -179,40 +182,30 @@
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="basic-installation">
 <h2>Basic Installation<a class="headerlink" href="#basic-installation" title="Permalink to this headline">¶</a></h2>
-<p>For lcopt to work you should have the latest version of <a class="reference external" href="https://brightwaylca.org/">brightway2</a> by Chris Mutel installed.
-This will make sure most of lcopts dependencies are satisfied.</p>
-<p>The instructions for installing brightway below are current as of April 2017, but check <a class="reference external" href="https://docs.brightwaylca.org/installation.html">here</a> for the latest ones.</p>
-<p>On the command line/console, create a new environment called lcopt:</p>
+<div class="section" id="recommended-installation">
+<h3>Recommended Installation<a class="headerlink" href="#recommended-installation" title="Permalink to this headline">¶</a></h3>
+<p>The easiest way to install lcopt is via conda. This ensures the version of Python (3.6) is correct, all of the dependencies are correct and there are no conflicts.
+You can also do it in only 3 commands.</p>
+<ol class="arabic">
+<li><p class="first">On the command line/console, create a new environment called lcopt:</p>
 <div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">conda create -n lcopt python=3.6</span>
 </pre></div>
 </div>
-<p>Then activate the lcopt environment using one of these:</p>
+</li>
+<li><p class="first">Activate the lcopt environment using one of these:</p>
 <div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">#</span> Mac/Linux
 <span class="go">source activate lcopt</span>
 <span class="gp">#</span> Windows
 <span class="go">activate lcopt</span>
 </pre></div>
 </div>
-<p>Then install brightway2:</p>
-<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">conda install -y -q -c conda-forge -c cmutel -c haasad brightway2 jupyter</span>
+</li>
+<li><p class="first">Install lcopt:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">conda install -y -q -c conda-forge -c cmutel -c haasad -c pjamesjoyce lcopt</span>
 </pre></div>
 </div>
-<p>On windows there&#8217;s an extra dependency:</p>
-<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">conda install -y -q pywin32</span>
-</pre></div>
-</div>
-<p>Once brightway2 is ready to go, theres two more steps before installing lcopt itself...</p>
-<p>Install pandas:</p>
-<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">conda install -y -q pandas</span>
-</pre></div>
-</div>
-<p>Update werkzeug (this is a python 3.6 thing...):</p>
-<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">pip install -U werkzeug</span>
-</pre></div>
-</div>
-<p>Finally, install lcopt via pip:</p>
-<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">pip install lcopt</span>
-</pre></div>
+</li>
+</ol>
 </div>
 </div>
 <div class="section" id="setting-up-brightway2-for-lcopt">
@@ -282,7 +275,7 @@ This will make sure most of lcopts dependencies are satisfied.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="2_use.html" class="btn btn-neutral float-right" title="Using LCOPT" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="2_Getting_Started.html" class="btn btn-neutral float-right" title="Getting Started" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="0_introduction.html" class="btn btn-neutral" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

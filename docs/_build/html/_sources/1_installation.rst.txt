@@ -8,46 +8,26 @@ Installation
 Basic Installation
 ------------------
 
-For lcopt to work you should have the latest version of `brightway2 <https://brightwaylca.org/>`_ by Chris Mutel installed.
-This will make sure most of lcopts dependencies are satisfied.
+Recommended Installation
+------------------------
 
-The instructions for installing brightway below are current as of April 2017, but check `here <https://docs.brightwaylca.org/installation.html>`_ for the latest ones.
+The easiest way to install lcopt is via conda. This ensures the version of Python (3.6) is correct, all of the dependencies are correct and there are no conflicts.
+You can also do it in only 3 commands.
 
-On the command line/console, create a new environment called lcopt::
+1) On the command line/console, create a new environment called lcopt::
 
     conda create -n lcopt python=3.6
 
-
-Then activate the lcopt environment using one of these::
+2) Activate the lcopt environment using one of these::
 
     # Mac/Linux
     source activate lcopt
     # Windows
     activate lcopt
 
+3) Install lcopt::
 
-Then install brightway2::
-
-	conda install -y -q -c conda-forge -c cmutel -c haasad brightway2 jupyter
-
-
-On windows there's an extra dependency::
-
-	conda install -y -q pywin32
-
-Once brightway2 is ready to go, theres two more steps before installing lcopt itself...
-
-Install pandas::
-
-	conda install -y -q pandas
-
-Update werkzeug (this is a python 3.6 thing...)::
-
-	pip install -U werkzeug
-
-Finally, install lcopt via pip::
-
-	pip install lcopt
+	conda install -y -q -c conda-forge -c cmutel -c haasad -c pjamesjoyce lcopt
 
 .. _bw2_setup_step:
 
