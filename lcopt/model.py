@@ -208,7 +208,8 @@ class LcoptModel(object):
                       'technosphere_databases',
                       'biosphere_databases',
                       'result_set',
-                      'evaluated_parameter_sets'
+                      'evaluated_parameter_sets',
+                      'useForwast'
                       ]
 
         for attr in attributes:

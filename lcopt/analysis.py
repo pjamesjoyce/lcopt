@@ -14,7 +14,10 @@ class Bw2Analysis():
         
         self.bw2_database_name, self.bw2_database = self.exporter.export_to_bw2()
         
-        self.bw2_project_name = self.modelInstance.name
+        if self.modelInstance.useForwast:
+            self.bw2_project_name = '{}_FORWAST'.format(self.modelInstance.name)
+        else:
+            self.bw2_project_name = self.modelInstance.name
         
     def setup_bw2(self):
 
