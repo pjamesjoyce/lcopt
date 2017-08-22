@@ -58,6 +58,7 @@ var UNIT_CHOICES = {
         ['m3*year',  'cubic meter-year'],
         ['kg sw',  'kilogram separative work unit'],
         ['km*year',  'kilometer-year'],
+        ['EUR2003', 'EUR2003']
     ]
 } 
 
@@ -566,46 +567,60 @@ var addInput = function(e, instance){
             var unit = $('#unit').selectpicker('val');//inputModal.getData('unit')[0],
             //console.log("unit at OK click " + unit)
             var location = 'GLO';
-            var code = hex_md5(name+type+unit+location)
-            var suffix = $('[id^=' + code + ']').size()
-            var node_id = code + '__' + suffix
+            var code = hex_md5(name+type+unit+location);
+            var suffix = $('[id^=' + code + ']').size();
+            var node_id = code + '__' + suffix;
+            var ext_link_name = inputModal.getData('ext_link_name');
+            var ext_link = inputModal.getData('code');
+            var unlinked = $('#unlinked').is(':checked') 
             //console.log('creating node with id ' + node_id)
 
-            var postData = {
-              'action': 'addInput',
-              'targetId': thisNodeID,
-              'name': name,
-              'type': type,
-              'unit': unit,
-              'location': location,
-              'code':code,
-              'ext_link_name' : inputModal.getData('ext_link_name'),
-              'ext_link': inputModal.getData('code'),
-              'lcopt_type': 'input'
+            if(name && (ext_link || unlinked)){
+              var postData = {
+                  'action': 'addInput',
+                  'targetId': thisNodeID,
+                  'name': name,
+                  'type': type,
+                  'unit': unit,
+                  'location': location,
+                  'code':code,
+                  'ext_link_name' : ext_link_name,
+                  'ext_link': ext_link,
+                  'lcopt_type': 'input'
+    
+               }
+    
+              console.log(postData);
+    
+              $.post('/process_post', postData);
+              //close the dialog
+              dialogRef.close()
+    
+              var position = $('#'+thisNodeID).position()
+              //console.log(position)
+    
+              // create a new node in the js side version for display on screen, and initiate it
+              var thisNode = newNodeExternal(name,'input',node_id,position.left + 25,position.top - 50,instance);
+              initNode(thisNode,instance);
+              saveState(thisNode);
+    
+              //connect the new node
+              var thisConnection = instance.connect({
+                source: node_id,
+                target: thisNodeID,
+                type:"basic input",
+                data:{'connection_type':'input'}
+              })
+            }else{
+              $('.inputMessage').remove();
+              if(!name){
+                $('#inputName').after('<div class="red inputMessage">Please give the exchange a name</div>');
+              }
+              if(!ext_link){
+                $('#extLink').after('<div class="red inputMessage">Please specify an exchange (or mark this input as burden free)</div>');
+              }
+            }
 
-           }
-
-          console.log(postData);
-
-          $.post('/process_post', postData);
-          //close the dialog
-          dialogRef.close()
-
-          var position = $('#'+thisNodeID).position()
-          //console.log(position)
-
-          // create a new node in the js side version for display on screen, and initiate it
-          var thisNode = newNodeExternal(name,'input',node_id,position.left + 25,position.top - 50,instance);
-          initNode(thisNode,instance);
-          saveState(thisNode);
-
-          //connect the new node
-          var thisConnection = instance.connect({
-            source: node_id,
-            target: thisNodeID,
-            type:"basic input",
-            data:{'connection_type':'input'}
-          })
         }
       },
       {
@@ -912,48 +927,60 @@ var addBiosphere = function(e, instance){
             var unit = $('#unit').selectpicker('val');//inputModal.getData('unit')[0],
             //console.log("unit at OK click " + unit)
             var location = 'GLO';
-            var code = hex_md5(name+type+unit+location)
-            var suffix = $('[id^=' + code + ']').size()
-            var node_id = code + '__' + suffix
+            var code = hex_md5(name+type+unit+location);
+            var suffix = $('[id^=' + code + ']').size();
+            var node_id = code + '__' + suffix;
+            var ext_link_name = inputModal.getData('ext_link_name');
+            var ext_link = inputModal.getData('code');
+
             //console.log('creating node with id ' + node_id)
 
-            var postData = {
-              'action': 'addInput',
-              'targetId': thisNodeID,
-              'name': name,
-              'type': type,
-              'unit': unit,
-              'location': location,
-              'code':code,
-              'ext_link_name' : inputModal.getData('ext_link_name'),
-              'ext_link': inputModal.getData('code'),
-              'lcopt_type': 'biosphere',
-
-           }
-
-          console.log(postData);
-
-          $.post('/process_post', postData);
-          //close the dialog
-          dialogRef.close()
-
-          var position = $('#'+thisNodeID).position()
-          //console.log(position)
-
-          // create a new node in the js side version for display on screen, and initiate it
-          var thisNode = newNodeExternal(name,'biosphere',node_id,position.left + 25,position.top - 50,instance);
-          initNode(thisNode,instance);
-          saveState(thisNode);
-
-          //connect the new node
-          var thisConnection = instance.connect({
-            source: node_id,
-            target: thisNodeID,
-            type:"basic biosphere",
-            data:{'connection_type':'biosphere'}
-          })
-
-          thisConnection.addClass('connection_biosphere')
+            if(name && ext_link){
+                var postData = {
+                  'action': 'addInput',
+                  'targetId': thisNodeID,
+                  'name': name,
+                  'type': type,
+                  'unit': unit,
+                  'location': location,
+                  'code':code,
+                  'ext_link_name' : ext_link_name,
+                  'ext_link': ext_link,
+                  'lcopt_type': 'biosphere',
+               }
+  
+              console.log(postData);
+  
+              $.post('/process_post', postData);
+              //close the dialog
+              dialogRef.close()
+  
+              var position = $('#'+thisNodeID).position()
+              //console.log(position)
+  
+              // create a new node in the js side version for display on screen, and initiate it
+              var thisNode = newNodeExternal(name,'biosphere',node_id,position.left + 25,position.top - 50,instance);
+              initNode(thisNode,instance);
+              saveState(thisNode);
+  
+              //connect the new node
+              var thisConnection = instance.connect({
+                source: node_id,
+                target: thisNodeID,
+                type:"basic biosphere",
+                data:{'connection_type':'biosphere'}
+              })
+  
+              thisConnection.addClass('connection_biosphere')
+            }else{
+              $('.inputMessage').remove();
+              if(!name){
+                $('#exchangeName').after('<div class="red inputMessage">Please give the exchange a name</div>');
+              }
+              if(!ext_link){
+                $('#extLink').after('<div class="red inputMessage">Please specify an exchange</div>');
+              }
+            }
         }
       },
       {
@@ -1339,16 +1366,27 @@ var addProcess = function(instance){
             //console.log(to_hash)
             uuid = hex_md5(to_hash)
             //console.log(uuid)
+            if(process_name && output_name){
+              // send the info to the python side server to create the item in the model
+              newProcess(uuid, process_name, output_name, unit)
 
-            // send the info to the python side server to create the item in the model
-            newProcess(uuid, process_name, output_name, unit)
+              // create a new node in the js side version for display on screen, and initiate it
+              var thisNode = newNodeExternal(process_name,'transformation',uuid,250,250,instance, outputlabel=output_name);
+              initNode(thisNode,instance);
+              
+              // close the  modal
+              dialogRef.close();  
+            }else{
 
-            // create a new node in the js side version for display on screen, and initiate it
-            var thisNode = newNodeExternal(process_name,'transformation',uuid,250,250,instance, outputlabel=output_name);
-            initNode(thisNode,instance);
+              $('.inputMessage').remove();
+              if(!process_name){
+                $('#processName').after('<div class="red inputMessage">Please give the process a name</div>');
+              }
+              if(!output_name){
+                $('#outputName').after('<div class="red inputMessage">Please give the process an output</div>');
+              }
+            }
             
-          // close the  modal
-          dialogRef.close();
         }
       },
       {
