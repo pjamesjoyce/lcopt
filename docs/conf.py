@@ -62,7 +62,7 @@ author = 'P. James Joyce'
 # built documents.
 #
 # The short X.Y version.
-version = '0.4.0'
+version = '0.4.1'
 # The full version, including alpha/beta/rc tags.
 release = ''
 
