@@ -4,6 +4,7 @@ include README.md
 recursive-include lcopt/assets *
 recursive-include lcopt/templates *
 recursive-include lcopt/static *
+recursive-include lcopt/bin *
 
 # Include the data files if there are any
 # recursive-include data *

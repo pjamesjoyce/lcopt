@@ -25,6 +25,12 @@ lcopt/assets/ecoinvent_example.lcopt
 lcopt/assets/forwast.pickle
 lcopt/assets/forwast_example.lcopt
 lcopt/assets/locations.json
+lcopt/bin/lcopt_bw2_setup.py
+lcopt/bin/lcopt_bw2_setup_forwast.py
+lcopt/bin/lcopt_launcher.py
+lcopt/bin/__pycache__/lcopt_bw2_setup.cpython-36.pyc
+lcopt/bin/__pycache__/lcopt_bw2_setup_forwast.cpython-36.pyc
+lcopt/bin/__pycache__/lcopt_launcher.cpython-36.pyc
 lcopt/static/THIS IS SYMLINKED TO THE NOTEBOOK TEST PATH
 lcopt/static/css/analysis.css
 lcopt/static/css/function_box.css
