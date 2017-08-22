@@ -10,4 +10,5 @@
 report.html
 generate
 dist
+build
 lcopt.egg-info/
