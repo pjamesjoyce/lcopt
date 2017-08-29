@@ -16,6 +16,9 @@ lcopt - An interactive tool for creating fully parameterised Life Cycle Assessme
 .. image:: https://coveralls.io/repos/github/pjamesjoyce/lcopt/badge.svg?branch=master
 	:target: https://coveralls.io/github/pjamesjoyce/lcopt?branch=master
 
+.. image:: http://joss.theoj.org/papers/c0b544bee185c9ac75e96d24b8573547/status.svg
+	:target: http://joss.theoj.org/papers/c0b544bee185c9ac75e96d24b8573547
+
 Lcopt is a python module for creating fully parameterised LCA foreground models using a Flask based interactive GUI developed by `James Joyce <https://pjamesjoyce.github.io/>`_.
 
 Features
