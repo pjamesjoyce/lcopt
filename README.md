@@ -157,3 +157,15 @@ If you have any problems, questions, comments, feature requests etc. please [rai
 If you want to contribute to Lcopt, you're more than welcome! Please fork the [github repository](https://github.com/pjamesjoyce/lcopt/) and open a pull request. 
 
 Lcopt uses [py.test](https://docs.pytest.org/en/latest/index.html>) and Travis for automated testing, so please accompany any new features with corresponding tests. See the `tests` folder in the [source code](https://github.com/pjamesjoyce/lcopt/tree/master/tests) for examples.  
+
+## Cite
+
+Lcopt has been published in the [Journal of Open Source Software](http://joss.theoj.org/papers/10.21105/joss.00339).
+
+[![Publication](http://joss.theoj.org/papers/c0b544bee185c9ac75e96d24b8573547/status.svg)](http://joss.theoj.org/papers/c0b544bee185c9ac75e96d24b8573547)
+
+You can download the citation in BibTeX for use in LaTeX or importing into [Mendeley](https://www.mendeley.com/)/other reference management software from [here](http://www.doi2bib.org/#/doi/10.21105/joss.00339).
+
+Or use the following citation:
+
+Joyce, P.J., 2017. Lcopt - An interactive tool for creating fully parameterised Life Cycle Assessment (LCA) foreground models. Journal of Open Source Software, 2:16. doi:10.21105/joss.00339
