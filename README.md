@@ -57,7 +57,6 @@ Make a note of the folder path that contains the .ecospold files, its probably `
 
 Open a command line/console and type:
 
-At the command line type:
 ```
 lcopt-bw2-setup path/to/ecospold/files # use "" if there are spaces in your path
 ```
