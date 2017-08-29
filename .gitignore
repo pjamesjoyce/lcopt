@@ -12,4 +12,4 @@ generate
 dist
 build
 lcopt.egg-info/
-docs/_build
+/docs/_build/*
