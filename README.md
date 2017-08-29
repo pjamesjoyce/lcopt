@@ -16,19 +16,15 @@ Online documentation, including full installation instructions, is available [he
 
 ### Basic Installation
 
-For lcopt to work you should have the latest version of [brightway2](https://brightwaylca.org/) by Chris Mutel installed.
-This will make sure most of lcopts dependencies are satisfied.
+The easiest way to install lcopt is via conda. This ensures the version of Python (3.6) is correct, all of the dependencies are correct and there are no conflicts.
+You can also do it in only 3 commands.
 
-The instructions for installing brightway below are current as of April 2017, but check [here](https://docs.brightwaylca.org/installation.html) for the latest ones.
-
-On the command line/console, create a new environment called lcopt:
-
+1) On the command line/console, create a new environment called lcopt:
 ```
 conda create -n lcopt python=3.6
 ```
 
-
-Then activate the lcopt environment using one of these:
+2) Activate the lcopt environment using one of these:
 ```
 # Mac/Linux
 source activate lcopt
@@ -36,31 +32,9 @@ source activate lcopt
 activate lcopt
 ```
 
-Then install brightway2:
+3) Install lcopt:
 ```
-conda install -y -q -c conda-forge -c cmutel -c haasad brightway2 jupyter
-```
-
-On windows there's an extra dependency:
-```
-conda install -y -q pywin32
-```
-
-Once brightway2 is ready to go, theres two more steps before installing lcopt itself...
-
-Install pandas:
-```
-conda install -y -q pandas
-```
-
-Update werkzeug (this is a python 3.6 thing...):
-```
-pip install -U werkzeug
-```
-
-Finally, install lcopt via pip::
-```
-pip install lcopt
+conda install -y -q -c conda-forge -c cmutel -c haasad -c pjamesjoyce lcopt
 ```
 
 ### Linking lcopt to brightway
@@ -81,28 +55,31 @@ Extract the file somewhere sensible on your machine, you might need to download 
 
 Make a note of the folder path that contains the .ecospold files, its probably `<path/extracted/to>/datasets/`
 
-Open a python console or jupyter notebook and use the setup utility function below:
+Open a command line/console and type:
 
-```python
-from lcopt.utils import lcopt_bw2_setup
-ecospold_path = r'path/to/ecospold/files' # put your own path in here
-lcopt_bw2_setup(ecospold_path)
+At the command line type:
+```
+lcopt-bw2-setup path/to/ecospold/files # use "" if there are spaces in your path
 ```
 
-To set up lcopt to use FORWAST there's no download step (the utility function downloads the latest version of the database). Simply use:
+To set up lcopt to use FORWAST there's no download step (the script downloads the latest version of the database). At the command line/console simply use:
 
-```python
-from lcopt.utils import lcopt_bw2_forwast_setup
-lcopt_bw2_forwast_setup()
+```
+lcopt-bw2-setup-forwast
 ```
 
 ## Example Usage
 
-Below are the basic commands to get lcopt's interactive GUI up and running to create your first model. More detailed instructions are available in the [online documentation](https://lcopt.readthedocs.io/en/latest/2_use.html), including a [video runthrough](https://lcopt.readthedocs.io/en/latest/3_video_runthrough.html) of creating a simple model using the ecoinvent 3.3 database.
+Below are the basic commands to get lcopt's interactive GUI up and running to create your first model. A [Getting Started](https://lcopt.readthedocs.io/en/latest/2_Getting_Started.html) guide, including a [video runthrough](https://lcopt.readthedocs.io/en/latest/2_Getting_Started.html#video), as well as [more detailed instructions](https://lcopt.readthedocs.io/en/latest/3_use.html) are available in the [online documentation](https://lcopt.readthedocs.io/).
 
 Lcopt saves models in your current working directory, so before launching it, `cd` to the folder you want to save your models in.
 
-Lcopt is written in Python, so to use it open up a jupyter notebook or python shell and use the following commands
+To launch lcopt and view an example model, at the command line use:
+```
+lcopt-launcher
+```
+
+Lcopt is written in Python, so you can also use it from within a Python shell. Open up a jupyter notebook or python shell and use the following commands:
 
 ### Importing Lcopt
 
@@ -148,7 +125,7 @@ This will start a Flask server and launch your web browser to access the GUI. If
 
 Information on how to use the GUI is located in 'More info...' panels dotted around at sensible locations within it.
 
-For more details on using it, see the [documentation](https://lcopt.readthedocs.io/en/latest/2_use.html) or the [video](https://lcopt.readthedocs.io/en/latest/3_video_runthrough.html)
+For more details on using it, see the [documentation](https://lcopt.readthedocs.io/en/latest/3_use.html) or the [video](https://lcopt.readthedocs.io/en/latest/2_Getting_Started.html#video)
 
 ## Contribute
 
