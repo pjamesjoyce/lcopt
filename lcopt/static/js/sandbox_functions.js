@@ -572,10 +572,11 @@ var addInput = function(e, instance){
             var node_id = code + '__' + suffix;
             var ext_link_name = inputModal.getData('ext_link_name');
             var ext_link = inputModal.getData('code');
+            var ext_link_check = $('#extLink').val();
             var unlinked = $('#unlinked').is(':checked') 
             //console.log('creating node with id ' + node_id)
 
-            if(name && (ext_link || unlinked)){
+            if(name && (ext_link_check || unlinked)){
               var postData = {
                   'action': 'addInput',
                   'targetId': thisNodeID,
@@ -616,7 +617,7 @@ var addInput = function(e, instance){
               if(!name){
                 $('#inputName').after('<div class="red inputMessage">Please give the exchange a name</div>');
               }
-              if(!ext_link){
+              if(!ext_link_check){
                 $('#extLink').after('<div class="red inputMessage">Please specify an exchange (or mark this input as burden free)</div>');
               }
             }
