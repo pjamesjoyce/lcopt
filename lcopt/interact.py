@@ -8,7 +8,7 @@ from itertools import groupby
 import xlsxwriter
 from io import BytesIO
 import os
-
+import socket
 
 from lcopt.bw2_export import Bw2Exporter
 from lcopt.export_view import LcoptView
@@ -1007,9 +1007,19 @@ class FlaskSandbox():
 
     def run(self):                      # pragma: no cover
         app = self.create_app()
+        
+        for port in range(5000, 5100):
 
-        url = 'http://127.0.0.1:5000/'
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            result = sock.connect_ex(('127.0.0.1', port))
+            
+            if result != 0:
+                break
+            else:
+                print("port {} is in use, checking {}".format(port, port + 1))
+
+        url = 'http://127.0.0.1:{}/'.format(port)
         webbrowser.open_new(url)
         #print ("running from the module")
-
-        app.run()
+        
+        app.run(port=port)

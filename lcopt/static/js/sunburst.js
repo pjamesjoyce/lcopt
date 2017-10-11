@@ -27,14 +27,15 @@
   
     var partition = d3.partition();
 
-    var break1 = 0.5,
+    var break1 = 0.2, //0.5
         break2 = 0.6;
     var show1 = 0.2,
         show2 = 0.6;
 
     var rscale; 
-    rscale = d3.scaleLinear().domain([0, break1*radius, break2*radius, 1.0*radius]).range([0, show1*radius, show2*radius, 1.0*radius]);
-  
+    //rscale = d3.scaleLinear().domain([0, break1*radius, break2*radius, 1.0*radius]).range([0, show1*radius, show2*radius, 1.0*radius]);
+    rscale = d3.scaleLinear().domain([0, radius]).range([0, radius]);
+
     var arc = d3.arc()
         .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x0))); })
         .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x1))); })
