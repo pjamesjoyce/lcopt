@@ -36,13 +36,17 @@ def create_LcoptModel_from_BW2Package(import_filename):
 
     for k, v in db.items():
         exchanges = []
+        production_amount = v['production amount']
+
+        if production_amount != 1:
+            print("NOTE: Production amount for {} is not 1 unit ({}). Parameters for this process will be divided by {} to normalise to one unit of output".format(v['name'], production_amount, production_amount))
 
         for e in v['exchanges']:
 
             exc_name = e.pop('name')
             exc_input = e.pop('input')
             exc_unit = unnormalise_unit(e.pop('unit'))
-            exc_amount = e.pop('amount')
+            exc_amount = e.pop('amount') / production_amount
             exc_type = e.pop('type')
 
             temp_param_set.append({'from': exc_name, 'to': v['name'], 'amount': exc_amount})
