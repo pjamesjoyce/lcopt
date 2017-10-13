@@ -2,7 +2,7 @@ from lcopt.bw2_parameter_utils import get_symbols, CapitalizationError, Paramete
 from asteval import Interpreter
 from collections import OrderedDict
 from pprint import pformat
-
+from copy import deepcopy
 
 class ParameterInterpreter():
 
@@ -12,6 +12,8 @@ class ParameterInterpreter():
 
         self.params = self.modelInstance.params
         self.global_params = {item['name']: item for item in self.modelInstance.ext_params}
+        self.production_params = self.modelInstance.production_params
+        self.normalised_params = self.normalise_parameters()
         #print (self.global_params)
         
         self.parameter_sets = self.modelInstance.parameter_sets
@@ -26,11 +28,36 @@ class ParameterInterpreter():
 
         self.order = self.get_order()
 
+    def normalise_parameters(self):
+        
+        param_copy = deepcopy(self.params)
+        norm_params = OrderedDict()
+        for k, v in param_copy.items():
+            norm_params['n_{}'.format(k)] = {}
+            for key, item in v.items():
+                if key == 'function':
+                    if not item:
+                        norm_function = '{} / {}'.format(k, v['normalisation_parameter'])
+                    else:
+                        norm_function = '({}) / {}'.format(item, v['normalisation_parameter'])
+                    
+                    norm_params['n_{}'.format(k)][key] = norm_function
+                else:
+                    norm_params['n_{}'.format(k)][key] = item
+        
+        return norm_params
+
     def get_references(self):
         """Create dictionary of parameter references"""
         refs = {key: get_symbols(value['function'])
                 if value.get('function') else set()
                 for key, value in self.params.items()}
+        refs.update({key: get_symbols(value['function'])
+                     if value.get('function') else set()
+                     for key, value in self.normalised_params.items()})
+        refs.update({key: get_symbols(value['function'])
+                     if value.get('function') else set()
+                     for key, value in self.production_params.items()})
         refs.update({key: set() for key in self.global_params})
         return refs
 
@@ -82,6 +109,10 @@ class ParameterInterpreter():
             
             this_ps = {}
             aeval = Interpreter()
+
+            all_params = dict(self.params)
+            all_params.update(dict(self.normalised_params))
+            all_params.update(dict(self.production_params))
             
             for key in self.order:
                 
@@ -91,13 +122,16 @@ class ParameterInterpreter():
 
                     aeval.symtable[key] = this_ps[key] = ps[key]
                     
-                elif self.params[key].get('function'):
-                    value = aeval(self.params[key]['function'])
+                elif all_params[key].get('function'):
+                    value = aeval(all_params[key]['function'])
                     aeval.symtable[key] = this_ps[key] = value
                     
                 else:
                     if key not in ps.keys():
-                        ps[key] = 0
+                        if key in self.production_params.keys():
+                            ps[key] = 1
+                        else:
+                            ps[key] = 0
                     aeval.symtable[key] = this_ps[key] = ps[key]
             
             evaluated_parameter_sets[ps_name] = this_ps

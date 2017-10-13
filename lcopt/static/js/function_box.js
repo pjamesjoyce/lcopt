@@ -37,9 +37,10 @@ function setUpSelectize(external_data){
 
 		icon_map = {
 			'input':'business',
-			'intermediate':'trending_flat',
+			'intermediate':'input',
 			'biosphere': 'local_florist',
 			'global':'language',
+			'production': 'forward'
 		},
 
 		name_map = {};
@@ -57,13 +58,13 @@ function setUpSelectize(external_data){
 		subsections = external_data[this_process].my_items;
 		for (var subsection in subsections){
 			subsection_name = subsections[subsection].name;
-			//console.log("\t" + subsection_name)
+			console.log("\t" + subsection_name)
 			items = subsections[subsection].my_items;
 			for (var item in items){
 				id = items[item].id;
 				name = items[item].name;
 				unit = items[item].unit;
-				console.log(unit);
+				console.log(subsection_name);
 
 				if(custom_type_map[subsection_name] == 'biosphere'){
 					option_text = "Emission of "+ name + " from " + to;
@@ -71,6 +72,9 @@ function setUpSelectize(external_data){
 				}else if (to_full == 'Global Parameters'){
 					option_text = name;
 					option_custom_type = 'global';
+				}else if(subsection_name == 'Production exchange (Output)'){
+					option_text = name;
+					option_custom_type = 'production';
 				}
 				else{
 					option_text = "Input of "+ name + " to " + to;
