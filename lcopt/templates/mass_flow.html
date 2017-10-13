@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block head_postload %}
+
+<script src="{{ url_for('static', filename = 'js/cdn_cache/d3.min.js') }}"></script>
+<script src="{{ url_for('static', filename = 'js/cdn_cache/sankey.js') }}"></script>
+<script src="{{ url_for('static', filename = 'js/mass_flow.js') }}"></script>
+
+<link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/mass_flow.css') }}" />
+
+
+{% endblock %}
+
+{% block content %} 
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xs-10 col-xs-offset-1">
+	
+    	<h2>Mass Flow</h2>
+
+      <div class="mass_flow_div"></div>
+
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

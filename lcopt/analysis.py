@@ -1,5 +1,6 @@
 from lcopt.bw2_export import Bw2Exporter
 from lcopt.utils import DEFAULT_DB_NAME, FORWAST_DB_NAME
+from lcopt.mass_balance import recurse_mass
 import brightway2 as bw2
 from bw2analyzer.tagged import recurse_tagged_database, aggregate_tagged_graph
 from copy import deepcopy
@@ -248,7 +249,8 @@ class Bw2Analysis():
                             'foreground_results': foreground_result,
                             'graph': recursed_graph,
                             'dropped_graph': dropped_graph,
-                            'original_graph': str(type_graph[0])
+                            'original_graph': str(type_graph[0]),
+                            'mass_flow': recurse_mass(type_graph[0])
                         }
                         
                         ps_results.append(result_set)

@@ -59,7 +59,7 @@ function export_StyledSVG(svg_id, filename, height, width){
 
     var data = new XMLSerializer().serializeToString(oDOM);
     console.log(data);
-    var imgData = 'data:image/svg+xml;base64,' + btoa(data);
+    var imgData = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(data)));
 
 
     var canvas = document.getElementById('export_canvas');

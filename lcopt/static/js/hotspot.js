@@ -40,13 +40,13 @@
                         "#8c564b", "#c49c94", "#e377c2", "#f7b6d2", "#7f7f7f", "#c7c7c7", "#bcbd22", "#dbdb8d", "#17becf", "#9edae5",
                         "#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#ffff33", "#a65628", "#f781bf", "#999999", "#8dd3c7"];
 
-    var color30_firing = ["#1f77b4", "#aec7e8", "#ff7f0e", "#ffbb78", "#ff9896", "#9467bd", "#c5b0d5", "#2ca02c", "#98df8a", "#d62728", 
-                        "#8c564b", "#c49c94", "#e377c2", "#f7b6d2", "#7f7f7f", "#c7c7c7", "#bcbd22", "#dbdb8d", "#17becf", "#9edae5",
-                        "#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#ffff33", "#a65628", "#f781bf", "#999999", "#8dd3c7",
-                        "#1abd44", "#923bc1", "#94d957", "#317dff", "#4f9100", "#d28aff", "#006f0c", "#a20083", "#00bf7a", "#c60040",];
+    var color30_firing = ["#000000", "#aec7e8", "#ff7f0e", "#f7b6d2", "#2ca02c", "#c7c7c7", "#bcbd22", "#dbdb8d", "#17becf", "#9edae5",
+                        "#8c564b", "#c5b0d5", "#7f7f7f", "#ffbb78", "#ff9896", "#9467bd", "#aec7e8", "#e377c2", "#98df8a", "#404040", 
+                        "#e41a1c", "#377eb8", "#00bf7a", "#984ea3", "#ff7f00", "#ffff33", "#a65628", "#f781bf", "#999999", "#8dd3c7",
+                        "#1abd44", "#923bc1", "#94d957", "#317dff", "#4f9100", "#d28aff", "#006f0c", "#a20083", "#ff9896"];//,"#00bf7a", "#c60040",];
 
     var color = d3.scaleOrdinal();
-    color.range(color30_d3v4);
+    color.range(color30_firing);
     
   
     // what is partition?  
@@ -54,15 +54,17 @@
 
     // set the breaks which determine the size of the outer rings
     // break 1 and 2 are the breaks in the scale, show 1 and 2 are how far along the scale those breaks appear
-    var break1 = 0.5,
+    var break1 = 0.2,//0.5
         break2 = 0.6;
     var show1 = 0.2,
         show2 = 0.6;
 
     // create the radius scale based on the breaks above
     var rscale; 
-    rscale = d3.scaleLinear().domain([0, break1*radius, break2*radius, 1.0*radius]).range([0, show1*radius, show2*radius, 1.0*radius]);
+    //rscale = d3.scaleLinear().domain([0, break1*radius, break2*radius, 1.0*radius]).range([0, show1*radius, show2*radius, 1.0*radius]);
+  
     
+
     // create the format functions for the labels
     var formatNumber = d3.format(",.3r"),
         formatPercentage = d3.format(",.1%");
@@ -80,12 +82,37 @@
         create_sunburst();
     });
 
+
+// delete this again
+    //console.log(bound_data);
+    dot = 40;
+    r1 = 20;
+    levels = 5;
+
+    rdomain = [0, (1/levels * radius), (2/levels * radius)];
+    //rdomain = [0, (1.8/levels * radius)];
+    rrange = [0, 10, dot];
+    /*for(i=3; i<levels; i++){
+        rdomain.push(i*(1/levels) * radius);
+        rrange.push(i*(1/levels) * (radius - dot - r1));
+    }*/
+
+    rdomain.push(radius);
+    rrange.push(radius);
+
+    console.log(rdomain);
+    console.log(rrange);
+
+    rscale = d3.scaleLinear().domain(rdomain).range(rrange);
+
+// to here
+
     // create the arc function for the pie chart
     var arc = d3.arc()
         .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x0))); })
         .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x1))); })
-        .innerRadius(function(d) {  return rscale(Math.max(0, y(d.y0))); })
-        .outerRadius(function(d) {  return rscale(Math.max(0, y(d.y1))); });
+        .innerRadius(function(d) { return rscale(Math.max(0, y(d.y0))); })
+        .outerRadius(function(d) { return rscale(Math.max(0, y(d.y1))); });
     
     function create_sunburst(){
         // create the svg container in the DOM
@@ -158,6 +185,8 @@
 
           var full_data = partition(root).descendants();
           var filtered_data = full_data.filter(function(x){return x.x0 != x.x1});
+          console.log(filtered_data);
+
           // partition changes the tree into a list of objects
           svg.selectAll("path")
               .data(filtered_data)
@@ -165,6 +194,7 @@
               .attr("d", arc)
               .style("fill", function(d) {
                 activity_name = d.data.activity.split("'")[1];
+                console.log(activity_name,  color(d.depth + ". " + activity_name ));
                 return color(d.depth + ". " + activity_name ) 
                })//return color(d.data.activity); })//return color((d.children ? d : d.parent).data.activity); })
               /*.style("stroke", function(d){
@@ -177,6 +207,7 @@
                 }
               })*/
               .style("stroke", "black")
+              .style("stroke-width", "0.5px")
               .attr("data-legend", function(d){ return d ;})
               .on("click", click)
               .on('mouseover', mouseover)
@@ -256,7 +287,7 @@
 
         for(var legend_item in sorted_legend_object){
           var i = legend_object[legend_item];
-          console.log(this_item);
+          //console.log(this_item);
 
           var item_level = i.item_level;
           var text = i.text;
