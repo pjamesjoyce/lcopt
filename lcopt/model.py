@@ -104,6 +104,7 @@ class LcoptModel(object):
         self.database = {'items': OrderedDict(), 'name': '{}_Database'.format(self.name)}
         self.external_databases = []
         self.params = OrderedDict()
+        self.production_params = OrderedDict()
         self.ext_params = []
         self.matrix = None
         self.names = None
@@ -159,7 +160,6 @@ class LcoptModel(object):
             if self.ecoinventName not in [x['name'] for x in self.external_databases]:
                 self.import_external_db(ecoinventPath, 'technosphere')
 
-
         if self.biosphereName not in [x['name'] for x in self.external_databases]:
             self.import_external_db(biospherePath, 'biosphere')
 
@@ -169,6 +169,8 @@ class LcoptModel(object):
         self.exists_in_database = partial(exists_in_specific_database, database=self.database)
         self.get_name = partial(get_exchange_name_from_database, database=self.database)
         self.get_unit = partial(get_exchange_unit_from_database, database=self.database)
+
+        self.parameter_scan()
         
     def rename(self, newname):
         """change the name of the model (i.e. what the .lcopt file will be saved as)"""
@@ -191,6 +193,7 @@ class LcoptModel(object):
         attributes = ['name',
                       'database',
                       'params',
+                      'production_params',
                       'ext_params',
                       'matrix',
                       'names',
@@ -368,6 +371,15 @@ class LcoptModel(object):
                 for e in i['exchanges']:
                     if e['type'] == 'production':
                         col_code = cr_list.index(e['input'][1])
+                        if not 'p_{}_production'.format(col_code) in self.production_params:
+                            self.production_params['p_{}_production'.format(col_code)] = {
+                                'function': None,
+                                'description': 'Production parameter for {}'.format(self.get_name(e['input'][1])),
+                                'unit': self.get_unit(e['input'][1]),
+                                'from': e['input'],
+                                'from_name': self.get_name(e['input'][1]),
+                                'type': 'production',
+                            }
 
                     elif e['type'] == 'technosphere':
                         #print(e)
@@ -376,6 +388,8 @@ class LcoptModel(object):
 
                 for ip in inputs:
                     self.matrix[(ip[0], col_code)] = ip[1]
+
+        param_check_list = []
 
         for c, column in enumerate(self.matrix.T):
             for r, i in enumerate(column):
@@ -387,9 +401,12 @@ class LcoptModel(object):
                     from_item_type = self.database['items'][(self.database['name'], p_from)]['lcopt_type']
                     #print('{}\t| {} --> {}'.format(coords, self.get_name(p_from), self.get_name(p_to)))
 
+                    param_check_list.append('p_{}_{}'.format(coords[0], coords[1]))
+
                     if not 'p_{}_{}'.format(coords[0], coords[1]) in self.params:
                         self.params['p_{}_{}'.format(coords[0], coords[1])] = {
                             'function': None,
+                            'normalisation_parameter': 'p_{}_production'.format(coords[1]),
                             'description': 'Input of {} to create {}'.format(self.get_name(p_from), self.get_name(p_to)),
                             'coords': coords,
                             'unit': self.get_unit(p_from),
@@ -400,12 +417,27 @@ class LcoptModel(object):
                             'type': from_item_type,
                         }
 
-                    else:
-                        pass
+                    elif 'normalisation_parameter' not in self.params['p_{}_{}'.format(coords[0], coords[1])].keys():
+                        print("Adding normalisation_parameter to {}".format('p_{}_{}'.format(coords[0], coords[1])))
+                        self.params['p_{}_{}'.format(coords[0], coords[1])]['normalisation_parameter'] = 'p_{}_production'.format(coords[1])
+                        
                         #print('p_{}_{} already exists'.format(coords[0],coords[1]))
+
+                    else:
+                        pass # print("SOMETHING WRONG HERE\n{}\n".format(self.params['p_{}_{}'.format(coords[0], coords[1])]))
 
                     if not 'p_{}_{}'.format(coords[0], coords[1]) in self.parameter_map:
                         self.parameter_map[(p_from, p_to)] = 'p_{}_{}'.format(coords[0], coords[1])
+
+        kill_list = []
+        for k in self.params.keys():
+            if k not in param_check_list:
+                print("{} may be obsolete".format(k))
+                kill_list.append(k)
+
+        for p in kill_list:
+            print("deleting parameter {}".format(p))
+            del self.params[p]
 
         return True
 
