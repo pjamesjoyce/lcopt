@@ -1003,6 +1003,10 @@ class FlaskSandbox():
 
             return json.dumps(filtered_locations)
 
+        @app.route('/mass_flow')
+        def mass_flow():
+            return render_template('mass_flow.html')
+
         return app
 
     def run(self):                      # pragma: no cover

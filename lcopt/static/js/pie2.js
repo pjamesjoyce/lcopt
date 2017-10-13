@@ -54,6 +54,7 @@ d3.json("results.json", function(data) {
     draw_tree();
     setup_stack_bar();
 	update_summary_table();
+	mass_flow(0);
 
     //draw_sunburst()
 
@@ -461,6 +462,8 @@ function polylineTweenPoints(a){
 $('#parameterSetChoice').change(function(){
 	change2()
 	draw_tree()
+	console.log($('#parameterSetChoice').val()-1)
+	mass_flow($('#parameterSetChoice').val()-1)
 	//create_force_layout()
 })
 $('#methodChoice').change(function(){
