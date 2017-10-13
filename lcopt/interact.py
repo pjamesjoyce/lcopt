@@ -400,7 +400,11 @@ class FlaskSandbox():
 
         #print(postData)
         new_function = postData['my_function']
-        parameter = self.modelInstance.params[postData['for']]
+        function_for = postData['for']
+        if function_for.split("_")[-1] == "production":
+            parameter = self.modelInstance.production_params[function_for]
+        else:
+            parameter = self.modelInstance.params[function_for]
         parameter['function'] = new_function
         parameter['description'] = postData['description']
 
@@ -408,6 +412,7 @@ class FlaskSandbox():
 
     def parameter_sorting(self):
         parameters = self.modelInstance.params
+        production_params = self.modelInstance.production_params
 
         # create a default parameter set if there isn't one yet
         if len(self.modelInstance.parameter_sets) == 0:
@@ -430,32 +435,45 @@ class FlaskSandbox():
         input_order = lambda x: parameters[x]['coords'][1]
         type_of = lambda x: parameters[x]['type']
 
+        rev_p_params = {v['from_name']: k for k, v in production_params.items()}
+
         sorted_keys = sorted(parameters, key=input_order)
 
         sorted_parameters = []
 
         for target, items in groupby(sorted_keys, to_name):
-            #print(target)
-            
+
             section = {'name': target, 'my_items': []}
+            this_p_param = rev_p_params[target]
+            if production_params[this_p_param].get('function'):
+                print ('{} determined by a function'.format(this_p_param))
+                values = ['{} = {:.3g}'.format(production_params[this_p_param]['function'], e_ps[this_p_param]) for e_ps_name, e_ps in evaluated_parameters.items()]
+                isFunction = True
+            else:
+                values = [ps[this_p_param] if this_p_param in ps.keys() else '' for ps_name, ps in self.modelInstance.parameter_sets.items()]
+                isFunction = False
+
+            subsection = {'name': 'Production exchange (Output)', 'my_items': []}
+            subsection['my_items'].append({'id': this_p_param, 'name': 'Output of {}'.format(production_params[this_p_param]['from_name']), 'existing_values': values, 'unit': production_params[this_p_param]['unit'], 'isFunction': isFunction})
+
+            section['my_items'].append(subsection)
 
             sorted_exchanges = sorted(items, key=type_of)
-
-            #print sorted_exchanges
+            print (sorted_exchanges)
             for type, exchanges in groupby(sorted_exchanges, type_of):
-                #print('\t{}'.format(type))
+                print('\t{}'.format(type))
                 subsection = {'name': subsectionTitles[type], 'my_items': []}
                 for exchange in exchanges:
 
                     if parameters[exchange].get('function'):
-                        #print ('{} determined by a function'.format(exchange))
+                        print ('{} determined by a function'.format(exchange))
                         values = ['{} = {:.3g}'.format(parameters[exchange]['function'], e_ps[exchange]) for e_ps_name, e_ps in evaluated_parameters.items()]
                         isFunction = True
                     else:
                         values = [ps[exchange] if exchange in ps.keys() else '' for ps_name, ps in self.modelInstance.parameter_sets.items()]
                         isFunction = False
 
-                    #print('\t\t{} ({}) {}'.format(parameters[exchange]['from_name'], exchange, values))
+                    print('\t\t{} ({}) {}'.format(parameters[exchange]['from_name'], exchange, values))
 
                     subsection['my_items'].append({'id': exchange, 'name': parameters[exchange]['from_name'], 'existing_values': values, 'unit': parameters[exchange]['unit'], 'isFunction': isFunction})
                 
@@ -465,7 +483,7 @@ class FlaskSandbox():
             #print(db_code)
             
             unit = self.modelInstance.database['items'][db_code]['unit']
-            section['name'] = "{}\t(1 {})".format(target, unit)
+            section['name'] = "{}\t({})".format(target, unit)
             sorted_parameters.append(section)
 
         ext_section = {'name': 'Global Parameters', 'my_items': [{'name': 'User created', 'my_items': []}]}
@@ -812,7 +830,13 @@ class FlaskSandbox():
 
         @app.route('/parameter_<param_id>.json')
         def param_query(param_id):
-            param = self.modelInstance.params[param_id]
+            if self.modelInstance.params.get(param_id):
+                param = self.modelInstance.params[param_id]
+            else:
+                param = self.modelInstance.production_params[param_id]
+
+            print(param)
+
             return json.dumps(param)
 
         @app.route('/status.json')

@@ -12,26 +12,37 @@
 
 .item_biosphere{
 	background-color: #EFFFF7;
-
-
 }
+
+.item_production{
+	background-color: #8ca5ce;
+	padding-left:5px;
+	padding-right:5px;
+	border-radius: 2px;
+}
+
 .item_operator{
 	background-color: aliceblue;
+	border-radius: 2px;
 }
 
 .item_intermediate{
 	background-color: #FEFFEF;
+	border-radius: 2px;
 }
 
 .item_input{
 	background-color: #FAEFFF;
+	border-radius: 2px;
 }
 .item_number{
-	background-color: #ddd
+	background-color: #ddd;
+	border-radius: 2px;
 }
 
 .item_global{
 	background-color: #FEF9F9;
+	border-radius: 2px;
 }
 
 .selectize-control.plugin-clear_button .clearAll {

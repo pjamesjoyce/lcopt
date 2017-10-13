@@ -349,7 +349,8 @@ function draw_tree(){
       total_impact = d.data.cum_impact + d.data.impact;
 
       //replace is for getting rif of trailing zeros
-      return  total_impact.toPrecision(2).replace(/\.?0*$/,'') + " " + method_unit; 
+      //return  total_impact.toPrecision(2).replace(/\.?0*$/,'') + " " + method_unit; 
+      return  total_impact.toPrecision(2) + " " + method_unit; 
     }
     });
     var wrap_height = nodeSizes.other[0],
