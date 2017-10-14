@@ -1,8 +1,10 @@
 from bw2io.package import BW2Package
 from lcopt.model import LcoptModel, unnormalise_unit
+from lcopt.interact import FlaskSandbox
 from copy import deepcopy
 from collections import OrderedDict
 from warnings import warn
+import networkx as nx
 
 
 def validate_imported_model(model):
@@ -24,6 +26,102 @@ def validate_imported_model(model):
     return True   
 
 
+def get_sandbox_root(links):
+    froms = []
+    tos = []
+    
+    for l in links:
+        froms.append(l['sourceID'])
+        tos.append(l['targetID'])
+    
+    fset = set(froms)
+    tset = set(tos)
+    roots = [x for x in tset if x not in fset] 
+
+    #print(sorted(fset))
+    #print(sorted(tset))
+
+    if len(roots) == 1:
+        return roots[0]
+    else:
+        print('Multiple roots found!')   
+        return False
+
+
+def hierarchy_pos(G, root, width=1., vert_gap = 0.2, vert_loc = 0, xcenter = 0.5, pos = None, parent = None):
+    '''If there is a cycle that is reachable from root, then this will see infinite recursion.
+       G: the graph
+       root: the root node of current branch
+       width: horizontal space allocated for this branch - avoids overlap with other branches
+       vert_gap: gap between levels of hierarchy
+       vert_loc: vertical location of root
+       xcenter: horizontal location of root
+       pos: a dict saying where all nodes go if they have been assigned
+       parent: parent of this branch.'''
+    if pos is None:
+        pos = {root: (xcenter, vert_loc)}
+    else:
+        pos[root] = (xcenter, vert_loc)
+    neighbors = list(G.neighbors(root))
+    #print(list(neighbors))
+    if parent is not None:   # this should be removed for directed graphs.
+        neighbors.remove(parent)  # if directed, then parent not in neighbors.
+    if len(neighbors) != 0:
+        dx = width / len(neighbors)
+        nextx = xcenter - width / 2 - dx / 2
+        for neighbor in neighbors:
+            nextx += dx
+            pos = hierarchy_pos(G, neighbor, width=dx, vert_gap=vert_gap, 
+                                vert_loc=vert_loc - vert_gap, xcenter=nextx, pos=pos, 
+                                parent=root)
+    return pos
+
+
+def compute_layout(nodes, links):
+    nx_nodes = []
+    n = deepcopy(nodes)
+    for x in n:
+        i = x.pop('id')
+        nx_nodes.append((i, x))
+
+    nx_links = []
+    l = deepcopy(links)
+    for x in l:
+        from_id = x.pop('sourceID')
+        to_id = x.pop('targetID')
+        nx_links.append((from_id, to_id, x))
+
+    G = nx.Graph()
+    G.add_nodes_from(nx_nodes)
+    G.add_edges_from(nx_links)
+
+    pos = hierarchy_pos(G, get_sandbox_root(links))
+    pos90 = {k: (v[1], -v[0]) for k, v in pos.items()}
+
+    xs = [v[0] for k, v in pos90.items()]
+    ys = [v[1] for k, v in pos90.items()]
+
+    s_xs = [(x - min(xs))for x in xs]
+    s_ys = [(y - min(ys))for y in ys]
+
+    row = 50
+    col = 250
+    max_height = 750
+    max_width = 1100
+
+    height = min([max_height, len(set(ys)) * row])
+    width = min([max_width, len(set(xs)) * col])
+
+    pad_top = 20
+    pad_left = 20
+
+    pos_scaled = {k: ((v[0] - min(xs)) / max(s_xs) * width + pad_left, (v[1] - min(ys)) / max(s_ys) * height + pad_top) for k, v in pos90.items()}
+
+    sandbox = {k: {'x': v[0], 'y': v[1]} for k, v in pos_scaled.items()}
+
+    return sandbox
+
+
 def create_LcoptModel_from_BW2Package(import_filename):
     
     import_data = BW2Package.load_file(import_filename)
@@ -37,12 +135,34 @@ def create_LcoptModel_from_BW2Package(import_filename):
 
     for k, v in db.items():
         exchanges = []
-        production_amount = v['production amount']
+        production_amount = v.get('production amount', 1)
 
         if production_amount != 1:
             print("NOTE: Production amount for {} is not 1 unit ({})".format(v['name'], production_amount, production_amount))
 
         temp_production_param_set.append({'of': v['name'], 'amount': production_amount})
+
+        """p_exs = [e for e in v['exchanges'] if e['type'] == 'production']
+                                t_exs = [e for e in v['exchanges'] if e['type'] == 'technosphere']
+                        
+                                if len(p_exs) == 0:
+                                    print(v['name'] + " has no production exchange")
+                        
+                                if len(p_exs) == 0 and len(t_exs) == 1:
+                                    temp_tech_exc = deepcopy(t_exs[0])
+                                    exc_name = temp_tech_exc.pop('name')
+                                    exc_input = temp_tech_exc.pop('input')
+                                    exc_unit = unnormalise_unit(temp_tech_exc.pop('unit'))
+                                    exc_type = 'production'
+                        
+                                    this_exc = {
+                                        'name': exc_name,
+                                        'type': exc_type,
+                                        'unit': exc_unit,
+                                        'amount': 1,
+                                        'lcopt_type': 'intermediate',
+                                    }
+                                    exchanges.append(this_exc)"""
 
         for e in v['exchanges']:
 
@@ -107,6 +227,10 @@ def create_LcoptModel_from_BW2Package(import_filename):
 
     param_set = OrderedDict()
 
+    #model.parameter_scan()
+
+    #print (model.names)
+
     for p in temp_param_set:
         exc_from = model.names.index(p['from'])
         exc_to = model.names.index(p['to'])
@@ -120,6 +244,12 @@ def create_LcoptModel_from_BW2Package(import_filename):
         param_set[parameter_id] = p['amount']
 
     model.parameter_sets[db_name] = param_set
+
+    model.parameter_scan()
+
+    fs = FlaskSandbox(model)
+
+    model.sandbox_positions = compute_layout(fs.nodes, fs.links)
 
     if validate_imported_model(model):
         print('\nModel created successfully')

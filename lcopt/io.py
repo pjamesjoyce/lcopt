@@ -54,7 +54,7 @@ def get_exchange_unit_from_database(code, database):
 
 
 # Create an exchange data structure
-def exchange_factory(input, type, amount, uncertainty, comment):
+def exchange_factory(input, type, amount, uncertainty, comment, **kwargs):
     data_structure = {
         'input': input,
         'type': type,
@@ -62,6 +62,10 @@ def exchange_factory(input, type, amount, uncertainty, comment):
         'uncertainty type': uncertainty,
         'comment': comment,
     }
+
+    for kw in kwargs:
+        data_structure[kw] = kwargs[kw]
+        
     return data_structure
 
 
