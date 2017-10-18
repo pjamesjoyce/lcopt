@@ -4,7 +4,7 @@ from lcopt.interact import FlaskSandbox
 from copy import deepcopy
 from collections import OrderedDict
 from warnings import warn
-import networkx as nx
+#import networkx as nx
 
 
 def validate_imported_model(model):
@@ -48,7 +48,16 @@ def get_sandbox_root(links):
         return False
 
 
-def hierarchy_pos(G, root, width=1., vert_gap = 0.2, vert_loc = 0, xcenter = 0.5, pos = None, parent = None):
+def get_sandbox_neighbours(sandbox_links, root):
+    neighbours = []
+    for x in sandbox_links:
+        if x['targetID'] == root:
+            neighbours.append(x['sourceID'])
+            
+    return neighbours   
+
+
+def hierarchy_pos(links, root, width=1., vert_gap=0.2, vert_loc=0, xcenter=0.5, pos=None, parent=None, min_dx=0.03):
     '''If there is a cycle that is reachable from root, then this will see infinite recursion.
        G: the graph
        root: the root node of current branch
@@ -62,40 +71,43 @@ def hierarchy_pos(G, root, width=1., vert_gap = 0.2, vert_loc = 0, xcenter = 0.5
         pos = {root: (xcenter, vert_loc)}
     else:
         pos[root] = (xcenter, vert_loc)
-    neighbors = list(G.neighbors(root))
-    #print(list(neighbors))
-    if parent is not None:   # this should be removed for directed graphs.
-        neighbors.remove(parent)  # if directed, then parent not in neighbors.
+
+    neighbors = get_sandbox_neighbours(links, root)
+
     if len(neighbors) != 0:
-        dx = width / len(neighbors)
-        nextx = xcenter - width / 2 - dx / 2
+        dx = max(width / len(neighbors), min_dx)
+        #nextx = xcenter - width / 2 - dx / 2
+        nextx = pos[root][0] - (len(neighbors) - 1) * dx / 2 - dx
+        
         for neighbor in neighbors:
             nextx += dx
-            pos = hierarchy_pos(G, neighbor, width=dx, vert_gap=vert_gap, 
+            pos = hierarchy_pos(links, neighbor, width=dx, vert_gap=vert_gap, 
                                 vert_loc=vert_loc - vert_gap, xcenter=nextx, pos=pos, 
                                 parent=root)
     return pos
 
 
-def compute_layout(nodes, links):
-    nx_nodes = []
-    n = deepcopy(nodes)
-    for x in n:
-        i = x.pop('id')
-        nx_nodes.append((i, x))
+def compute_layout(fs):
+    #nx_nodes = []
+    #n = deepcopy(nodes)
+    #for x in n:
+    #    i = x.pop('id')
+    #    nx_nodes.append((i, x))
 
-    nx_links = []
-    l = deepcopy(links)
-    for x in l:
-        from_id = x.pop('sourceID')
-        to_id = x.pop('targetID')
-        nx_links.append((from_id, to_id, x))
+    #nx_links = []
+    #l = deepcopy(links)
+    #for x in l:
+    #    from_id = x.pop('sourceID')
+    #    to_id = x.pop('targetID')
+    #    nx_links.append((from_id, to_id, x))
 
-    G = nx.Graph()
-    G.add_nodes_from(nx_nodes)
-    G.add_edges_from(nx_links)
+    #G = nx.Graph()
+    #G.add_nodes_from(nx_nodes)
+    #G.add_edges_from(nx_links)
+    nodes = fs.nodes
+    links = fs.links
 
-    pos = hierarchy_pos(G, get_sandbox_root(links))
+    pos = hierarchy_pos(links, get_sandbox_root(links))
     pos90 = {k: (v[1], -v[0]) for k, v in pos.items()}
 
     xs = [v[0] for k, v in pos90.items()]
@@ -105,8 +117,8 @@ def compute_layout(nodes, links):
     s_ys = [(y - min(ys))for y in ys]
 
     row = 50
-    col = 250
-    max_height = 750
+    col = 300
+    max_height = 1000
     max_width = 1100
 
     height = min([max_height, len(set(ys)) * row])
@@ -118,6 +130,14 @@ def compute_layout(nodes, links):
     pos_scaled = {k: ((v[0] - min(xs)) / max(s_xs) * width + pad_left, (v[1] - min(ys)) / max(s_ys) * height + pad_top) for k, v in pos90.items()}
 
     sandbox = {k: {'x': v[0], 'y': v[1]} for k, v in pos_scaled.items()}
+
+    processes = [k for k, v in fs.reverse_process_output_map.items()]
+
+    process_fudge_factor = 10 # process boxes are (generally) 20px taller than inputs, so if we shift these up 10 pixels it looks nicer...
+
+    for k, v in sandbox.items():
+        if k in processes:
+            sandbox[k]['y'] -= process_fudge_factor
 
     return sandbox
 
@@ -249,7 +269,7 @@ def create_LcoptModel_from_BW2Package(import_filename):
 
     fs = FlaskSandbox(model)
 
-    model.sandbox_positions = compute_layout(fs.nodes, fs.links)
+    model.sandbox_positions = compute_layout(fs)
 
     if validate_imported_model(model):
         print('\nModel created successfully')
