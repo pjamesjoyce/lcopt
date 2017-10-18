@@ -64,6 +64,7 @@ class Bw2Exporter():
         
         db = self.modelInstance.database['items']
         name = self.modelInstance.database['name']
+        ext_db_names = [x['name'] for x in self.modelInstance.external_databases]
 
         altbw2database = deepcopy(db)
 
@@ -79,31 +80,45 @@ class Bw2Exporter():
         for p in products:
             product = altbw2database[p]
             product['type'] = 'process'
-            new_exchanges = [x for x in product['exchanges'] if x['type'] != 'production']                
-            
+            new_exchanges = [x for x in product['exchanges'] if x['type'] != 'production']
+
+            print([x for x in product['exchanges'] if x['type'] == 'production'])
+
             product['exchanges'] = new_exchanges
             
             #link to intermediate generator
             if p in intermediate_map.keys():
                 #print (db[p]['name'])
-                product['exchanges'].append(exchange_factory(intermediate_map[p], 'technosphere', 1, 1, 'intermediate link'))
+                product['exchanges'].append(exchange_factory(intermediate_map[p], 'technosphere', 1, 1, 'intermediate link', name=db[p]['name'], unit=db[p]['unit']))
 
             #add external links
             if 'ext_link' in product.keys():
                 if product['ext_link'][0] in self.modelInstance.biosphere_databases:
-                    product['exchanges'].append(exchange_factory(product['ext_link'], 'biosphere', 1, 1, 'external link to {}'.format(product['ext_link'][0])))
-                else:    
-                    product['exchanges'].append(exchange_factory(product['ext_link'], 'technosphere', 1, 1, 'external link to {}'.format(product['ext_link'][0])))
+                    ed_ix =  ext_db_names.index(product['ext_link'][0])
+                    ex_name = self.modelInstance.external_databases[ed_ix]['items'][product['ext_link']]['name']
+                    ex_unit = self.modelInstance.external_databases[ed_ix]['items'][product['ext_link']]['unit']
+                    product['exchanges'].append(exchange_factory(product['ext_link'], 'biosphere', 1, 1, 'external link to {}'.format(product['ext_link'][0]), name=ex_name, unit=ex_unit))
+                else:
+                    ed_ix =  ext_db_names.index(product['ext_link'][0])
+                    ex_name = self.modelInstance.external_databases[ed_ix]['items'][product['ext_link']]['name']
+                    ex_unit = self.modelInstance.external_databases[ed_ix]['items'][product['ext_link']]['unit']
+                    product['exchanges'].append(exchange_factory(product['ext_link'], 'technosphere', 1, 1, 'external link to {}'.format(product['ext_link'][0]), name=ex_name, unit=ex_unit))
         
         for p in processes:
             process = altbw2database[p]
-            new_exchanges = [x for x in process['exchanges'] if x['type'] != 'production']    
-            #print (new_exchanges)
-            
+            new_exchanges = [x for x in process['exchanges'] ]#if x['type'] != 'production']    
+            print([x for x in process['exchanges'] if x['type'] == 'production'])
             # add parameter hooks
             for e in new_exchanges:
+                ex_name = self.modelInstance.get_name(e['input'][1])
+                ex_unit = self.modelInstance.get_unit(e['input'][1])
                 #print (self.parameter_map[(e['input'], p)])
-                e['parameter_hook'] = self.parameter_map[(e['input'], p)]
+                if e['type'] != 'production':
+                    e['parameter_hook'] = self.parameter_map[(e['input'], p)]
+                e['name'] = ex_name
+                e['unit'] = ex_unit
+            
+            #print (new_exchanges)
             
             process['exchanges'] = new_exchanges
                     

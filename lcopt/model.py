@@ -352,9 +352,11 @@ class LcoptModel(object):
 
         cr_list = []
         items = self.database['items']
+        #print(items)
 
         for key in items.keys():
             i = items[key]
+            #print(i['name'], i['type'])
             if i['type'] == 'product':
                 cr_list.append(i['code'])
 
@@ -368,6 +370,8 @@ class LcoptModel(object):
             i = items[key]
             if i['type'] == 'process':
                 inputs = []
+                #print(i['name'])
+                #print([(e['comment'], e['type']) for e in i['exchanges']])
                 for e in i['exchanges']:
                     if e['type'] == 'production':
                         col_code = cr_list.index(e['input'][1])
@@ -382,7 +386,7 @@ class LcoptModel(object):
                             }
 
                     elif e['type'] == 'technosphere':
-                        #print(e)
+                        #print(cr_list)
                         row_code = cr_list.index(e['input'][1])
                         inputs.append((row_code, e['amount']))
 
@@ -418,13 +422,13 @@ class LcoptModel(object):
                         }
 
                     elif 'normalisation_parameter' not in self.params['p_{}_{}'.format(coords[0], coords[1])].keys():
-                        print("Adding normalisation_parameter to {}".format('p_{}_{}'.format(coords[0], coords[1])))
+                        #print("Adding normalisation_parameter to {}".format('p_{}_{}'.format(coords[0], coords[1])))
                         self.params['p_{}_{}'.format(coords[0], coords[1])]['normalisation_parameter'] = 'p_{}_production'.format(coords[1])
                         
                         #print('p_{}_{} already exists'.format(coords[0],coords[1]))
 
                     else:
-                        pass # print("SOMETHING WRONG HERE\n{}\n".format(self.params['p_{}_{}'.format(coords[0], coords[1])]))
+                        pass  # print("SOMETHING WRONG HERE\n{}\n".format(self.params['p_{}_{}'.format(coords[0], coords[1])]))
 
                     if not 'p_{}_{}'.format(coords[0], coords[1]) in self.parameter_map:
                         self.parameter_map[(p_from, p_to)] = 'p_{}_{}'.format(coords[0], coords[1])
