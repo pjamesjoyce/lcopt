@@ -28,6 +28,7 @@ Features
 - Flexible model setup
 - Integration with SimaPro and Brightway2
 - Run LCA analyses and explore the results from inside the GUI
+- Export and share your results using `lcoptview <http://lcoptview.rtfd.io>`_
 
 .. toctree::
    :maxdepth: 1

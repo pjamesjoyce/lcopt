@@ -8,7 +8,10 @@ An interactive tool for creating fully parameterised Life Cycle Assessment (LCA)
 [![Publication](http://joss.theoj.org/papers/c0b544bee185c9ac75e96d24b8573547/status.svg)](http://joss.theoj.org/papers/c0b544bee185c9ac75e96d24b8573547)
 
 Lcopt is a python module for creating fully parameterised LCA foreground models using a Flask based interactive GUI developed by [James Joyce](https://pjamesjoyce.github.io/)
+
 It integrates with SimaPro and BrightWay2
+
+You can export and share your model and results as an .lcoptview file, and share them with a wider audience using [lcoptview](http://lcoptview.rtfd.io)
 
 Online documentation, including full installation instructions, is available [here](http://lcopt.readthedocs.io)
 
@@ -18,6 +21,8 @@ Online documentation, including full installation instructions, is available [he
 
 The easiest way to install lcopt is via conda. This ensures the version of Python (3.6) is correct, all of the dependencies are correct and there are no conflicts.
 You can also do it in only 3 commands.
+
+If you don't have conda installed yet, first install Miniconda (available [here](https://conda.io/miniconda.html))
 
 1) On the command line/console, create a new environment called lcopt:
 ```

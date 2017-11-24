@@ -10,16 +10,18 @@ def recurse_mass(d):
             
         elif k == 'technosphere':
             #print('technosphere')
-            for e in v:
-                #print (e['activity'])
-                #cum_impact += e['impact']
-                #if 'cum_impact' in e.keys():
-                #    cum_impact += e['cum_impact']
+            #print(len(to_return), d['activity'], d['activity']['unit'])
+            if d['activity']['unit'] in ['kg', 'g']:
+                for e in v:
+                    #print (e['activity'])
+                    #cum_impact += e['impact']
+                    #if 'cum_impact' in e.keys():
+                    #    cum_impact += e['cum_impact']
 
-                if k in to_return.keys():
-                    to_return[k].append(recurse_mass(e))
-                else:
-                    to_return[k] = [recurse_mass(e)]
+                    if k in to_return.keys():
+                        to_return[k].append(recurse_mass(e))
+                    else:
+                        to_return[k] = [recurse_mass(e)]
 
         elif k in['biosphere', 'impact']:
             pass
