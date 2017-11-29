@@ -64,6 +64,7 @@ class FlaskSandbox():
         m = self.modelInstance
         db = m.database['items']
         matrix = m.matrix
+        ext_dbs = [x['name'] for x in m.external_databases]
         
         sandbox_positions = m.sandbox_positions
 
@@ -118,13 +119,38 @@ class FlaskSandbox():
         i = 1
         for p in input_codes:
             if input_row_totals[p] != 0:
-                self.nodes.append({'name': input_map[p], 'type': 'input', 'id': p + "__0", 'initX': i * 50 + 150, 'initY': i * 50})
+                item = db[(m.database['name'], p)]
+                el = item.get('ext_link')
+                if el:
+                    ext_db_ix = ext_dbs.index(el[0])
+                    ext_db_items = m.external_databases[ext_db_ix]['items']
+                    ext_item = ext_db_items[el]
+                    ext_item_data = "<div><b>Database: </b>{}</br><b>Reference product: </b>{}</br><b>Process: </b>{}</br><b>Location: </b>{}</br></div>".format(el[0], ext_item['reference product'], ext_item['name'], ext_item['location'])
+                else:
+                    ext_item_data = "<div><i><b>This is a burden free input</b></i></div>"
+
+                self.nodes.append({'name': input_map[p], 'type': 'input', 'id': p + "__0", 'initX': i * 50 + 150, 'initY': i * 50, 'ext_item_data': ext_item_data})
                 i += 1
 
         i = 1
         for p in biosphere_codes:
             if biosphere_row_totals[p] != 0:
-                self.nodes.append({'name': biosphere_map[p], 'type': 'biosphere', 'id': p + "__0", 'initX': i * 50 + 150, 'initY': i * 50})
+                item = db[(m.database['name'], p)]
+                el = item.get('ext_link')
+                if el:
+                    ext_db_ix = ext_dbs.index(el[0])
+                    ext_db_items = m.external_databases[ext_db_ix]['items']
+                    ext_item = ext_db_items[el]
+                    if type(ext_item['categories']) == tuple:
+                        ext_categories = "; ".join(ext_item['categories'])
+                    else:
+                        ext_categories = ext_item['categories']
+
+                    ext_item_data = "<div><b>Database: </b>{}</br><b>Name: </b>{}</br><b>Type: </b>{}</br><b>Categories: </b>{}</br></div>".format(el[0], ext_item['name'], ext_item['type'], ext_categories)
+                else:
+                    ext_item_data = None
+
+                self.nodes.append({'name': biosphere_map[p], 'type': 'biosphere', 'id': p + "__0", 'initX': i * 50 + 150, 'initY': i * 50, 'ext_item_data': ext_item_data})
                 i += 1
             
         # compute links
@@ -161,7 +187,8 @@ class FlaskSandbox():
             count = input_duplicates.count(p)
             if count > 0:
                 suffix = "__" + str(count)
-                self.nodes.append({'name': input_map[p], 'type': 'input', 'id': p + suffix, 'initX': i * 50 + 150, 'initY': i * 50})
+                ext_item_data = [x['ext_item_data'] for x in self.nodes if x['id'] == p + "__0"][0]
+                self.nodes.append({'name': input_map[p], 'type': 'input', 'id': p + suffix, 'initX': i * 50 + 150, 'initY': i * 50, 'ext_item_data': ext_item_data})
                 i += 1
                 
         while len(biosphere_duplicates) > 0:
@@ -169,7 +196,8 @@ class FlaskSandbox():
             count = biosphere_duplicates.count(p)
             if count > 0:
                 suffix = "__" + str(count)
-                self.nodes.append({'name': biosphere_map[p], 'type': 'biosphere', 'id': p + suffix, 'initX': i * 50 + 150, 'initY': i * 50})
+                ext_item_data = [x['ext_item_data'] for x in self.nodes if x['id'] == p + "__0"][0]
+                self.nodes.append({'name': biosphere_map[p], 'type': 'biosphere', 'id': p + suffix, 'initX': i * 50 + 150, 'initY': i * 50, 'ext_item_data': ext_item_data})
                 i += 1
                 
         #try and reset the locations

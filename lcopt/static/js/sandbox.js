@@ -183,7 +183,7 @@ var jsPlumbsetup = function (nodes, links,linklabels, outputlabels) {
     
 
     for(i=0;i<nodes.length;i++){
-        initNode(newNodeExternal(nodes[i]['name'],nodes[i]['type'],nodes[i]['id'],nodes[i]['initX'],nodes[i]['initY'], instance), instance);
+        initNode(newNodeExternal(nodes[i]['name'],nodes[i]['type'],nodes[i]['id'],nodes[i]['initX'],nodes[i]['initY'], nodes[i]['ext_item_data'], instance), instance);
     };
 
 

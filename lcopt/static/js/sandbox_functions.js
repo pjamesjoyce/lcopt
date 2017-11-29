@@ -63,13 +63,18 @@ var UNIT_CHOICES = {
 } 
 
 // This function creates a new node from external data
-var newNodeExternal = function(name, type, id, x, y, instance, outputlabel = ''){
+var newNodeExternal = function(name, type, id, x, y, ext_item_data = '', instance, outputlabel = ''){
   
-  if(outputlabel != ''){instance.data.outputlabels[id] = outputlabel};
+  if(outputlabel !== ''){instance.data.outputlabels[id] = outputlabel};
   //console.log(outputlabel)
   //console.log(instance.data.outputlabels[id])
-  var id = id//name.split(' ').join('_')//jsPlumbUtil.uuid();
-  var d = $('<div>').attr('id', id).addClass('w ' + type);
+  var id = id;//name.split(' ').join('_')//jsPlumbUtil.uuid();
+  var d;
+  if(type == 'input' || type == 'biosphere'){
+    d = $('<div data-toggle="popover" data-trigger="hover" title="'+name+'" data-content="'+ext_item_data+'" data-html="true">').attr('id', id).addClass('w ' + type);  
+  }else{
+    d = $('<div>').attr('id', id).addClass('w ' + type);
+  }
   var title =  $('<div>').addClass('title').text(name);
   var buttons = $('<div>').addClass('buttons');
   var connect =  $('<div>').addClass('ep').html('<i class="ep2 material-icons md-18" data-toggle="popover" data-placement= "left" data-trigger="hover" title="Connect" data-content="Drag to connect to another process">trending_flat</i>');
@@ -573,6 +578,7 @@ var addInput = function(e, instance){
             var ext_link_name = inputModal.getData('ext_link_name');
             var ext_link = inputModal.getData('code');
             var ext_link_check = $('#extLink').val();
+            var ext_link_name_check = $('#extLinkName').val();
             var unlinked = $('#unlinked').is(':checked') 
             //console.log('creating node with id ' + node_id)
 
@@ -599,9 +605,32 @@ var addInput = function(e, instance){
     
               var position = $('#'+thisNodeID).position()
               //console.log(position)
+
+              console.log(ext_link_check);
+              console.log(ext_link_name_check);
+
+              db_string = ext_link_check.split(",")[0];
+              db = db_string.substring(2,db_string.length-1);
+              name_list = ext_link_name_check.split("{");
+              loc_re = /{(.*)}/
+              ext_loc = loc_re.exec(ext_link_name_check)[1]
+
+              ext_data_name = name_list[0]
+
+              
+              if(ext_data_name.substring(0,10) == 'market for'){
+                ext_data_rp = ext_data_name.substring(11,ext_data_name.length)
+              }else if(ext_data_name.slice(-11) == 'production '){
+                ext_data_rp = ext_data_name.substring(0, ext_data_name.length - 12)
+              }else{
+                ext_data_rp = ext_data_name
+              }
+              
+              var ext_link_data = "<div><b>Database: </b>"+db+"</br><b>Reference product: </b>"+ext_data_rp+"</br><b>Process: </b>"+ext_data_name+"</br><b>Location: </b>"+ext_loc+"</div>"
+  
     
               // create a new node in the js side version for display on screen, and initiate it
-              var thisNode = newNodeExternal(name,'input',node_id,position.left + 25,position.top - 50,instance);
+              var thisNode = newNodeExternal(name,'input',node_id,position.left + 25,position.top - 50, ext_link_data, instance);
               initNode(thisNode,instance);
               saveState(thisNode);
     
@@ -934,6 +963,7 @@ var addBiosphere = function(e, instance){
             var ext_link_name = inputModal.getData('ext_link_name');
             var ext_link = inputModal.getData('code');
             var ext_link_check = $('#extLink').val();
+            var ext_link_name_check = $('#extLinkName').val();
 
             //console.log('creating node with id ' + node_id)
 
@@ -959,9 +989,23 @@ var addBiosphere = function(e, instance){
   
               var position = $('#'+thisNodeID).position()
               //console.log(position)
+              db_string = ext_link_check.split(",")[0];
+              db = db_string.substring(2,db_string.length-1);
+              name_list = ext_link_name_check.split("(");
+              ext_data_name = name_list[0];
+              ext_data_categories = name_list[1].split(")")[0];
+              is_emission = ext_data_categories.substring(0,8)
+              if(is_emission == "emission"){
+                ext_data_type = is_emission;
+                ext_data_category_display = ext_data_categories.substring(12)
+              }else{
+                ext_data_type = "natural resource";
+                ext_data_category_display = ext_data_categories
+              }
+              var ext_link_data = "<div><b>Database: </b>"+db+"</br><b>Name: </b>"+ext_data_name+"</br><b>Type: </b>"+ext_data_type+"</br><b>Categories: </b>"+ext_data_category_display+"</div>"
   
               // create a new node in the js side version for display on screen, and initiate it
-              var thisNode = newNodeExternal(name,'biosphere',node_id,position.left + 25,position.top - 50,instance);
+              var thisNode = newNodeExternal(name,'biosphere',node_id,position.left + 25,position.top - 50, ext_link_data, instance);
               initNode(thisNode,instance);
               saveState(thisNode);
   
@@ -1373,7 +1417,7 @@ var addProcess = function(instance){
               newProcess(uuid, process_name, output_name, unit)
 
               // create a new node in the js side version for display on screen, and initiate it
-              var thisNode = newNodeExternal(process_name,'transformation',uuid,250,250,instance, outputlabel=output_name);
+              var thisNode = newNodeExternal(process_name,'transformation',uuid,250,250, '', instance, outputlabel=output_name);
               initNode(thisNode,instance);
               
               // close the  modal
