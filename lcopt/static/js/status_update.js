@@ -52,11 +52,15 @@ function set_display(item, bool){
 
 }
 
-
-update_status();
-    $('[data-toggle="popover"]').popover({
+$(document).ready(function(){
+	update_status();
+	$('[data-toggle="popover"]').popover({
     delay: {
        show: "0",
        hide: "50"
     },
 });
+})
+
+
+

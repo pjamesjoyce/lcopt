@@ -237,7 +237,7 @@ class FlaskSandbox():
         location = 'GLO'
         m.create_process(name, exchanges, location, unit)
         self.modelInstance.parameter_scan()
-        print (m.database['items'][(m.database['name'], postData['uuid'])])
+        #print (m.database['items'][(m.database['name'], postData['uuid'])])
         
         return "OK"
     
@@ -382,7 +382,7 @@ class FlaskSandbox():
             return_data['ext_link_string'] = full_link_string
             return_data['ext_link_unit'] = full_link['unit']
         else:
-            print('This is an unlinked product')
+            #print('This is an unlinked product')
             return_data['isLinked'] = False
             return_data['unlinked_unit'] = myInput['unit']
         
@@ -474,8 +474,8 @@ class FlaskSandbox():
             section = {'name': target, 'my_items': []}
             this_p_param = rev_p_params[target]
             if production_params[this_p_param].get('function'):
-                print ('{} determined by a function'.format(this_p_param))
-                values = ['{} = {:.3g}'.format(production_params[this_p_param]['function'], e_ps[this_p_param]) for e_ps_name, e_ps in evaluated_parameters.items()]
+                #print ('{} determined by a function'.format(this_p_param))
+                values = ['{} = {:.3f}'.format(production_params[this_p_param]['function'], e_ps[this_p_param]) for e_ps_name, e_ps in evaluated_parameters.items()]
                 isFunction = True
             else:
                 values = [ps[this_p_param] if this_p_param in ps.keys() else '' for ps_name, ps in self.modelInstance.parameter_sets.items()]
@@ -487,21 +487,21 @@ class FlaskSandbox():
             section['my_items'].append(subsection)
 
             sorted_exchanges = sorted(items, key=type_of)
-            print (sorted_exchanges)
+            #print (sorted_exchanges)
             for type, exchanges in groupby(sorted_exchanges, type_of):
-                print('\t{}'.format(type))
+                #print('\t{}'.format(type))
                 subsection = {'name': subsectionTitles[type], 'my_items': []}
                 for exchange in exchanges:
 
                     if parameters[exchange].get('function'):
-                        print ('{} determined by a function'.format(exchange))
-                        values = ['{} = {:.3g}'.format(parameters[exchange]['function'], e_ps[exchange]) for e_ps_name, e_ps in evaluated_parameters.items()]
+                        #print ('{} determined by a function'.format(exchange))
+                        values = ['{} = {:.3f}'.format(parameters[exchange]['function'], e_ps[exchange]) for e_ps_name, e_ps in evaluated_parameters.items()]
                         isFunction = True
                     else:
                         values = [ps[exchange] if exchange in ps.keys() else '' for ps_name, ps in self.modelInstance.parameter_sets.items()]
                         isFunction = False
 
-                    print('\t\t{} ({}) {}'.format(parameters[exchange]['from_name'], exchange, values))
+                    #print('\t\t{} ({}) {}'.format(parameters[exchange]['from_name'], exchange, values))
 
                     subsection['my_items'].append({'id': exchange, 'name': parameters[exchange]['from_name'], 'existing_values': values, 'unit': parameters[exchange]['unit'], 'isFunction': isFunction})
                 
@@ -539,7 +539,7 @@ class FlaskSandbox():
                         if k not in reserved:
                             if k not in current_parameter_sets:
                                 current_parameter_sets.append(k)
-                            print (k, line['id'], line[k])
+                            #print (k, line['id'], line[k])
 
                             if line[k] == '':
                                 line[k] = 0
@@ -863,7 +863,7 @@ class FlaskSandbox():
             else:
                 param = self.modelInstance.production_params[param_id]
 
-            print(param)
+            #print(param)
 
             return json.dumps(param)
 
@@ -1020,7 +1020,7 @@ class FlaskSandbox():
             ps = int(request.args.get('ps'))
             m = int(request.args.get('m'))
 
-            print (export_type, ps, m)
+            #print (export_type, ps, m)
 
             if export_type == 'summary':
 

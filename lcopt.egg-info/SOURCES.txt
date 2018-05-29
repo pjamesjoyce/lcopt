@@ -6,13 +6,16 @@ setup.py
 lcopt/__init__.py
 lcopt/analysis.py
 lcopt/bw2_export.py
+lcopt/bw2_import.py
 lcopt/bw2_parameter_utils.py
 lcopt/bw2query.py
 lcopt/export_view.py
 lcopt/interact.py
 lcopt/io.py
+lcopt/mass_balance.py
 lcopt/model.py
 lcopt/parameter_interpreter.py
+lcopt/tagged_copy.py
 lcopt/utils.py
 lcopt.egg-info/PKG-INFO
 lcopt.egg-info/SOURCES.txt
@@ -30,10 +33,12 @@ lcopt/bin/lcopt_bw2_setup_forwast.py
 lcopt/bin/lcopt_launcher.py
 lcopt/bin/__pycache__/lcopt_bw2_setup.cpython-36.pyc
 lcopt/bin/__pycache__/lcopt_bw2_setup_forwast.cpython-36.pyc
+lcopt/bin/__pycache__/lcopt_launcher.cpython-33.pyc
 lcopt/bin/__pycache__/lcopt_launcher.cpython-36.pyc
 lcopt/static/THIS IS SYMLINKED TO THE NOTEBOOK TEST PATH
 lcopt/static/css/analysis.css
 lcopt/static/css/function_box.css
+lcopt/static/css/mass_flow.css
 lcopt/static/css/methods_box.css
 lcopt/static/css/parameter_table.css
 lcopt/static/css/sandbox.css
@@ -67,6 +72,7 @@ lcopt/static/js/export_chart.js
 lcopt/static/js/function_box.js
 lcopt/static/js/hotspot.js
 lcopt/static/js/location_selectize.js
+lcopt/static/js/mass_flow.js
 lcopt/static/js/md5.js
 lcopt/static/js/methods_box.js
 lcopt/static/js/pie2.js
@@ -90,6 +96,7 @@ lcopt/static/js/cdn_cache/d3.min.js
 lcopt/static/js/cdn_cache/jquery-ui.min.js
 lcopt/static/js/cdn_cache/jquery.min.js
 lcopt/static/js/cdn_cache/jsplumb.min.js
+lcopt/static/js/cdn_cache/sankey.js
 lcopt/static/js/cdn_cache/selectize-plugin-clear.js
 lcopt/static/js/cdn_cache/selectize.js
 lcopt/static/js/cdn_cache/selectize_duplicates_JJ.js
@@ -108,6 +115,7 @@ lcopt/templates/analysis_preload.html
 lcopt/templates/base.html
 lcopt/templates/create_functions.html
 lcopt/templates/export.csv
+lcopt/templates/mass_flow.html
 lcopt/templates/parameter_set_table_sorted.html
 lcopt/templates/sandbox.html
 lcopt/templates/settings.html

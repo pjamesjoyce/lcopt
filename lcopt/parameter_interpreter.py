@@ -124,6 +124,10 @@ class ParameterInterpreter():
                     
                 elif all_params[key].get('function'):
                     value = aeval(all_params[key]['function'])
+                    
+                    if value is None:
+                        value = 0
+
                     aeval.symtable[key] = this_ps[key] = value
                     
                 else:

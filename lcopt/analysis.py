@@ -2,7 +2,8 @@ from lcopt.bw2_export import Bw2Exporter
 from lcopt.utils import DEFAULT_DB_NAME, FORWAST_DB_NAME
 from lcopt.mass_balance import recurse_mass
 import brightway2 as bw2
-from bw2analyzer.tagged import recurse_tagged_database, aggregate_tagged_graph
+#from bw2analyzer.tagged import recurse_tagged_database, aggregate_tagged_graph
+from .tagged_copy import recurse_tagged_database, aggregate_tagged_graph
 from copy import deepcopy
 import time
 import datetime
@@ -60,7 +61,6 @@ class Bw2Analysis():
                     e['amount'] = parameter_set[e['parameter_hook']]
                     #print("\t\t {}".format(e.amount))
                     e.save()
-    
     def multi_recurse(self, d):
     
         max_levels = 100

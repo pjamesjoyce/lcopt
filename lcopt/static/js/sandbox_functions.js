@@ -527,7 +527,8 @@ var addInput = function(e, instance){
         // This is the callback function that gets run by the search box once it has a result
         function logResult(name, code){
 
-          var unit_re = /\[([\w ]*)\]$/
+          var unit_re = /\[([\w- ]*)\]$/
+          console.log(name)
           var unit_name = unit_re.exec(name)[1]
           var unit = unitMap[unit_name]
           //console.log(unit[0])
