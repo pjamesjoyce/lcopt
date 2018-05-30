@@ -8,6 +8,13 @@ from copy import deepcopy
 import time
 import datetime
 
+# TODO: Figure out a different way to do this and reinstate the proper bw2data.parameters dependency
+
+#from bw2data.parameters import DatabaseParameter, ActivityParameter
+from .bw2data_parameters import DatabaseParameter, ActivityParameter
+
+#import presamples as ps
+#import numpy as np
 
 class Bw2Analysis():
     def __init__(self, modelInstance):
@@ -53,14 +60,10 @@ class Bw2Analysis():
 
             for e in i.exchanges():
 
-                if 'parameter_hook' in e.keys():
-                    #print (i)
-                    #print("\t {}".format(e))
-                    #print("\t\t {}".format(e['parameter_hook']))
-                    #print("\t\t {}".format(e.amount))
-                    e['amount'] = parameter_set[e['parameter_hook']]
-                    #print("\t\t {}".format(e.amount))
+                if 'formula' in e.keys():
+                    e['amount'] = parameter_set[e['formula']]
                     e.save()
+
     def multi_recurse(self, d):
     
         max_levels = 100
@@ -165,6 +168,20 @@ class Bw2Analysis():
             
             new_db.write(self.bw2_database)
             new_db.process()
+
+            # This is where the parameter bit goes
+            bw2_parameters = self.modelInstance.bw2_export_params
+            bw2.parameters.new_database_parameters(bw2_parameters, name)
+
+            #Group.create(name="all")
+
+            for a in new_db:
+                for e in a.exchanges():
+                    if e.get('formula'):
+                        bw2.parameters.add_exchanges_to_group("all", a)
+                        break                
+
+            ActivityParameter.recalculate_exchanges("all")
             
             #print ('trying to get {}'.format(demand_item_code))
             product_demand = new_db.get(demand_item_code)
@@ -174,6 +191,32 @@ class Bw2Analysis():
                 fu = {product_demand: amount}
                 parameter_sets = self.modelInstance.evaluated_parameter_sets
 
+                """# This was the attempted presamples bit - but presamples and recurse_tagged_dataases are incompatible
+                p_names = []
+                indices = []
+                for k, v in self.modelInstance.parameter_map.items():
+                    p_names.append(v)
+                    indices.append((k[0], k[1], 'technosphere'))
+
+                pset_names = self.modelInstance.evaluated_parameter_sets.keys()
+                ps_list = [[self.modelInstance.evaluated_parameter_sets[k][x] for x in p_names] for k in pset_names]
+                assert len(ps_list[0]) == len(indices)
+
+                params_for_presamples = np.transpose(np.array(ps_list))
+
+                presamples_matrix = [(
+                    params_for_presamples,
+                    indices,
+                    'technosphere'
+                )]
+
+                ps_id, ps_fp = ps.create_presamples_package(
+                    matrix_data=presamples_matrix,
+                    name='presamples_test_psets',
+                    seed = 'sequential',
+                    overwrite=True
+                )
+"""
                 ts = time.time()
                 ts_format = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
                
@@ -193,6 +236,8 @@ class Bw2Analysis():
                 }
                 result_sets = []
                 
+                #initial_method = methods[0]
+                #lca = bw2.LCA(fu, initial_method, presamples=[ps_fp])
                 #for each parameter set in the model run the analysis
 
                 for n, (parameter_set_name, parameter_set) in enumerate(parameter_sets.items()):
@@ -210,11 +255,25 @@ class Bw2Analysis():
                     
                     ps_results = []
 
-                    for method in methods:
+                    for j, method in enumerate(methods):
                         lca.switch_method(method)
                         lca.redo_lcia(fu)
                         unit = bw2.methods[method]['unit']
                         
+                        """if n == 0 and j == 0:
+                            #print('first run')
+                            lca.lci()
+                            lca.lcia()
+                        else:
+                            if n > 0 and j == 0:
+                                print("switching to next presamples parameter set")
+                                lca.presamples.update_matrices(lca)
+                                lca.redo_lci()
+
+                            lca.switch_method(method)
+                            lca.redo_lcia()
+                        """
+
                         score = lca.score
                         #print('Analysis for {} {} of {}, using {}'.format(amount, product_demand['unit'], product_demand['name'], method))
                         #print ('{:.3g} {}'.format(score, unit))

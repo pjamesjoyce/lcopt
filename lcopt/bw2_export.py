@@ -12,6 +12,8 @@ class Bw2Exporter():
         # set up the parameter hook dictionary
         self.evaluate_parameter_sets()
         self.create_parameter_map()
+        self.modelInstance.parameter_map = self.parameter_map
+
         
     def evaluate_parameter_sets(self):
         """ 
@@ -21,8 +23,9 @@ class Bw2Exporter():
         #parameter_interpreter = ParameterInterpreter(self.modelInstance)
         #parameter_interpreter.evaluate_parameter_sets()
 
-        parameter_interpreter = LcoptParameterSet(self.modelInstance)
-        self.modelInstance.evaluated_parameter_sets = parameter_interpreter.evaluated_parameter_sets
+        self.parameter_interpreter = LcoptParameterSet(self.modelInstance)
+        self.modelInstance.evaluated_parameter_sets = self.parameter_interpreter.evaluated_parameter_sets
+        self.modelInstance.bw2_export_params = self.parameter_interpreter.bw2_export_params
 
     def create_parameter_map(self):
         """
@@ -118,7 +121,8 @@ class Bw2Exporter():
                 ex_unit = self.modelInstance.get_unit(e['input'][1])
                 #print (self.parameter_map[(e['input'], p)])
                 if e['type'] != 'production':
-                    e['parameter_hook'] = self.parameter_map[(e['input'], p)]
+                    #e['parameter_hook'] = self.parameter_map[(e['input'], p)]
+                    e['formula'] = self.parameter_map[(e['input'], p)]
                 e['name'] = ex_name
                 e['unit'] = ex_unit
             

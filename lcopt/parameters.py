@@ -17,7 +17,7 @@ class LcoptParameterSet(ParameterSet):
         
         self.all_params = {**self.modelInstance.params, **self.modelInstance.production_params, **self.norm_params}
         
-        self.bw2_params, self.bw2_global_params = self.lcopt_to_bw2_params(0)
+        self.bw2_params, self.bw2_global_params, self.bw2_export_params = self.lcopt_to_bw2_params(0)
         
         
         super().__init__(self.bw2_params, self.bw2_global_params)
@@ -35,8 +35,22 @@ class LcoptParameterSet(ParameterSet):
             bw2_params[k]['amount'] = ps1.get(k,0)
             
         bw2_global_params = {x['name']: ps1[x['name']] for x in self.modelInstance.ext_params}
+
+        bw2_export_params = []
+
+        for k, v in bw2_params.items():
+            to_append = {'name': k}
+            if v.get('formula'):
+                to_append['formula'] = v['formula']
+            else:
+                to_append['amount'] = v['amount']
+                
+            bw2_export_params.append(to_append)
+            
+        for k, v in bw2_global_params.items():
+            bw2_export_params.append({'name':k, 'amount':v})
         
-        return bw2_params, bw2_global_params
+        return bw2_params, bw2_global_params, bw2_export_params
     
     def normalise_parameters(self):
         
@@ -63,7 +77,7 @@ class LcoptParameterSet(ParameterSet):
         
         for n, k in enumerate(self.modelInstance.parameter_sets.keys()):
             
-            self.params, self.global_params = self.lcopt_to_bw2_params(n)
+            self.params, self.global_params, _ = self.lcopt_to_bw2_params(n)
             self.evaluate_and_set_amount_field()
             
             this_set = {}
@@ -73,7 +87,7 @@ class LcoptParameterSet(ParameterSet):
                 
             evaluated_params[k] = this_set
                 
-        self.params, self.global_params = self.lcopt_to_bw2_params(0)
+        self.params, self.global_params , _ = self.lcopt_to_bw2_params(0)
         self.evaluate_and_set_amount_field()
         
             
