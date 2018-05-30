@@ -1,6 +1,7 @@
 from lcopt.io import exchange_factory
 from copy import deepcopy
-from lcopt.parameter_interpreter import ParameterInterpreter
+#from lcopt.parameter_interpreter import ParameterInterpreter
+from .parameters import LcoptParameterSet
 
 
 class Bw2Exporter():
@@ -17,8 +18,11 @@ class Bw2Exporter():
         This takes the parameter sets of the model instance and evaluates any formulas using the parameter values to create a 
         fixed, full set of parameters for each parameter set in the model
         """
-        parameter_interpreter = ParameterInterpreter(self.modelInstance)
-        parameter_interpreter.evaluate_parameter_sets()
+        #parameter_interpreter = ParameterInterpreter(self.modelInstance)
+        #parameter_interpreter.evaluate_parameter_sets()
+
+        parameter_interpreter = LcoptParameterSet(self.modelInstance)
+        self.modelInstance.evaluated_parameter_sets = parameter_interpreter.evaluated_parameter_sets
 
     def create_parameter_map(self):
         """
@@ -82,7 +86,7 @@ class Bw2Exporter():
             product['type'] = 'process'
             new_exchanges = [x for x in product['exchanges'] if x['type'] != 'production']
 
-            print([x for x in product['exchanges'] if x['type'] == 'production'])
+            #print([x for x in product['exchanges'] if x['type'] == 'production'])
 
             product['exchanges'] = new_exchanges
             
@@ -107,7 +111,7 @@ class Bw2Exporter():
         for p in processes:
             process = altbw2database[p]
             new_exchanges = [x for x in process['exchanges'] ]#if x['type'] != 'production']    
-            print([x for x in process['exchanges'] if x['type'] == 'production'])
+            #print([x for x in process['exchanges'] if x['type'] == 'production'])
             # add parameter hooks
             for e in new_exchanges:
                 ex_name = self.modelInstance.get_name(e['input'][1])

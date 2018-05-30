@@ -210,7 +210,7 @@ var initNode = function(el, instance) {
               
             }); 
 
-            update_status();
+            //update_status();
             
 };
       
@@ -252,6 +252,8 @@ var newProcess = function(uuid, process_name, output_name, unit){
     'unit': unit
   }
   $.post('/process_post', postData);
+
+  update_status();
 }
 
 var newConnection = function(info, instance){
@@ -273,6 +275,8 @@ var newConnection = function(info, instance){
 
         //console.log(postData);
         $.post('/process_post', postData);
+
+        update_status();
 }
 
 var unlinkIntermediate = function(connection) {
@@ -290,6 +294,8 @@ var unlinkIntermediate = function(connection) {
     $.post('/process_post', postData);
 
     jsPlumb.detach(connection)
+
+    update_status();
 
 }
 
@@ -661,6 +667,8 @@ var addInput = function(e, instance){
         }
       }]
     });
+
+  update_status();
   };
 
 
@@ -689,7 +697,9 @@ var removeInput = function(e, instance){
     //jsPlumb.remove(thisNodeID)
     jsPlumb.detach(thisConnections[0])
     jsPlumb.remove(thisNodeID)
-    $('.popover').remove()      
+    $('.popover').remove()
+
+    update_status();      
 }
 
 // This is the add biosphere function - a big copy of the addInput one - these could maybe be rationalised later...
@@ -1037,6 +1047,7 @@ var addBiosphere = function(e, instance){
         }
       }]
     });
+  update_status();
   };
 
 
@@ -1450,7 +1461,7 @@ var addProcess = function(instance){
     return processModal.open()
 
 
-
+update_status();
  };
 
 // This is the helper function that creates a bootstrap pop up modal

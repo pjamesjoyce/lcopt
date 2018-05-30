@@ -1,5 +1,6 @@
 from bw2parameters.parameter_set import ParameterSet
 from collections import OrderedDict
+from copy import deepcopy
 
 class LcoptParameterSet(ParameterSet):
     """
@@ -19,7 +20,7 @@ class LcoptParameterSet(ParameterSet):
         self.bw2_params, self.bw2_global_params = self.lcopt_to_bw2_params(0)
         
         
-        super(LcoptParameterSet, self).__init__(self.bw2_params, self.bw2_global_params)
+        super().__init__(self.bw2_params, self.bw2_global_params)
         
         self.evaluated_parameter_sets = self.preevaluate_exchange_params()
         
