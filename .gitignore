@@ -13,3 +13,7 @@ dist
 build
 lcopt.egg-info/
 /docs/_build/*
+.coverage*
+/tests/Test_model*
+.pytest_cache
+/tests/*.csv

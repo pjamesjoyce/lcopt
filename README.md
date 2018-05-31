@@ -42,6 +42,25 @@ activate lcopt
 conda install -y -q -c conda-forge -c cmutel -c haasad -c pjamesjoyce lcopt
 ```
 
+### Development installation
+
+Lcopt is continuing to develop, with new features and extensions being added. The `lcopt-dev` conda package is updated each time an update is pushed to the [`development` branch on github](https://github.com/pjamesjoyce/lcopt/tree/development).
+
+It's recommended that you create a new environment separate from the one with `lcopt` in to install `lcopt-dev`, as they will overwrite one another.
+
+Create a dev environment like this
+
+```
+conda create -y -n lcopt-dev -c conda-forge -c cmutel -c haasad -c pjamesjoyce lcopt-dev
+```
+
+Or to get the most up to date version of `lcopt-dev`:
+
+```
+activate lcopt-dev
+conda update -c conda-forge -c cmutel -c haasad -c pjamesjoyce lcopt-dev
+```
+
 ### Linking lcopt to brightway
 
 To analyse any of the models you create in lcopt in brightway, there's an extra installation step to set up the default project and databases.
@@ -109,7 +128,7 @@ model = LcoptModel('My First FORWAST Model', useForwast=True)
 
 ### Loading an existing model
 
-To load a model, make sure the file (*.lcopt) is in your working directory and use the model name (with or without the .lcopt extension) in this command:
+To load a model, make sure the file (\*.lcopt) is in your working directory and use the model name (with or without the .lcopt extension) in this command:
 
 ```python
 model = LcoptModel(load='My First Model')
