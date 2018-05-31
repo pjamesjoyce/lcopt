@@ -14,6 +14,8 @@ class LcoptParameterSet(ParameterSet):
         self.modelInstance = modelInstance
         
         self.norm_params = self.normalise_parameters()
+
+        self.check_production_parameters_exist()
         
         self.all_params = {**self.modelInstance.params, **self.modelInstance.production_params, **self.norm_params}
         
@@ -93,3 +95,14 @@ class LcoptParameterSet(ParameterSet):
             
             
         return evaluated_params
+
+    def check_production_parameters_exist(self):
+        """ old versions of models won't have produciton parameters, leading to ZeroDivision errors and breaking things"""
+        for k, v in self.modelInstance.parameter_sets.items():
+            for p_id in self.modelInstance.production_params.keys():
+                if v.get(p_id):
+                    print('{} already exists'.format(p_id))
+                    pass
+                else:
+                    print('No production parameter called {} - setting it to 1'.format(p_id))
+                    v[p_id] = 1

@@ -441,6 +441,7 @@ class FlaskSandbox():
     def parameter_sorting(self):
         parameters = self.modelInstance.params
         production_params = self.modelInstance.production_params
+        ext_params = self.modelInstance.ext_params
 
         # create a default parameter set if there isn't one yet
         if len(self.modelInstance.parameter_sets) == 0:
@@ -451,6 +452,10 @@ class FlaskSandbox():
 
             for param in production_params:
                 self.modelInstance.parameter_sets['ParameterSet_1'][param] = 1
+
+            for param in ext_params:
+                self.modelInstance.parameter_sets['ParameterSet_1'][param['name']] = param['default']
+
 
         exporter = Bw2Exporter(self.modelInstance)
         exporter.evaluate_parameter_sets()
