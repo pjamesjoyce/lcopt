@@ -441,6 +441,7 @@ class FlaskSandbox():
     def parameter_sorting(self):
         parameters = self.modelInstance.params
         production_params = self.modelInstance.production_params
+        ext_params = self.modelInstance.ext_params
 
         # create a default parameter set if there isn't one yet
         if len(self.modelInstance.parameter_sets) == 0:
@@ -448,6 +449,13 @@ class FlaskSandbox():
             self.modelInstance.parameter_sets['ParameterSet_1'] = OrderedDict()
             for param in parameters:
                 self.modelInstance.parameter_sets['ParameterSet_1'][param] = 0
+
+            for param in production_params:
+                self.modelInstance.parameter_sets['ParameterSet_1'][param] = 1
+
+            for param in ext_params:
+                self.modelInstance.parameter_sets['ParameterSet_1'][param['name']] = param['default']
+
 
         exporter = Bw2Exporter(self.modelInstance)
         exporter.evaluate_parameter_sets()
@@ -876,22 +884,30 @@ class FlaskSandbox():
             ext_linked_inputs = OrderedDict((k, v) for k, v in inputs.items() if v.get('ext_link'))
             #print(ext_linked_inputs)
             biosphere = OrderedDict((k, v) for k, v in products.items() if v['lcopt_type'] == 'biosphere')
-
-            exporter = Bw2Exporter(self.modelInstance)
-            exporter.evaluate_parameter_sets()
-            evaluated_parameters = self.modelInstance.evaluated_parameter_sets
-
-            totals = []
             
-            for _, ps in evaluated_parameters.items():
-                running_total = 0
-                for k, v in ps.items():
-                    running_total += abs(v)
-                totals.append(running_total)
+            totals = []
+            if len(self.modelInstance.parameter_sets):
+                exporter = Bw2Exporter(self.modelInstance)
+                exporter.evaluate_parameter_sets()
+                evaluated_parameters = self.modelInstance.evaluated_parameter_sets
 
-            non_zero = sum(totals) > 0
+                
+                
+                for _, ps in evaluated_parameters.items():
+                    running_total = 0
+                    for k, v in ps.items():
+                        if k[-10:] != 'production':
+                            running_total += abs(v)
+
+                    totals.append(running_total)
+
+                non_zero = sum(totals) > 0
+
+            else:
+                non_zero = False
 
             #print(evaluated_parameters)
+            print(totals)
 
             has_model = len(db) != 0
             model_has_impacts = len(ext_linked_inputs) + len(biosphere) != 0

@@ -8,7 +8,7 @@ TEST_MODEL_NAME = "Test_model"
 def setup_fixtures(request):
 
 	print('RUNNING SETUP FIXTURE')
-
+	bw2.projects.purge_deleted_directories()
 	if TEST_MODEL_NAME in bw2.projects:
 		bw2.projects.delete_project(name=TEST_MODEL_NAME, delete_dir=True)
 
@@ -33,7 +33,8 @@ def setup_fixtures(request):
 		bw2.projects.set_current('default')
 		
 		if TEST_MODEL_NAME in bw2.projects:
-			bw2.projects.delete_project(name=TEST_MODEL_NAME, delete_dir=True)
+			bw2.projects.delete_project(name=TEST_MODEL_NAME)#, delete_dir=True)
+			#bw2.projects.purge_deleted_directories()
 	
 	request.addfinalizer(teardown_fixtures)
 
