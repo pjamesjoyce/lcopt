@@ -1,6 +1,5 @@
 language: python
 python:
-  - "3.5"
   - "3.6"
 # command to install dependencies
 install: 
@@ -32,7 +31,6 @@ install:
   # Create environment
   - conda create -q -n test python=$TRAVIS_PYTHON_VERSION
   - source activate test
-  - conda install -y -c conda-forge icu=58
   - conda install -q --use-local lcopt-dev
   - pip install -r travis-requirements.txt
 
@@ -48,11 +46,8 @@ after_success:
         anaconda -t $CONDA_TOKEN upload --force *.tar.bz2;
         echo "uploaded to conda channel";
       else
-        echo "no upload because not master branch";
+        echo "no upload because not development branch";
      fi
    else
     echo "no upload from osx";
    fi
-
-   coveralls
-  - test $TRAVIS_BRANCH = "master" && conda install conda-build && conda install anaconda-client && bash conda/conda_upload.sh
