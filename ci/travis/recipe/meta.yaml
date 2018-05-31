@@ -1,0 +1,56 @@
+{% set name = "lcopt-dev" %}
+{% set version = 0.4.2.dev %}
+
+package:
+  name: '{{ name|lower }}'
+  version: '{{ version }}'
+
+source:
+  path: ../../..
+
+build:
+  noarch: python
+  number: 0
+  script: python setup.py install  --single-version-externally-managed --record=record.txt
+  entry_points:
+    - lcopt-launcher = lcopt.bin.lcopt_launcher:main
+    - lcopt-bw2-setup = lcopt.bin.lcopt_bw2_setup:main
+    - lcopt-bw2-setup-forwast = lcopt.bin.lcopt_bw2_setup_forwast:main
+
+requirements:
+  build:
+    script_env:
+      - VERSION
+      - CONDA_BLD_PATH
+    - python
+    - setuptools
+  run:
+    - python
+    - brightway2 >=2.1.2
+    - pandas
+
+about:
+  home: https://github.com/pjamesjoyce/lcopt/
+  license: BSD 3-Clause
+  license_family: BSD
+  license_file: LICENSE.txt
+  summary: 'An interactive tool for creating fully parameterised Life Cycle Assessment (LCA) foreground models - DEVELOPMENT VERSION'
+  description: '# lcopt
+
+    An interactive tool for creating fully parameterised Life Cycle Assessment (LCA) foreground models
+
+
+    [![Build Status](https://travis-ci.org/pjamesjoyce/lcopt.svg?branch=master)](https://travis-ci.org/pjamesjoyce/lcopt)
+
+
+    [![Coverage Status](https://coveralls.io/repos/github/pjamesjoyce/lcopt/badge.svg?branch=master)](https://coveralls.io/github/pjamesjoyce/lcopt?branch=master)
+
+
+    Lcopt is a python module for creating fully parameterised LCA foreground models using a Flask based interactive GUI developed by [James Joyce](https://pjamesjoyce.github.io/)
+
+    It integrates with SimaPro and BrightWay2
+
+
+    Online documentation, including full installation instructions, is available [here](http://lcopt.readthedocs.io)'
+  doc_url: 'http://lcopt.readthedocs.io/en/latest/index.html'
+  dev_url: 'https://github.com/pjamesjoyce/lcopt'

@@ -11,18 +11,48 @@ install:
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
+  - conda install conda-build
     # Useful for debugging any issues with conda
   - conda info -a
-  # Replace dep1 dep2 ... with your dependencies
+
+  # conda channels
+  - conda config --append channels conda-forge
+  - conda config --append channels cmutel
+  - conda config --append channels haasad
+  - conda config --append channels pjamesjoyce
+
+  # conda build
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+      echo $(date '+%Y%m%d%H%M');
+      sed "s/  number:\ 1/  number:\ $(date '+%Y%m%d%H%M')/g" ./ci/travis/recipe/meta.yaml > /tmp/meta.yaml;
+      mv /tmp/meta.yaml ./ci/travis/recipe/meta.yaml;
+    fi
+  - conda build ./ci/travis/recipe
+
+  # Create environment
   - conda create -q -n test python=$TRAVIS_PYTHON_VERSION
   - source activate test
   - conda install -y -c conda-forge icu=58
-  - conda install -y -q -c conda-forge -c cmutel -c haasad brightway2 jupyter
-  - pip install -e .
+  - conda install -q --use-local lcopt-dev
   - pip install -r travis-requirements.txt
-  - pip list
 
 # command to run tests
 script: cd tests; pytest --cov=lcopt
 
-after_success: coveralls
+after_success: 
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+      coveralls;
+      if [ "$TRAVIS_BRANCH" = "development" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then 
+        conda install anaconda-client;
+        cp /home/travis/miniconda/conda-bld/noarch/*.tar.bz2 .;
+        anaconda -t $CONDA_TOKEN upload --force *.tar.bz2;
+        echo "uploaded to conda channel";
+      else
+        echo "no upload because not master branch";
+     fi
+   else
+    echo "no upload from osx";
+   fi
+
+   coveralls
+  - test $TRAVIS_BRANCH = "master" && conda install conda-build && conda install anaconda-client && bash conda/conda_upload.sh

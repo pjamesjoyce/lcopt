@@ -1,0 +1,118 @@
+{% set name = "lcopt" %}
+{% set version = "0.4.2" %}
+{% set hash_type = "md5" %}
+{% set hash_value = "8655e7ab8b0b8a7ee627f555a90c3172" %}
+
+package:
+  name: '{{ name|lower }}'
+  version: '{{ version }}'
+
+source:
+  fn: '{{ name }}-{{ version }}.tar.gz'
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  '{{ hash_type }}': '{{ hash_value }}'
+
+build:
+  noarch: python
+  number: 0
+  script: python setup.py install  --single-version-externally-managed --record=record.txt
+  entry_points:
+    - lcopt-launcher = lcopt.bin.lcopt_launcher:main
+    - lcopt-bw2-setup = lcopt.bin.lcopt_bw2_setup:main
+    - lcopt-bw2-setup-forwast = lcopt.bin.lcopt_bw2_setup_forwast:main
+
+requirements:
+  build:
+    - appdirs
+    - asteval
+    - brightway2
+    - bw2analyzer >=0.9.4
+    - bw2calc
+    - bw2data
+    - bw2io >=0.5.10
+    - bw2parameters
+    - docopt
+    - eight
+    - flask
+    - future
+    - jupyter
+    - lxml
+    - numpy
+    - pandas
+    - peewee >=2.8
+    - psutil
+    - pypardiso
+    - pyprind
+    - python
+    - pywin32   # [win]
+    - requests
+    - scipy
+    - setuptools
+    - stats_arrays
+    - unicodecsv
+    - voluptuous
+    - werkzeug
+    - whoosh
+    - xlrd
+    - xlsxwriter
+  run:
+    - appdirs
+    - asteval
+    - brightway2
+    - bw2analyzer
+    - bw2calc
+    - bw2data
+    - bw2io >=0.5.10
+    - bw2parameters
+    - docopt
+    - eight
+    - flask
+    - future
+    - jupyter
+    - lxml
+    - numpy
+    - pandas
+    - peewee >=2.8
+    - psutil
+    - pypardiso
+    - pyprind
+    - python
+    - requests
+    - scipy
+    - stats_arrays
+    - unicodecsv
+    - voluptuous
+    - werkzeug
+    - whoosh
+    - xlrd
+    - xlsxwriter
+
+test:
+  imports:
+    - {{ name }}
+
+about:
+  home: https://github.com/pjamesjoyce/lcopt/
+  license: BSD 3-Clause
+  license_family: BSD
+  license_file: LICENSE.txt
+  summary: 'An interactive tool for creating fully parameterised Life Cycle Assessment (LCA) foreground models'
+  description: '# lcopt
+
+    An interactive tool for creating fully parameterised Life Cycle Assessment (LCA) foreground models
+
+
+    [![Build Status](https://travis-ci.org/pjamesjoyce/lcopt.svg?branch=master)](https://travis-ci.org/pjamesjoyce/lcopt)
+
+
+    [![Coverage Status](https://coveralls.io/repos/github/pjamesjoyce/lcopt/badge.svg?branch=master)](https://coveralls.io/github/pjamesjoyce/lcopt?branch=master)
+
+
+    Lcopt is a python module for creating fully parameterised LCA foreground models using a Flask based interactive GUI developed by [James Joyce](https://pjamesjoyce.github.io/)
+
+    It integrates with SimaPro and BrightWay2
+
+
+    Online documentation, including full installation instructions, is available [here](http://lcopt.readthedocs.io)'
+  doc_url: 'http://lcopt.readthedocs.io/en/latest/index.html'
+  dev_url: 'https://github.com/pjamesjoyce/lcopt'
