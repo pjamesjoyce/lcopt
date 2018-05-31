@@ -19,9 +19,6 @@ build:
 
 requirements:
   build:
-    script_env:
-      - VERSION
-      - CONDA_BLD_PATH
     - python
     - setuptools
   run:
