@@ -101,8 +101,8 @@ class LcoptParameterSet(ParameterSet):
         for k, v in self.modelInstance.parameter_sets.items():
             for p_id in self.modelInstance.production_params.keys():
                 if v.get(p_id):
-                    print('{} already exists'.format(p_id))
+                    #print('{} already exists'.format(p_id))
                     pass
                 else:
-                    print('No production parameter called {} - setting it to 1'.format(p_id))
+                    #print('No production parameter called {} - setting it to 1'.format(p_id))
                     v[p_id] = 1
