@@ -16,6 +16,7 @@ install:
   # Replace dep1 dep2 ... with your dependencies
   - conda create -q -n test python=$TRAVIS_PYTHON_VERSION
   - source activate test
+  - pip install lxml
   - conda install -y -q -c conda-forge -c cmutel -c haasad brightway2 jupyter
   - pip install -e .
   - pip install -r travis-requirements.txt
