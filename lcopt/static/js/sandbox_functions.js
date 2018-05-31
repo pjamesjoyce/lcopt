@@ -608,8 +608,9 @@ var addInput = function(e, instance){
     
               $.post('/process_post', postData);
               //close the dialog
-              dialogRef.close()
-    
+              dialogRef.close();
+              update_status();
+
               var position = $('#'+thisNodeID).position()
               //console.log(position)
 
@@ -889,6 +890,7 @@ var addBiosphere = function(e, instance){
                   }
                 }, 
                 "json");
+            update_status();
           }
           
         $message.find('#exchangeName').bind('typeahead:selected', function(obj, suggestion) {  
@@ -997,6 +999,7 @@ var addBiosphere = function(e, instance){
               $.post('/process_post', postData);
               //close the dialog
               dialogRef.close()
+              update_status();
   
               var position = $('#'+thisNodeID).position()
               //console.log(position)
@@ -1047,7 +1050,6 @@ var addBiosphere = function(e, instance){
         }
       }]
     });
-  update_status();
   };
 
 
