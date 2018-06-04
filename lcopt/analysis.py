@@ -8,10 +8,7 @@ from copy import deepcopy
 import time
 import datetime
 
-# TODO: Figure out a different way to do this and reinstate the proper bw2data.parameters dependency
-
-#from bw2data.parameters import DatabaseParameter, ActivityParameter
-from .bw2data_parameters import DatabaseParameter, ActivityParameter, parameters 
+from bw2data.parameters import DatabaseParameter, ActivityParameter
 
 #import presamples as ps
 #import numpy as np
@@ -178,8 +175,7 @@ class Bw2Analysis():
             for a in new_db:
                 for e in a.exchanges():
                     if e.get('formula'):
-                        #bw2.parameters.add_exchanges_to_group("all", a)
-                        parameters.add_exchanges_to_group("all", a)
+                        bw2.parameters.add_exchanges_to_group("all", a)
                         break                
 
             ActivityParameter.recalculate_exchanges("all")

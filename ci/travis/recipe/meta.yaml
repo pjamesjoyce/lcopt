@@ -2,7 +2,7 @@
 {% set version = "0.4.2.dev" %}
 
 {% if environ['TRAVIS_COMMIT'] %}
-  {% set dev_version = version + environ['TRAVIS_COMMIT'] %}
+  {% set dev_version = version + environ['TRAVIS_COMMIT'][:8] %}
 {% else %}
   {% set dev_version = version %}
 {% endif %}
@@ -29,6 +29,7 @@ requirements:
     - setuptools
   run:
     - python
+    - bw2data >= 3.4.2
     - brightway2 >=2.1.2
     - pandas
 
