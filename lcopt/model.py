@@ -12,7 +12,8 @@ from lcopt.interact import FlaskSandbox
 from lcopt.bw2_export import Bw2Exporter
 from lcopt.analysis import Bw2Analysis
 # This is a copy straight from bw2data.query, extracted so as not to cause a dependency.
-from lcopt.bw2query import Query, Dictionaries, Filter
+#from lcopt.bw2query import Query, Dictionaries, Filter
+from bw2data.query import Query, Dictionaries, Filter
 
 from functools import partial
 from collections import OrderedDict

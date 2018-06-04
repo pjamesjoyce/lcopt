@@ -17,3 +17,4 @@ lcopt.egg-info/
 /tests/Test_model*
 .pytest_cache
 /tests/*.csv
+/tests/htmlcov/

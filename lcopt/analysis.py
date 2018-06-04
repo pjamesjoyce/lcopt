@@ -2,8 +2,8 @@ from lcopt.bw2_export import Bw2Exporter
 from lcopt.utils import DEFAULT_DB_NAME, FORWAST_DB_NAME
 from lcopt.mass_balance import recurse_mass
 import brightway2 as bw2
-#from bw2analyzer.tagged import recurse_tagged_database, aggregate_tagged_graph
-from .tagged_copy import recurse_tagged_database, aggregate_tagged_graph
+from bw2analyzer.tagged import recurse_tagged_database, aggregate_tagged_graph
+#from .tagged_copy import recurse_tagged_database, aggregate_tagged_graph
 from copy import deepcopy
 import time
 import datetime
