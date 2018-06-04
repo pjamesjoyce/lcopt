@@ -29,7 +29,7 @@ requirements:
     - setuptools
   run:
     - python
-    - bw2data >= 3.4.2
+    - bw2data >=3.4.2
     - brightway2 >=2.1.2
     - pandas
 
