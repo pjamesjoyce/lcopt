@@ -306,7 +306,7 @@ class Bw2Analysis():
                             'graph': recursed_graph,
                             'dropped_graph': dropped_graph,
                             'original_graph': str(type_graph[0]),
-                            'mass_flow': recurse_mass(type_graph[0])
+                            'mass_flow': recurse_mass(type_graph[0], True)
                         }
                         
                         ps_results.append(result_set)

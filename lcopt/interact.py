@@ -907,7 +907,7 @@ class FlaskSandbox():
                 non_zero = False
 
             #print(evaluated_parameters)
-            print(totals)
+            #print(totals)
 
             has_model = len(db) != 0
             model_has_impacts = len(ext_linked_inputs) + len(biosphere) != 0

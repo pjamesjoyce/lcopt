@@ -1,4 +1,4 @@
-def recurse_mass(d):
+def recurse_mass(d, allow_no_mass = False):
 
     to_return = {}
     #cum_impact = 0
@@ -11,7 +11,7 @@ def recurse_mass(d):
         elif k == 'technosphere':
             #print('technosphere')
             #print(len(to_return), d['activity'], d['activity']['unit'])
-            if d['activity']['unit'] in ['kg', 'g']:
+            if d['activity']['unit'] in ['kg', 'g'] or allow_no_mass:
                 for e in v:
                     #print (e['activity'])
                     #cum_impact += e['impact']
@@ -19,9 +19,9 @@ def recurse_mass(d):
                     #    cum_impact += e['cum_impact']
 
                     if k in to_return.keys():
-                        to_return[k].append(recurse_mass(e))
+                        to_return[k].append(recurse_mass(e, False))
                     else:
-                        to_return[k] = [recurse_mass(e)]
+                        to_return[k] = [recurse_mass(e, False)]
 
         elif k in['biosphere', 'impact']:
             pass
@@ -34,7 +34,7 @@ def recurse_mass(d):
             #print(activity, unit)
             to_return['activity'] = str(activity)
             to_return['unit'] = unit
-            if unit in ['kg', 'g']:
+            if unit in ['kg', 'g'] or allow_no_mass:
                 to_return['is_mass'] = True
             else:
                 to_return['is_mass'] = False
