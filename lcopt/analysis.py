@@ -1,8 +1,9 @@
 from lcopt.bw2_export import Bw2Exporter
 from lcopt.utils import DEFAULT_DB_NAME, FORWAST_DB_NAME
-from lcopt.mass_balance import recurse_mass
+from .mass_balance import recurse_mass
+from .multi_tagged import multi_traverse_tagged_databases, get_cum_impact, drop_pass_through_levels
 import brightway2 as bw2
-from bw2analyzer.tagged import recurse_tagged_database, aggregate_tagged_graph
+#from bw2analyzer.tagged import recurse_tagged_database, aggregate_tagged_graph
 #from .tagged_copy import recurse_tagged_database, aggregate_tagged_graph
 from copy import deepcopy
 import time
@@ -61,96 +62,8 @@ class Bw2Analysis():
                     e['amount'] = parameter_set[e['formula']]
                     e.save()
 
-    def multi_recurse(self, d):
     
-        max_levels = 100
-
-        this_d = d
-
-        for i in range(max_levels):
-            prev_d = this_d
-            this_d = self.recurse(prev_d)
-            if this_d == prev_d:
-                #print('breaking after {} levels'.format(i+1))
-                break
-
-        return this_d
-
-    def recurse(self, d):
-
-        to_return = {}
-        cum_impact = 0
-
-        for k, v in d.items():
-            if k == 'technosphere':
-                #print('technosphere')
-                for e in v:
-                    #print (e['activity'])
-                    cum_impact += e['impact']
-                    if 'cum_impact' in e.keys():
-                        cum_impact += e['cum_impact']
-
-                    if k in to_return.keys():
-                        to_return[k].append(self.recurse(e))
-                    else:
-                        to_return[k] = [self.recurse(e)]
-                        
-            elif k == 'biosphere':
-                to_return[k] = v
-                if len(v) != 0:
-                    for b in v:
-                        cum_impact += b['impact']
-                        
-            elif k == 'activity':
-                #print (k,v)
-                to_return[k] = str(v)
-            #elif k == 'impact':
-            #   print('impact of {} = {}'.format(d['activity'], v))
-
-            else:
-                to_return[k] = v
-        #print('cum_impact of {} = {}'.format(d['activity'], cum_impact))
-        to_return['cum_impact'] = cum_impact
-            
-        return to_return
-
-    def drop_level_recurse(self, d):
-
-        to_return = {}
-        
-        if d['tag'] == 'intermediate':
-            #print('this needs to be dropped')
-            #print ('Dropping {}'.format(d['activity']))
-            for key in d.keys():
-                if key != 'technosphere':
-                    if key == 'activity':
-                        d[key] = str(d['technosphere'][0][key])
-                    #print(key, d[key], d['technosphere'][0][key])
-                    d[key] = d['technosphere'][0][key]
-            if 'technosphere' in d['technosphere'][0].keys():
-                d['technosphere'] = d['technosphere'][0]['technosphere']
-
-        for k, v in d.items():
-            #print (k)
-            if k == 'technosphere':
-                #print('technosphere')
-                for e in v:
-                    
-                    if k in to_return.keys():
-                        to_return[k].append(self.drop_level_recurse(e))
-                    else:
-                        to_return[k] = [self.drop_level_recurse(e)]
-
-            elif k == 'activity':
-                #print (k,v)
-                to_return[k] = str(v)
-
-            else:
-                to_return[k] = v
-            
-        return to_return
-    
-    def run_analyses(self, demand_item, demand_item_code, amount=1, methods=[('IPCC 2013', 'climate change', 'GWP 100a')], top_processes=10, gt_cutoff=0.01, pie_cutoff=0.05):
+    def run_analyses(self, demand_item, demand_item_code, amount=1, methods=[('IPCC 2013', 'climate change', 'GWP 100a')], pie_cutoff=0.05):
         
         ready = self.setup_bw2()
         name = self.bw2_database_name
@@ -244,74 +157,42 @@ class Bw2Analysis():
                     
                     self.update_exchange_amounts(new_db, parameter_set)
                     
-                    initial_method = methods[0]
-                    # run the LCA
-                    lca = bw2.LCA(fu, initial_method)
-                    lca.lci(factorize=True)
-                    lca.lcia()
-                    
-                    ps_results = []
+                    # Get overall scores for all methods
+                    scores = []
 
-                    for j, method in enumerate(methods):
-                        lca.switch_method(method)
-                        lca.redo_lcia(fu)
-                        unit = bw2.methods[method]['unit']
-                        
-                        """if n == 0 and j == 0:
-                            #print('first run')
+                    for n, m in enumerate(methods):
+                        if n == 0:
+                            lca = bw2.LCA(fu, m)
                             lca.lci()
                             lca.lcia()
                         else:
-                            if n > 0 and j == 0:
-                                print("switching to next presamples parameter set")
-                                lca.presamples.update_matrices(lca)
-                                lca.redo_lci()
+                            lca.switch_method(m)
+                            lca.redo_lcia(
+                            )
+                        scores.append(lca.score)
 
-                            lca.switch_method(method)
-                            lca.redo_lcia()
-                        """
+                    # method units at list
+                    method_units = [bw2.methods[method]['unit'] for method in methods]
 
-                        score = lca.score
-                        #print('Analysis for {} {} of {}, using {}'.format(amount, product_demand['unit'], product_demand['name'], method))
-                        #print ('{:.3g} {}'.format(score, unit))
-                        
-                        method_dict = {o[0]: o[1] for o in bw2.Method(method).load()}
-                        default_tag = "other"
+                    multi_type_result, multi_type_graph = multi_traverse_tagged_databases(fu, methods, label="lcopt_type", default_tag="other")
+                    multi_foreground_result, multi_foreground_graph = multi_traverse_tagged_databases(fu, methods, label="name", default_tag="other")
 
-                        label = "lcopt_type"
-                        type_graph = [recurse_tagged_database(key, amount, method_dict, lca, label, default_tag)
-                                      for key, amount in fu.items()]
-                        # type_result = aggregate_tagged_graph(type_graph)
-                        
-                        # for k,v in type_result.items():
-                        #    print('{}\t\t{}'.format(k,v))
-                        
-                        label = "name"
-                        foreground_graph = [recurse_tagged_database(key, amount, method_dict, lca, label, default_tag)
-                                            for key, amount in fu.items()]
-                        foreground_result = aggregate_tagged_graph(foreground_graph)
-                        
-                        #for k,v in foreground_result.items():
-                        #    print('{}\t\t{}'.format(k,v))
-                            
-                        recursed_graph = self.multi_recurse(deepcopy(type_graph[0]))
-                        dropped_graph = self.drop_level_recurse(deepcopy(type_graph[0]))
-                        
-                        result_set = {
+                    recursed_graph = get_cum_impact(deepcopy(multi_type_graph[0]))
+                    dropped_graph = drop_pass_through_levels(deepcopy(multi_type_graph[0]))
+
+                    result_set = {
                             'ps_name': parameter_set_name,
-                            'method': str(method),
-                            'unit': unit,
-                            'score': score,
-                            'foreground_results': foreground_result,
+                            'methods': [str(method) for method in methods],
+                            'units': method_units,
+                            'scores': scores,
+                            'foreground_results': multi_foreground_result,
                             'graph': recursed_graph,
                             'dropped_graph': dropped_graph,
-                            'original_graph': str(type_graph[0]),
-                            'mass_flow': recurse_mass(type_graph[0], True)
+                            'original_graph': str(multi_type_graph[0]),
+                            'mass_flow': recurse_mass(multi_type_graph[0], True)
                         }
-                        
-                        ps_results.append(result_set)
-                        
-                    result_sets.append(ps_results)
+
+                    result_sets.append(result_set)
 
                 result_dict['results'] = result_sets
                     
