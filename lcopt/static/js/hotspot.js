@@ -142,9 +142,9 @@
         var m = $('#methodChoice').val() - 1;
       
         // set the root of the data  
-        root = d3.hierarchy(bound_data.results[ps][m].dropped_graph, function(d){return d.technosphere; });
-        //console.log(root)
-        unit = bound_data.results[ps][m].unit;
+        root = d3.hierarchy(bound_data.results[ps].dropped_graph, function(d){return d.technosphere; });
+        console.log(root)
+        unit = bound_data.results[ps].units[m];
 
         /* Initialize tooltip */
         tip = d3.tip().attr('class', 'd3-tip').html(function(d) { 
@@ -167,7 +167,7 @@
               message += "</span>";
             }
 
-            total_percent = formatPercentage(d.value/bound_data.results[ps][m].score);
+            total_percent = formatPercentage(d.value/bound_data.results[ps].scores[m]);
 
             message += "<br><span class=\"tip_total\">";
             message += total_percent;
@@ -181,7 +181,7 @@
           /* Invoke the tip in the context of your visualization */
           svg.call(tip);
 
-          root.sum(function(d) { if (d.biosphere[0]){bio_impact = d.biosphere[0].impact;}else{bio_impact=0;} return d.impact + bio_impact; });
+          root.sum(function(d) { if (d.biosphere[0]){bio_impact = d.biosphere[0].impact[m];}else{bio_impact=0;} return d.impact[m] + bio_impact; });
 
           var full_data = partition(root).descendants();
           var filtered_data = full_data.filter(function(x){return x.x0 != x.x1});

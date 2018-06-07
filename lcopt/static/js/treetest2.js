@@ -51,7 +51,7 @@ function link5(d) {
   return "M" + d.parent.x + "," + (d.parent.y + nodeSizes[d.parent.data.tag][0]/2)
       + "C" + d.parent.x  + "," + (d.parent.y + d.y) / 2
       + " " + d.x + "," + (d.parent.y + d.y) / 2
-      + " " + d.x + "," + (d.y - nodeSizes[d.data.tag][0]/2);
+      + " " + d.x + "," + (d.y - nodeSizes[d.data.secondary_tags[0]][0]/2);
 }
 
 function elbow(d) {
@@ -83,7 +83,7 @@ function sortNumber(a,b) {
     return a - b;
 }
 
-function postOrder(d, total_score, cutoff){
+function postOrder(d, total_score, cutoff, m){
   var splice_dict = {};
   d.eachAfter(function(n){
 
@@ -96,7 +96,7 @@ function postOrder(d, total_score, cutoff){
         for(i in n.parent.children){
           if(n.parent.children[i] == n){
             var item = n.parent.children[i];
-            var this_impact = item.data.cum_impact + item.data.impact;
+            var this_impact = item.data.cum_impact[m] + item.data.impact[m];
             //console.log(n.data.activity)
             //console.log(this_impact/total_score)
             if(this_impact/total_score <= cutoff){
@@ -153,9 +153,9 @@ function draw_tree(){
 
   ////console.log(data[0][0].graph);
   //console.log(bound_data);
-  var treeData = bound_data.results[ps][m].graph;
-  var method_unit = bound_data.results[ps][m].unit;
-  var total_score = treeData.cum_impact;
+  var treeData = bound_data.results[ps].graph;
+  var method_unit = bound_data.results[ps].units[m];
+  var total_score = treeData.cum_impact[m];
   ////console.log(treeData)
   //  assigns the data to a hierarchy using parent-child relationships
   var nodes = d3.hierarchy(treeData, function(d) {
@@ -165,7 +165,7 @@ function draw_tree(){
   //console.log(nodes);
 
   ////console.log(nodes)
-  postOrder(nodes, total_score, cutoff);
+  postOrder(nodes, total_score, cutoff, m);
   ////console.log(nodes)
 
   var depths = nodes.descendants().map(function(d){return d.depth;});
@@ -227,10 +227,10 @@ function draw_tree(){
     .attr("stroke-width", function(d){
       ////console.log(d.data.cum_impact);
       ////console.log(d.data.activity, d.data.impact, d.data.cum_impact);
-      if (d.data.cum_impact){
-        return Math.max(d.data.cum_impact/total_score * max_stroke_width,1);
+      if (d.data.cum_impact[m]){
+        return Math.max(d.data.cum_impact[m]/total_score * max_stroke_width,1);
       }else if(d.data.impact){
-        return Math.max(d.data.impact/total_score * max_stroke_width,1);
+        return Math.max(d.data.impact[m]/total_score * max_stroke_width,1);
       }else{
         return 1;
       }
@@ -252,30 +252,30 @@ function draw_tree(){
       (d.technosphere ? " node--internal" : " node--leaf"); })
     .attr("transform", function(d) { 
       ////console.log(d)
-      return "translate(" + (d.x - nodeSizes[d.data.tag][1]/2) + "," + (d.y - nodeSizes[d.data.tag][0]/2) + ")"; 
+      return "translate(" + (d.x - nodeSizes[d.data.secondary_tags[0]][1]/2) + "," + (d.y - nodeSizes[d.data.secondary_tags[0]][0]/2) + ")"; 
     });
 
     
 
   // adds the circle to the node
   //node.append("circle")
-  //  .attr("r", function(d){return nodeSizes[d.data.tag]})
-  //  .attr("class", function(d){return d.data.tag});
+  //  .attr("r", function(d){return nodeSizes[d.data.secondary_tags[0]]})
+  //  .attr("class", function(d){return d.data.secondary_tags[0]});
 
   // adds a rectangle to the node
   node.append("rect")
-    .attr("width", function(d){return nodeSizes[d.data.tag][1];})
-    .attr("height", function(d){return nodeSizes[d.data.tag][0];})
-    .attr("class", function(d){return d.data.tag;});
+    .attr("width", function(d){return nodeSizes[d.data.secondary_tags[0]][1];})
+    .attr("height", function(d){return nodeSizes[d.data.secondary_tags[0]][0];})
+    .attr("class", function(d){return d.data.secondary_tags[0];});
 
   
 
   // adds the text to the node
   node.append("text")
     .attr("dy", ".35em")
-    //.attr("x", function(d) { return d.data.technosphere ? (nodeSizes[d.data.tag][1]/2) :0 ; })
+    //.attr("x", function(d) { return d.data.technosphere ? (nodeSizes[d.data.secondary_tags[0]][1]/2) :0 ; })
     .attr("class", function(d){
-      if(d.data.tag == "other"){
+      if(d.data.secondary_tags[0] == "other"){
         return "name_label";
       }else{
         return "input_label";
@@ -283,30 +283,30 @@ function draw_tree(){
     })
     .attr("style", "font-weight: bold;")
     .attr("x", function(d) {
-        return nodeSizes[d.data.tag][1]*0.5 ;
+        return nodeSizes[d.data.secondary_tags[0]][1]*0.5 ;
     })
     .attr("y", function(d) {
-        var this_type = 'other';//d.data.tag;
+        var this_type = 'other';//d.data.secondary_tags[0];
         if(this_type == 'other'){
-          return nodeSizes[d.data.tag][0]*0.5 ;  
+          return nodeSizes[d.data.secondary_tags[0]][0]*0.5 ;  
         }else{
-          return nodeSizes[d.data.tag][0] * 1.5;
+          return nodeSizes[d.data.secondary_tags[0]][0] * 1.5;
         }
     })
     .style("text-anchor", function(d) { 
     //return d.technosphere ? "end" : "start"; })
     return "middle" ;})
     .text(function(d) {
-      if (d.data.tag == "intermediate"){
+      if (d.data.secondary_tags[0] == "intermediate"){
         return '';
       }else{
       var re = /'(.*)'/;
       var str = d.data.activity;
       myArray = str.match(re);
       impact = d.data.impact;
-      bio = d.data.biosphere[0] ? d.data.biosphere[0].impact:0;
+      bio = d.data.biosphere[0] ? d.data.biosphere[0].impact[m]:0;
       //total_impact = impact + bio + d.data.cum_impact
-      total_impact = d.data.cum_impact + d.data.impact;
+      total_impact = d.data.cum_impact[m] + d.data.impact[m];
 
       return myArray[1] //+ " [" + total_impact.toFixed(3).replace(/\.?0*$/,'') + "]" ; 
     }
@@ -314,20 +314,20 @@ function draw_tree(){
 
   node.append("text")
     .attr("dy", ".35em")
-    //.attr("x", function(d) { return d.data.technosphere ? (nodeSizes[d.data.tag][1]/2) :0 ; })
+    //.attr("x", function(d) { return d.data.technosphere ? (nodeSizes[d.data.secondary_tags[0]][1]/2) :0 ; })
     .attr("x", function(d) {
-        return nodeSizes[d.data.tag][1]*0.5 ;
+        return nodeSizes[d.data.secondary_tags[0]][1]*0.5 ;
     })
     .attr("y", function(d) {
-        var this_type = 'other';//d.data.tag;
+        var this_type = 'other';//d.data.secondary_tags[0];
         if(this_type == 'other'){
-          return nodeSizes[d.data.tag][0]*0.8 ;  
+          return nodeSizes[d.data.secondary_tags[0]][0]*0.8 ;  
         }else{
-          return nodeSizes[d.data.tag][0] * 2.2;
+          return nodeSizes[d.data.secondary_tags[0]][0] * 2.2;
         }
     })
     .attr('class', function(d){
-      if(d.data.tag == 'other'){
+      if(d.data.secondary_tags[0] == 'other'){
         return 'process_amount';
       }else{
         return 'input_amount';
@@ -337,16 +337,16 @@ function draw_tree(){
     //return d.technosphere ? "end" : "start"; })
     return "middle" ;})
     .text(function(d) {
-      if (d.data.tag == "intermediate"){
+      if (d.data.secondary_tags[0] == "intermediate"){
         return '';
       }else{
       var re = /'(.*)'/;
       var str = d.data.activity;
       myArray = str.match(re);
       impact = d.data.impact;
-      bio = d.data.biosphere[0] ? d.data.biosphere[0].impact:0;
+      bio = d.data.biosphere[0] ? d.data.biosphere[0].impact[m]:0;
       //total_impact = impact + bio + d.data.cum_impact
-      total_impact = d.data.cum_impact + d.data.impact;
+      total_impact = d.data.cum_impact[m] + d.data.impact[m];
 
       //replace is for getting rif of trailing zeros
       //return  total_impact.toPrecision(2).replace(/\.?0*$/,'') + " " + method_unit; 

@@ -86,8 +86,8 @@ function update_stack_bar(){
 		this_stack_bar_data = []
 
 		running_total = 0
-		for (result in bound_data.results[i][m].foreground_results){
-			value = bound_data.results[i][m].foreground_results[result]
+		for (result in bound_data.results[i].foreground_results){
+			value = bound_data.results[i].foreground_results[result][m]
 			if (value != -1){
 				this_stack_bar_data.push({label:result, value:value, previous:running_total})
 				/*if (item_names.indexOf(result) == -1){
@@ -96,29 +96,29 @@ function update_stack_bar(){
 				running_total += value
 			}
 		}
-		//console.log(this_stack_bar_data)
+		console.log(this_stack_bar_data)
 		this_bar = {
 			data: this_stack_bar_data,
-			name: bound_data.results[i][m].ps_name,
+			name: bound_data.results[i].ps_name,
 		}
 		stack_bar_data.push(this_bar)
 	}
 	
 	to_include = []
 	//for each item
-	for (impact_item in bound_data.results[0][m].foreground_results){
+	for (impact_item in bound_data.results[0].foreground_results){
 		//set total to 0
 		running_total=0
 		//for each parameter set
 		for (i=0; i < bound_data.results.length; i++){
 			//for each method
 			for(j=0; j<bound_data.settings.methods.length; j++){
-				running_total += bound_data.results[i][j].foreground_results[impact_item]
+				running_total += bound_data.results[i].foreground_results[impact_item][j];
 			}
 		}
 		//console.log(impact_item, running_total)
 		if (running_total != 0){
-			to_include.push(impact_item)
+			to_include.push(impact_item);
 		}
 	}
 
@@ -260,7 +260,7 @@ function update_stack_bar(){
 
 	//console.log(bound_data.results[0][m].unit)
 
-	stack_svg.select('#s_bar_yaxis_label').text(bound_data.results[0][m].unit)
+	stack_svg.select('#s_bar_yaxis_label').text(bound_data.results[0].units[m]);
 
 	
 
@@ -309,7 +309,7 @@ function update_stack_bar(){
 	  //.useClass(true)
 	  .title("")
 	  .titleWidth(100)
-	  .scale(stack_color)
+	  .scale(stack_color);
 	  //.labels(function(d){console.log(d); return d.domain[d.i].split("'")[1]})
 	  //.orient('horizontal');
 

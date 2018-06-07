@@ -37,7 +37,7 @@ function mass_flow(ps){
   var path = sankey.link();
 
   // load the data
-  var data = bound_data.results[ps][0].mass_flow;
+  var data = bound_data.results[ps].mass_flow;
   console.log(data);
 
   var hierarchy = d3.hierarchy(data, function(d) {
@@ -62,7 +62,7 @@ function mass_flow(ps){
 
       if(item.data.is_mass && item.data.amount !== 0){
           id = item.data.activity + "_" + item.depth + "_" + item.height;
-          tag = item.data.tag;
+          tag = item.data.secondary_tags[0];
           activity = item.data.activity;
           if (!item.parent){
             tag = "final";

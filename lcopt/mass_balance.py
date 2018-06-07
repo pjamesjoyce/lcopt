@@ -1,10 +1,14 @@
-def recurse_mass(d, allow_no_mass = False):
+def recurse_mass(d, allow_no_mass = False, checkSecondary = True):
 
     to_return = {}
     #cum_impact = 0
+    isBiosphere = d['tag'] == 'biosphere'
+
+    if not isBiosphere and checkSecondary:
+        isBiosphere = 'biosphere' in d['secondary_tags']
     
     for k, v in d.items():
-        if k == 'amount' and d['tag'] == 'biosphere':
+        if k == 'amount' and isBiosphere:
             #print (k, -v)
             to_return[k] = -v
             

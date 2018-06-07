@@ -659,7 +659,7 @@ class FlaskSandbox():
 
         for i, m in enumerate(method_names):
             for j, p in enumerate(ps_names):
-                worksheet.write(i + row_offset + 1, j + col_offset + 2, results[j][i]['score'], cell_format)
+                worksheet.write(i + row_offset + 1, j + col_offset + 2, results[j]['scores'][i], cell_format)
 
         for i, m in enumerate(method_names):
             worksheet.write(i + row_offset + 1, col_offset, m, row_header_format)
@@ -698,7 +698,7 @@ class FlaskSandbox():
         table_data = []
 
         for i, p in enumerate(ps_names):
-            foreground_results = results[i][m]['foreground_results']
+            foreground_results = results[i]['foreground_results']
             this_item = []
 
             for k, v in foreground_results.items():
@@ -706,10 +706,10 @@ class FlaskSandbox():
                 running_total = 0
 
                 for j, _ in enumerate(ps_names):
-                    running_total += abs(results[j][m]['foreground_results'][k])
+                    running_total += abs(results[j]['foreground_results'][k][m])
 
                 if(running_total != 0):
-                    this_item.append({'name': k, 'value': v, 'rt': running_total})
+                    this_item.append({'name': k, 'value': v[m], 'rt': running_total})
 
             this_item = sorted(this_item, key=lambda x: x['rt'], reverse=True)
 
@@ -757,7 +757,7 @@ class FlaskSandbox():
 
         for i, p in enumerate(ps_names):
             worksheet.write(row_offset, col_offset + i + 1, p, col_header_format)
-            worksheet.write(row_offset + 1, col_offset + i + 1, results[i][m]['score'], total_format)
+            worksheet.write(row_offset + 1, col_offset + i + 1, results[i]['scores'][m], total_format)
 
         for i, item in enumerate(table_data[0]):
             worksheet.write(row_offset + i + 2, col_offset, item['name'], row_header_format)

@@ -71,27 +71,29 @@ function draw_pie(){
 
     console.log(data)
 
-    var pre_pie_data = data['results'][ps][m]['foreground_results']
-    var total_score = data['results'][ps][m]['score']
-    var pie_cutoff = data['settings']['pie_cutoff']
+    var pre_pie_data = data['results'][ps]['foreground_results']
+    var total_score = data['results'][ps]['scores'][m]
+    //var pie_cutoff = data['settings']['pie_cutoff']
+    var pie_cutoff = $('#cutoff_pie').val() / 100;
     ////console.log(pre_pie_data)
     var pie_data = []
     
     var remaining_processes = 0
 
     for (p in pre_pie_data){
-    	if (pre_pie_data[p]/total_score > pie_cutoff){
-    		percent = pre_pie_data[p]/total_score*100
-    		pie_data.push({value:pre_pie_data[p], label:p, percent_label : percent.toFixed(1) + '%'})
+    	if (pre_pie_data[p][m]/total_score > pie_cutoff){
+    		percent = pre_pie_data[p][m]/total_score*100;
+    		pie_data.push({value:pre_pie_data[p][m], label:p, percent_label : percent.toFixed(1) + '%'});
     	}else{
-    		remaining_processes += pre_pie_data[p]
+    		remaining_processes += pre_pie_data[p][m];
     	}
     }
     //console.log(remaining_processes)
-    percent = remaining_processes/total_score*100
+    percent = remaining_processes/total_score*100;
     //console.log(percent)
-    pie_data.push({value:remaining_processes, label:"Remaining processes", percent_label : percent.toFixed(1) + '%'})	
-
+    if(remaining_processes > 0){
+	    pie_data.push({value:remaining_processes, label:"Remaining processes", percent_label : percent.toFixed(1) + '%'});
+	}
     //console.log(pie_data)
 
     var pie = d3.pie()
@@ -211,8 +213,8 @@ function change2() {
 
 	    console.log(ps, m)
 
-	    var pre_pie_data = data['results'][ps][m]['foreground_results'];
-	    var total_score = data['results'][ps][m]['score'];
+	    var pre_pie_data = data['results'][ps]['foreground_results'];
+	    var total_score = data['results'][ps]['scores'][m];
 	    //var pie_cutoff = data['settings']['pie_cutoff']
 	    var pie_cutoff = $('#cutoff_pie').val() / 100;
 	    var pie_data = [];
@@ -220,11 +222,11 @@ function change2() {
 	    var remaining_processes = 0;
 
 	    for (p in pre_pie_data){
-	    	if (pre_pie_data[p]/total_score > pie_cutoff){
-	    		percent = pre_pie_data[p]/total_score*100
-	    		pie_data.push({value:pre_pie_data[p], label:p, percent_label : percent.toFixed(1) + '%'})
+	    	if (pre_pie_data[p][m]/total_score > pie_cutoff){
+	    		percent = pre_pie_data[p][m]/total_score*100;
+	    		pie_data.push({value:pre_pie_data[p][m], label:p, percent_label : percent.toFixed(1) + '%'});
 	    	}else{
-	    		remaining_processes += pre_pie_data[p]
+	    		remaining_processes += pre_pie_data[p][m];
 	    	}
 	    }
 	    //console.log(remaining_processes)
@@ -234,9 +236,9 @@ function change2() {
 	    pie_data.sort(function(a, b) {
 		    return parseFloat(b.value) - parseFloat(a.value);
 		});
-
-	    pie_data.push({value:remaining_processes, label:"Remaining processes", percent_label : percent.toFixed(1) + '%'})	
-
+	    if(remaining_processes > 0){
+	    	    pie_data.push({value:remaining_processes, label:"Remaining processes", percent_label : percent.toFixed(1) + '%'})	
+	    }
 	    //console.log(pie_data)
 		////console.log(pie_data)
 
