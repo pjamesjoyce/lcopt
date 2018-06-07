@@ -174,12 +174,9 @@ class Bw2Analysis():
                     # method units at list
                     method_units = [bw2.methods[method]['unit'] for method in methods]
 
-                    #multi_type_result, multi_type_graph = multi_traverse_tagged_databases(fu, methods, label="lcopt_type", default_tag="other", secondary_tags=[('name',)])
                     multi_foreground_result, multi_foreground_graph = multi_traverse_tagged_databases(fu, methods, label="name", default_tag="other", secondary_tags=[('lcopt_type', 'other')])
 
-                    #recursed_graph = get_cum_impact(deepcopy(multi_type_graph[0]))
                     recursed_graph = get_cum_impact(deepcopy(multi_foreground_graph[0]))
-                    #dropped_graph = drop_pass_through_levels(deepcopy(multi_type_graph[0]))
                     dropped_graph = drop_pass_through_levels(deepcopy(multi_foreground_graph[0]))
                     mass_flow = recurse_mass(multi_foreground_graph[0], True)
 
@@ -191,7 +188,6 @@ class Bw2Analysis():
                             'foreground_results': multi_foreground_result,
                             'graph': recursed_graph,
                             'dropped_graph': dropped_graph,
-                            #'original_graph': str(multi_type_graph[0]),
                             'mass_flow': mass_flow
                         }
 
