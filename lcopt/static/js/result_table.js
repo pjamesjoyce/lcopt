@@ -20,7 +20,7 @@ function update_table(){
 */
 	
 	for(var i = 0; i<ps_length; i++){
-		var foreground_results = bound_data.results[i][m].foreground_results;
+		var foreground_results = bound_data.results[i].foreground_results;
 		
 		var row_data = []
 		
@@ -30,11 +30,11 @@ function update_table(){
 
 			for(var p=0; p<ps_length; p++){
 				//console.log(bound_data.results[p][m].foreground_results[data_row]);
-				running_total += Math.abs(bound_data.results[p][m].foreground_results[data_row]);
+				running_total += Math.abs(bound_data.results[p].foreground_results[data_row][m]);
 			}
 			//console.log(running_total);
 			if(running_total != 0){
-				row_data.push({name: data_row, value:foreground_results[data_row], rt:running_total});	
+				row_data.push({name: data_row, value:foreground_results[data_row][m], rt:running_total});	
 			}
 		}
 		row_data.sort(function(a, b) {
@@ -68,7 +68,7 @@ function update_table(){
 
 	for(var j = 0; j<ps_length; j++){
 		//console.log(bound_data.settings.ps_names[j]);
-		$table_div.find('.total_row').append('<th class="text-right data_cell">'+ bound_data.results[j][m].score.toPrecision(3) +'</th>');
+		$table_div.find('.total_row').append('<th class="text-right data_cell">'+ bound_data.results[j].scores[m].toPrecision(3) +'</th>');
 	}
 	
 	//console.log(table_data);
@@ -124,7 +124,7 @@ function update_summary_table(){
 				display_method_name = method_name.charAt(0).toUpperCase() + method_name.slice(1);
 				html += '<td class="row_title">'+ display_method_name + ' <span class = "unit">(' + bound_data.settings.method_units[r] + ')</span></td>';
 			}else{
-				html += '<td class="text-right data_cell">' + bound_data.results[c][r].score.toPrecision(3) + '</td>';
+				html += '<td class="text-right data_cell">' + bound_data.results[c].scores[r].toPrecision(3) + '</td>';
 			}
 		}
 		html += '</tr>';

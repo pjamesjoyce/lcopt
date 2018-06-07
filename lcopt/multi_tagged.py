@@ -2,7 +2,7 @@ from bw2data import databases, methods, get_activity, Method
 from bw2calc import LCA
 from collections import defaultdict
 
-def multi_traverse_tagged_databases(functional_unit, methods, label="tag", default_tag="other"):
+def multi_traverse_tagged_databases(functional_unit, methods, label="tag", default_tag="other", secondary_tags=[]):
 
     lca = LCA(functional_unit, methods[0])
     lca.lci()#factorize=True)
@@ -10,7 +10,7 @@ def multi_traverse_tagged_databases(functional_unit, methods, label="tag", defau
 
     method_dicts = [{o[0]: o[1] for o in Method(method).load()} for method in methods]
 
-    graph = [multi_recurse_tagged_database(key, amount, methods, method_dicts, lca, label, default_tag)
+    graph = [multi_recurse_tagged_database(key, amount, methods, method_dicts, lca, label, default_tag, secondary_tags)
              for key, amount in functional_unit.items()]
 
     return multi_aggregate_tagged_graph(graph), graph
@@ -39,7 +39,7 @@ def multi_aggregate_tagged_graph(graph):
         scores = recursor(obj, scores)
     return scores
 
-def multi_recurse_tagged_database(activity, amount, methods, method_dicts, lca, label, default_tag):
+def multi_recurse_tagged_database(activity, amount, methods, method_dicts, lca, label, default_tag, secondary_tags=[]):
    
     if isinstance(activity, tuple):
         activity = get_activity(activity)
@@ -64,14 +64,16 @@ def multi_recurse_tagged_database(activity, amount, methods, method_dicts, lca, 
         'activity': activity,
         'amount': amount,
         'tag': activity.get(label) or default_tag,
+        'secondary_tags':[activity.get(t[0]) or t[1] for t in secondary_tags],
         'impact': outside_scores,
         'biosphere': [{
             'amount': exc['amount'] * amount,
             'impact': [exc['amount'] * amount * method_dict.get(exc['input'], 0) for method_dict in method_dicts],
-            'tag': exc.get(label) or activity.get(label) or default_tag
+            'tag': exc.get(label) or activity.get(label) or default_tag,
+            'secondary_tags':[exc.get(t[0]) or activity.get(t[0]) or t[1] for t in secondary_tags]
         } for exc in activity.biosphere()],
         'technosphere': [multi_recurse_tagged_database(exc.input, exc['amount'] * amount, methods,
-                                                 method_dicts, lca, label, default_tag)
+                                                 method_dicts, lca, label, default_tag, secondary_tags)
                          for exc in inside]
     }
 
@@ -131,11 +133,15 @@ def cum_impact_recurse(d):
 
     return to_return
 
-def drop_pass_through_levels(d):
+def drop_pass_through_levels(d, checkSecondary = True):
 
     to_return = {}
 
-    if d['tag'] == 'intermediate':
+    inSecondary = False
+    if checkSecondary:
+        inSecondary = 'intermediate' in d['secondary_tags']
+
+    if d['tag'] == 'intermediate' or inSecondary:
         #print('this needs to be dropped')
         #print ('Dropping {}'.format(d['activity']))
         for key in d.keys():
@@ -154,9 +160,9 @@ def drop_pass_through_levels(d):
             for e in v:
 
                 if k in to_return.keys():
-                    to_return[k].append(drop_pass_through_levels(e))
+                    to_return[k].append(drop_pass_through_levels(e, checkSecondary))
                 else:
-                    to_return[k] = [drop_pass_through_levels(e)]
+                    to_return[k] = [drop_pass_through_levels(e, checkSecondary)]
 
         elif k == 'activity':
             #print (k,v)

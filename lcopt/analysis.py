@@ -63,7 +63,7 @@ class Bw2Analysis():
                     e.save()
 
     
-    def run_analyses(self, demand_item, demand_item_code, amount=1, methods=[('IPCC 2013', 'climate change', 'GWP 100a')], pie_cutoff=0.05):
+    def run_analyses(self, demand_item, demand_item_code, amount=1, methods=[('IPCC 2013', 'climate change', 'GWP 100a')], pie_cutoff=0.05, **kwargs):
         
         ready = self.setup_bw2()
         name = self.bw2_database_name
@@ -174,11 +174,14 @@ class Bw2Analysis():
                     # method units at list
                     method_units = [bw2.methods[method]['unit'] for method in methods]
 
-                    multi_type_result, multi_type_graph = multi_traverse_tagged_databases(fu, methods, label="lcopt_type", default_tag="other")
-                    multi_foreground_result, multi_foreground_graph = multi_traverse_tagged_databases(fu, methods, label="name", default_tag="other")
+                    #multi_type_result, multi_type_graph = multi_traverse_tagged_databases(fu, methods, label="lcopt_type", default_tag="other", secondary_tags=[('name',)])
+                    multi_foreground_result, multi_foreground_graph = multi_traverse_tagged_databases(fu, methods, label="name", default_tag="other", secondary_tags=[('lcopt_type', 'other')])
 
-                    recursed_graph = get_cum_impact(deepcopy(multi_type_graph[0]))
-                    dropped_graph = drop_pass_through_levels(deepcopy(multi_type_graph[0]))
+                    #recursed_graph = get_cum_impact(deepcopy(multi_type_graph[0]))
+                    recursed_graph = get_cum_impact(deepcopy(multi_foreground_graph[0]))
+                    #dropped_graph = drop_pass_through_levels(deepcopy(multi_type_graph[0]))
+                    dropped_graph = drop_pass_through_levels(deepcopy(multi_foreground_graph[0]))
+                    mass_flow = recurse_mass(multi_foreground_graph[0], True)
 
                     result_set = {
                             'ps_name': parameter_set_name,
@@ -188,8 +191,8 @@ class Bw2Analysis():
                             'foreground_results': multi_foreground_result,
                             'graph': recursed_graph,
                             'dropped_graph': dropped_graph,
-                            'original_graph': str(multi_type_graph[0]),
-                            'mass_flow': recurse_mass(multi_type_graph[0], True)
+                            #'original_graph': str(multi_type_graph[0]),
+                            'mass_flow': mass_flow
                         }
 
                     result_sets.append(result_set)

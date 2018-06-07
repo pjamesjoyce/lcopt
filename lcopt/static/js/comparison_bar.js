@@ -63,8 +63,8 @@ function update_bar(){
 
 	for (i=0; i < bound_data.results.length; i++){
 		this_bar = {
-			value: bound_data.results[i][m].score,
-			label: bound_data.results[i][m].ps_name,
+			value: bound_data.results[i].scores[m],
+			label: bound_data.results[i].ps_name,
 		};
 		bar_data.push(this_bar);
 	}
@@ -105,7 +105,7 @@ function update_bar(){
 	//console.log(m);
 
 	svg.select('#c_bar_label')
-		.text(bound_data.results[0][m].unit);
+		.text(bound_data.results[0].units[m]);
 
 }
 

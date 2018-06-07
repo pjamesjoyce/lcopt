@@ -18,3 +18,4 @@ lcopt.egg-info/
 .pytest_cache
 /tests/*.csv
 /tests/htmlcov/
+/lcopt/__pycache__/
