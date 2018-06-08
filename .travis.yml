@@ -23,7 +23,7 @@ install:
   # conda build
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
       echo $(date '+%Y%m%d%H%M');
-      sed "s/  number:\ 1/  number:\ $(date '+%Y%m%d%H%M')/g" ./ci/travis/recipe/meta.yaml > /tmp/meta.yaml;
+      sed "s/  number:\ 0/  number:\ $(date '+%Y%m%d%H%M')/g" ./ci/travis/recipe/meta.yaml > /tmp/meta.yaml;
       mv /tmp/meta.yaml ./ci/travis/recipe/meta.yaml;
     fi
   - conda build ./ci/travis/recipe
