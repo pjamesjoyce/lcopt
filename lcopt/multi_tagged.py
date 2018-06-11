@@ -82,6 +82,47 @@ def multi_recurse_tagged_database(activity, amount, methods, method_dicts, lca, 
 def get_cum_impact(d, max_levels=100):
 
     this_d = d
+    
+    def cum_impact_recurse(d):
+
+        to_return = {}
+        cum_impact = [0] * len(d['impact'])
+
+        for k, v in d.items():
+            if k == 'technosphere':
+                #print('technosphere')
+                for e in v:
+                    #print (e['activity'])
+                    #cum_impact += e['impact']
+                    cum_impact = [sum(x) for x in zip(cum_impact, e['impact'])]
+                    if 'cum_impact' in e.keys():
+                        #cum_impact += e['cum_impact']
+                        cum_impact = [sum(x) for x in zip(cum_impact, e['cum_impact'])]
+
+                    if k in to_return.keys():
+                        to_return[k].append(cum_impact_recurse(e))
+                    else:
+                        to_return[k] = [cum_impact_recurse(e)]
+
+            elif k == 'biosphere':
+                to_return[k] = v
+                if len(v) != 0:
+                    for b in v:
+                        #cum_impact += b['impact']
+                        cum_impact = [sum(x) for x in zip(cum_impact, b['impact'])]
+
+            elif k == 'activity':
+                #print (k,v)
+                to_return[k] = str(v)
+            #elif k == 'impact':
+            #   print('impact of {} = {}'.format(d['activity'], v))
+
+            else:
+                to_return[k] = v
+        #print('cum_impact of {} = {}'.format(d['activity'], cum_impact))
+        to_return['cum_impact'] = cum_impact
+
+        return to_return
 
     for i in range(max_levels):
         prev_d = this_d
@@ -91,47 +132,6 @@ def get_cum_impact(d, max_levels=100):
             break
 
     return this_d
-
-def cum_impact_recurse(d):
-
-    to_return = {}
-    cum_impact = [0] * len(d['impact'])
-
-    for k, v in d.items():
-        if k == 'technosphere':
-            #print('technosphere')
-            for e in v:
-                #print (e['activity'])
-                #cum_impact += e['impact']
-                cum_impact = [sum(x) for x in zip(cum_impact, e['impact'])]
-                if 'cum_impact' in e.keys():
-                    #cum_impact += e['cum_impact']
-                    cum_impact = [sum(x) for x in zip(cum_impact, e['cum_impact'])]
-
-                if k in to_return.keys():
-                    to_return[k].append(cum_impact_recurse(e))
-                else:
-                    to_return[k] = [cum_impact_recurse(e)]
-
-        elif k == 'biosphere':
-            to_return[k] = v
-            if len(v) != 0:
-                for b in v:
-                    #cum_impact += b['impact']
-                    cum_impact = [sum(x) for x in zip(cum_impact, b['impact'])]
-
-        elif k == 'activity':
-            #print (k,v)
-            to_return[k] = str(v)
-        #elif k == 'impact':
-        #   print('impact of {} = {}'.format(d['activity'], v))
-
-        else:
-            to_return[k] = v
-    #print('cum_impact of {} = {}'.format(d['activity'], cum_impact))
-    to_return['cum_impact'] = cum_impact
-
-    return to_return
 
 def drop_pass_through_levels(d, checkSecondary = True):
 
