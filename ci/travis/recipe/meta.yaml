@@ -1,15 +1,9 @@
 {% set name = "lcopt-dev" %}
 {% set version = "0.4.2.dev" %}
 
-{% if environ['TRAVIS_COMMIT'] %}
-  {% set dev_version = version + "_"+ environ['TRAVIS_COMMIT'][:8] %}
-{% else %}
-  {% set dev_version = version %}
-{% endif %}
-
 package:
   name: '{{ name|lower }}'
-  version: '{{ dev_version }}'
+  version: '{{ version }}'
 
 source:
   path: ../../..
