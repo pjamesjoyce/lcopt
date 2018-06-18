@@ -36,7 +36,7 @@ class LcoptParameterSet(ParameterSet):
         for k in bw2_params.keys():
             bw2_params[k]['amount'] = ps1.get(k,0)
             
-        bw2_global_params = {x['name']: ps1[x['name']] for x in self.modelInstance.ext_params}
+        bw2_global_params = {x['name']: ps1.get(x['name'],x['default']) for x in self.modelInstance.ext_params}
 
         bw2_export_params = []
 
