@@ -79,7 +79,10 @@
         if (error) throw error;
         bound_data = data;
         //console.log(bound_data);
-        create_sunburst();
+        if(check_pie()){
+          create_sunburst();  
+        }
+        //create_sunburst();
     });
 
 
@@ -100,8 +103,8 @@
     rdomain.push(radius);
     rrange.push(radius);
 
-    console.log(rdomain);
-    console.log(rrange);
+    //console.log(rdomain);
+    //console.log(rrange);
 
     rscale = d3.scaleLinear().domain(rdomain).range(rrange);
 
@@ -143,7 +146,7 @@
       
         // set the root of the data  
         root = d3.hierarchy(bound_data.results[ps].dropped_graph, function(d){return d.technosphere; });
-        console.log(root)
+        //console.log(root)
         unit = bound_data.results[ps].units[m];
 
         /* Initialize tooltip */
@@ -185,7 +188,7 @@
 
           var full_data = partition(root).descendants();
           var filtered_data = full_data.filter(function(x){return x.x0 != x.x1});
-          console.log(filtered_data);
+          //console.log(filtered_data);
 
           // partition changes the tree into a list of objects
           svg.selectAll("path")
@@ -194,7 +197,7 @@
               .attr("d", arc)
               .style("fill", function(d) {
                 activity_name = d.data.activity.split("'")[1];
-                console.log(activity_name,  color(d.depth + ". " + activity_name ));
+                //console.log(activity_name,  color(d.depth + ". " + activity_name ));
                 return color(d.depth + ". " + activity_name ) 
                })//return color(d.data.activity); })//return color((d.children ? d : d.parent).data.activity); })
               /*.style("stroke", function(d){
@@ -426,19 +429,31 @@
   //create_sunburst()
 
   $('#parameterSetChoice').change(function(){
-    create_sunburst();
+    if(check_pie()){
+      create_sunburst();  
+    }
+    //create_sunburst();
     //create_force_layout()
   });
 
   $('#methodChoice').change(function(){
-    create_sunburst();
+    if(check_pie()){
+      if(check_pie()){
+        create_sunburst();  
+      }
+    //create_sunburst();  
+    }
+    //create_sunburst();
     //create_force_layout()
   });
 
   $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
     var target = $(e.target).attr("href"); // activated tab
     if (target=="#tab-hotspots"){
-      create_sunburst();
+      if(check_pie()){
+      create_sunburst();  
+    }
+    //create_sunburst();
     }
     else if(target=="#tab-table"){
       update_table();
@@ -475,7 +490,11 @@
       show2 = 1;
     }
     rscale = d3.scaleLinear().domain([0, break1*radius, break2*radius, 1.0*radius]).range([0, show1*radius, show2*radius, 1.0*radius]);
-    create_sunburst();
+
+    if(check_pie()){
+      create_sunburst();  
+    }
+    //create_sunburst();
   });
 
   
@@ -489,6 +508,35 @@
     export_StyledSVG('sunburst', 'hotspot_chart_' + ps + '_' + m + '.png', height, width);
   });
 
+
+  function check_pie(){
+    var data = bound_data;
+      var ps = $('#parameterSetChoice').val() - 1;
+      var m = $('#methodChoice').val() - 1;
+      var pre_pie_data = data['results'][ps]['foreground_results'];
+
+      var return_value = true;
+
+      for(result in pre_pie_data){
+        if(pre_pie_data[result][m] < 0){
+          return_value = false;
+          //svg.append("text")
+          //  .attr("transform", "translate(-" + pieDimensions.width/4 + ", -" + pieDimensions.height/4 + ")")
+          //  .text("Results contain negative values - Can't draw a pie chart - See the waterfall chart instead");
+
+          d3.select("#sunburst")
+            .attr("width", 1000)
+            .attr("height", 500)
+            .append("text")
+            .attr("transform", "translate(" + 15 + ", " + 50 + ")")
+            .text("Results contain negative values - Can't draw a bullseye chart - See the waterfall chart instead");
+
+          break;
+        }
+      }
+
+    return return_value;
+  }
 
 
   });

@@ -1,0 +1,37 @@
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.y.axis path {
+    display: none;
+    /*stroke-opacity: 0.2;*/
+}
+.y.axis line {
+    display: none;
+    /*stroke-opacity: 0.2;*/
+}
+
+.top.axis path {
+    display: none;
+}
+
+.starting-line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.bar text{
+  font: 12px 'Muli';
+}
+
+.y.axis > .tick text,
+.x.axis > .tick text,
+.top.axis > .tick text {
+    font: 12px 'Muli';
+}
+

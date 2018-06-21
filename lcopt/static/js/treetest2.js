@@ -83,7 +83,9 @@ function sortNumber(a,b) {
     return a - b;
 }
 
-function postOrder(d, total_score, cutoff, m){
+// Newer version in waterfall.js to account for negative impact flows
+
+/*function postOrder(d, total_score, cutoff, m){
   var splice_dict = {};
   d.eachAfter(function(n){
 
@@ -131,7 +133,7 @@ function postOrder(d, total_score, cutoff, m){
     }
   });
 }
-
+*/
 
 function count_occurences(item, array){
   var count = 0;
@@ -189,7 +191,7 @@ function draw_tree(){
   var treemap = d3.tree()
     .size([width, height]);
   // maps the node data to the tree layout
-  console.log(nodes);
+  //console.log(nodes);
   nodes = treemap(nodes);
   //console.log(nodes)
 
@@ -220,17 +222,18 @@ function draw_tree(){
     .data( nodes.descendants().slice(1))
     .enter().append("path")
     .attr("class", function(d){
-      hasImpact = d.data.cum_impact+d.data.impact ? 'impactTrue' : 'impactFalse';
-      return "link " + hasImpact;
+      hasImpact = d.data.cum_impact[m]+d.data.impact[m] ? 'impactTrue' : 'impactFalse';
+      sign = d.data.cum_impact[m]+d.data.impact[m] > 0 ? 'positive' : 'negative';
+      return "link " + hasImpact + " " + sign;
     })
     .attr("d", elbow)
     .attr("stroke-width", function(d){
       ////console.log(d.data.cum_impact);
       ////console.log(d.data.activity, d.data.impact, d.data.cum_impact);
       if (d.data.cum_impact[m]){
-        return Math.max(d.data.cum_impact[m]/total_score * max_stroke_width,1);
+        return Math.max(Math.abs(d.data.cum_impact[m])/Math.abs(total_score) * max_stroke_width,1);
       }else if(d.data.impact){
-        return Math.max(d.data.impact[m]/total_score * max_stroke_width,1);
+        return Math.max(Math.abs(d.data.impact[m])/Math.abs(total_score) * max_stroke_width,1);
       }else{
         return 1;
       }

@@ -1,7 +1,7 @@
 
 function mass_flow(ps){
 
-  console.log(bound_data);
+  //console.log(bound_data);
 
   var units = "kg";
 
@@ -38,13 +38,13 @@ function mass_flow(ps){
 
   // load the data
   var data = bound_data.results[ps].mass_flow;
-  console.log(data);
+  //console.log(data);
 
   var hierarchy = d3.hierarchy(data, function(d) {
       return d.technosphere;
   });
 
-  console.log(hierarchy);
+  //console.log(hierarchy);
 
   d3.tree(hierarchy);
 

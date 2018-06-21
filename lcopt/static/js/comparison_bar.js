@@ -71,7 +71,8 @@ function update_bar(){
 
 	// Scale the range of the data in the domains
 	xScale.domain(bar_data.map(function(d) { return d.label; }));
-	yScale.domain([0, d3.max(bar_data, function(d) { return d.value; })]);
+	//yScale.domain([0, d3.max(bar_data, function(d) { return d.value; })]);
+	yScale.domain([Math.min(0, d3.min(bar_data, function(d) { return d.value; })), Math.max(0, d3.max(bar_data, function(d) { return d.value; }))]).nice();
 
 	// append the rectangles for the bar chart
 	var bars = svg.selectAll(".bar")
@@ -84,25 +85,36 @@ function update_bar(){
 	    .attr("fill", function(d){return color(d.label);})
 	    .attr("x", function(d) { return xScale(d.label); })
 	    .attr("width", xScale.bandwidth())
-	    .attr("y", function(d) { return yScale(d.value); })
-	    .attr("height", function(d) { return bar_height - yScale(d.value); })
+	    .attr("y", function(d) { return yScale(Math.max(0, d.value)); })
+	    .attr("height", function(d) { return Math.abs(yScale(d.value) - yScale(0)); })
+	    //.attr("height", function(d) { return bar_height - yScale(d.value); })
 
 	    .merge(bars).transition()
 		  .attr("x", function(d) { return xScale(d.label); })
 	      .attr("width", xScale.bandwidth())
-	      .attr("y", function(d) { return yScale(d.value); })
-	      .attr("height", function(d) { return bar_height - yScale(d.value); });
+	      .attr("y", function(d) { return yScale(Math.max(0, d.value)); })
+	      .attr("height", function(d) { return Math.abs(yScale(d.value) - yScale(0)); })
+	      //.attr("y", function(d) { return yScale(d.value); })
+	      //.attr("height", function(d) { return bar_height - yScale(d.value); });
 
 
 	svg.select('.xAxis')
+		//.attr("transform", "translate(0," + yScale(0) + ")")
 		.call(d3.axisBottom(xScale));
+		
 
 	svg.select('.yAxis')
 		.call(d3.axisLeft(yScale));
 
-	//console.log(bound_data.results[0][m].unit);
-	//console.log(i);
-	//console.log(m);
+	if(yScale.domain()[0] != 0){
+		svg.append("g")
+	       .attr("transform", "translate(0, "+ (yScale(0) + 0.25) +")")
+	       .attr("class", "zeroline")
+	       .append("line")
+	       .attr("x2", xScale.range()[1])
+	       .style("stroke", "black")
+	       .style("stroke-width", ".5px")
+	}
 
 	svg.select('#c_bar_label')
 		.text(bound_data.results[0].units[m]);

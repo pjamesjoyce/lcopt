@@ -49,18 +49,46 @@ var svg = d3.select("#pie")
 d3.json("results.json", function(data) {
     bound_data = data;
     //draw_pie(data)
-    draw_pie();
+    if (check_pie()){
+		draw_pie();
+	}
     setup_bar();
     draw_tree();
-    setup_stack_bar();
+    //setup_stack_bar();
 	update_summary_table();
 	mass_flow(0);
+	createWaterfall(0,0);
+	do_stack(0);
 
     //draw_sunburst()
 
 })
 
+function check_pie(){
+	var data = bound_data;
+    var ps = $('#parameterSetChoice').val() - 1;
+    var m = $('#methodChoice').val() - 1;
+    var pre_pie_data = data['results'][ps]['foreground_results'];
 
+    var return_value = true;
+
+    for(result in pre_pie_data){
+    	if(pre_pie_data[result][m] < 0){
+    		return_value = false;
+    		svg.append("text")
+    			.attr("transform", "translate(-" + pieDimensions.width/4 + ", -" + pieDimensions.height/4 + ")")
+    			.text("Results contain negative values - Can't draw a pie chart - See the waterfall chart instead");
+
+    		d3.select("#sunburst").append("text")
+    			.attr("transform", "translate(-" + pieDimensions.width/4 + ", -" + pieDimensions.height/4 + ")")
+    			.text("Results contain negative values - Can't draw a pie chart - See the waterfall chart instead");
+
+    		break;
+    	}
+    }
+
+	return return_value;
+}
 
 //function draw_pie(data){
 function draw_pie(){
@@ -69,7 +97,7 @@ function draw_pie(){
     var ps = $('#parameterSetChoice').val() - 1
     var m = $('#methodChoice').val() - 1
 
-    console.log(data)
+    //console.log(data)
 
     var pre_pie_data = data['results'][ps]['foreground_results']
     var total_score = data['results'][ps]['scores'][m]
@@ -462,24 +490,33 @@ function polylineTweenPoints(a){
 } // end of polylineTweenPoints
 
 $('#parameterSetChoice').change(function(){
-	change2()
+	if (check_pie()){
+		change2()	
+	}
 	draw_tree()
 	console.log($('#parameterSetChoice').val()-1)
 	mass_flow($('#parameterSetChoice').val()-1)
+	createWaterfall($('#parameterSetChoice').val()-1, $('#methodChoice').val()-1)
 	//create_force_layout()
 })
 $('#methodChoice').change(function(){
-	change2()
+	if (check_pie()){
+		change2()	
+	}
 	update_bar()
 	draw_tree()
-	update_stack_bar()
+	//update_stack_bar()
+	do_stack( $('#methodChoice').val()-1)
 	update_table()
+	createWaterfall($('#parameterSetChoice').val()-1, $('#methodChoice').val()-1)
 	//create_force_layout()
 })
 
 $('#cutoff_pie')[0].oninput =  function(){
 	console.log('pie!')
-	change2()
+	if (check_pie()){
+		change2()	
+	}
 }
 //create the initial force layout
 //create_force_layout()

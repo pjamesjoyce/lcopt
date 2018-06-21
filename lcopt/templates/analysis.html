@@ -4,7 +4,7 @@
 
 {% block head_postload %}
 
-<script src="{{ url_for('static', filename = 'js/cdn_cache/d3.min.js') }}"></script>
+<script src="{{ url_for('static', filename = 'js/cdn_cache/d3.v4.min.js') }}"></script>
 <script src="{{ url_for('static', filename = 'js/cdn_cache/d3-legend.min.js') }}"></script>
 <script src="{{ url_for('static', filename = 'js/cdn_cache/d3-tip.js') }}"></script>
 <script src="{{ url_for('static', filename = 'js/cdn_cache/d3-textwrap.JJ.js') }}"></script>
@@ -16,11 +16,13 @@
 
 <script src = "{{ url_for('static', filename = 'js/result_table.js') }}"></script>
 <script src = "{{ url_for('static', filename = 'js/treetest2.js') }}"></script>
-<script src = "{{ url_for('static', filename = 'js/stacked_bar.js') }}"></script>
+<!-- <script src = "{{ url_for('static', filename = 'js/stacked_bar.js') }}"></script> -->
+<script src = "{{ url_for('static', filename = 'js/stacked_bar_negative.js') }}"></script>
 <!-- <script src = "{{ url_for('static', filename = 'js/sunburst.js') }}"></script> -->
 <script src = "{{ url_for('static', filename = 'js/export_chart.js') }}"></script>
 <script src = "{{ url_for('static', filename = 'js/hotspot.js') }}"></script>
 <script src = "{{ url_for('static', filename = 'js/mass_flow.js') }}"></script>
+<script src = "{{ url_for('static', filename = 'js/waterfall.js') }}"></script>
 
 
 <link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/analysis.css') }}" />
@@ -28,6 +30,8 @@
 <link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/treetest.css') }}" />
 
 <link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/mass_flow.css') }}" />
+
+<link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/waterfall.css') }}" />
 
 {% endblock%}
 
@@ -82,6 +86,7 @@
                 <li><a data-toggle="tab" href="#tab-pie">Pie Chart</a></li>
                 <li><a data-toggle="tab" href="#tab-hotspots">Bullseye Hotspot Chart</a></li>
                 <li><a data-toggle="tab" href="#tab-mass_flow">Mass Flow</a></li>
+                <li><a data-toggle="tab" href="#tab-waterfall">Waterfall chart</a></li>
             </ul>
         </div>
 
@@ -225,6 +230,24 @@
 
                     <div class = "mass_flow_div" class = "col-xs-12">
                         <svg id = "mass_flow_svg"></svg>
+                    </div>
+
+                </div>
+                
+            </div>
+
+            <div class="tab-pane fade" id="tab-waterfall">
+                <div class="row top-padding">
+                    <div class=col-xs-12>
+                        <button id="waterfall_export_button" class="btn btn-muted pull-right"><i class="material-icons">file_download</i></button>
+                    </div>
+                </div>
+               
+                
+                <div class="row bottom-padding">
+
+                    <div class = "waterfall_div" class = "col-xs-12">
+
                     </div>
 
                 </div>

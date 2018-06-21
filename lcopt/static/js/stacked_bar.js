@@ -96,7 +96,7 @@ function update_stack_bar(){
 				running_total += value
 			}
 		}
-		console.log(this_stack_bar_data)
+		//console.log(this_stack_bar_data)
 		this_bar = {
 			data: this_stack_bar_data,
 			name: bound_data.results[i].ps_name,

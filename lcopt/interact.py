@@ -125,7 +125,10 @@ class FlaskSandbox():
                     ext_db_ix = ext_dbs.index(el[0])
                     ext_db_items = m.external_databases[ext_db_ix]['items']
                     ext_item = ext_db_items[el]
-                    ext_item_data = "<div><b>Database: </b>{}</br><b>Reference product: </b>{}</br><b>Process: </b>{}</br><b>Location: </b>{}</br></div>".format(el[0], ext_item['reference product'], ext_item['name'], ext_item['location'])
+                    ext_ref_prod = ext_item.get('reference product','')
+                    ext_name = ext_item.get('name', '')
+                    ext_location = ext_item.get('location', '')
+                    ext_item_data = "<div><b>Database: </b>{}</br><b>Reference product: </b>{}</br><b>Process: </b>{}</br><b>Location: </b>{}</br></div>".format(el[0], ext_ref_prod, ext_name, ext_location)
                 else:
                     ext_item_data = "<div><i><b>This is a burden free input</b></i></div>"
 
