@@ -93,7 +93,8 @@ $(document).ready(function(){
 
     $BTN.click(function() {
         save_parameters();
-        window.location.replace("/parameters");
+        showToastTemp('Saving ...')
+        //window.location.replace("/parameters");
 
     });
 
@@ -119,8 +120,15 @@ $(document).ready(function(){
          });
 
 
-         myTable.find('.table_section,.table_subsection').each(function(){
+         //myTable.find('.table_section,.table_subsection').each(function(){
+         myTable.find('.table_section').each(function(){
             $(this).attr('colspan', count+4);
+         });
+
+         myTable.find('.table_subsection_row').each(function(){
+                
+          $(this).append('<td class="table_subsection hide_text align-center">ParameterSet_'+(count+1) +'</td>');
+            
          });
          
     });
@@ -236,5 +244,19 @@ $(document).ready(function(){
                 var $message = $('<div></div>').append(formHtml);
                 return $message;
             }
+
+
+  $(window).bind('keydown', function(event) {
+    if (event.ctrlKey || event.metaKey) {
+        switch (String.fromCharCode(event.which).toLowerCase()) {
+        case 's':
+            event.preventDefault();
+            save_parameters();
+            showToastTemp('Saving...');
+            break;
+        }
+    }
+  });
+    
 
 });//end of document.ready

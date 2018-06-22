@@ -79,6 +79,9 @@ class FlaskSandbox():
         process_output_map = {self.output_code(x): x[1] for x in processes.keys()}
         self.reverse_process_output_map = {value: key for key, value in process_output_map.items()}
 
+        # map products to producing process name
+        self.production_map = {k:process_name_map[v] for k, v, in process_output_map.items()}
+
         intermediates = {k: v for k, v in products.items() if v['lcopt_type'] == 'intermediate'}
         intermediate_codes = [k[1] for k in intermediates.keys()]
         intermediate_map = {k[1]: v['name'] for k, v in intermediates.items()}
@@ -505,8 +508,8 @@ class FlaskSandbox():
                 isFunction = False
 
             subsection = {'name': 'Production exchange (Output)', 'my_items': []}
-            subsection['my_items'].append({'id': this_p_param, 'name': 'Output of {}'.format(production_params[this_p_param]['from_name']), 'existing_values': values, 'unit': production_params[this_p_param]['unit'], 'isFunction': isFunction})
-
+            #subsection['my_items'].append({'id': this_p_param, 'name': 'Output of {}'.format(production_params[this_p_param]['from_name']), 'existing_values': values, 'unit': production_params[this_p_param]['unit'], 'isFunction': isFunction})
+            subsection['my_items'].append({'id': this_p_param, 'name': '{}'.format(production_params[this_p_param]['from_name']), 'existing_values': values, 'unit': production_params[this_p_param]['unit'], 'isFunction': isFunction})
             section['my_items'].append(subsection)
 
             sorted_exchanges = sorted(items, key=type_of)
@@ -534,7 +537,10 @@ class FlaskSandbox():
             #print(db_code)
             
             unit = self.modelInstance.database['items'][db_code]['unit']
-            section['name'] = "{}\t({})".format(target, unit)
+            item_name = self.production_map[db_code[1]]
+            print(item_name)
+            #section['name'] = "{}\t({})".format(target, unit)
+            section['name'] = item_name
             sorted_parameters.append(section)
 
         ext_section = {'name': 'Global Parameters', 'my_items': [{'name': 'User created', 'my_items': []}]}

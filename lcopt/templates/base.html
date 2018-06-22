@@ -55,6 +55,10 @@
 
     <link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/style.css') }}" />
 
+    <!-- Toast alerts -->
+    <link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/toast.css') }}" />
+    <script src="{{ url_for('static', filename = 'js/toast.js') }}"></script>
+
     <!-- Extra items for the header -->
     {% block head_postload %}{% endblock %}
 

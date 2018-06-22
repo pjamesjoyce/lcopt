@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="sandboxTitle col-xs-10 col-xs-offset-1">
-            <h1>Create Parameter Set</h1>
+            <h1>Parameter Sets</h1>
         </div>
     </div>
     <div class="row">
@@ -15,40 +15,52 @@
                 <table id="myTable" class="table table-bordered table-condensed table-hover">
                     <thead>
                         <tr class="table_header">
-                            <th class='hide_text_header'>id</th>
-                            <th>Name</th>
-                            <th>Unit</th>
+                            <th class='hide_text_header'style="width: 10%">id</th>
+                            <th style="width: 20%">Name</th>
+                            <th style="width: 5%">Unit</th>
                             {% for n in args.ps_names %}
-                            <th class="ps_name" contenteditable="true">{{n}}</th>{% endfor %}
+                            <th style="width: {{65 / (args.ps_names | length)}}%" class="ps_name" contenteditable="true">{{n}}</th>
+                            {% endfor %}
                         </tr>
                     </thead>
                     {% for section in args.sorted_parameters %}
                     <thead>
-                        <tr>
-                            <td class="table_section" colspan="{{colspan}}">{{section.name}}</td>
+                        <tr class="changer collapsible collapsed" data-toggle="collapse" data-target="#{{section.name|replace(' ', '_')|replace('\t', '_')|replace('(', '_')|replace(')', '_')}}" aria-expanded="false" aria-controls="menu">
+                            <td class="table_section  {% if section.name == 'Global Parameters' %}g_params{%endif%}" colspan="{{colspan}}" >
+                                <span class="row_icon material-icons"></span><span>{{section.name}}</span> 
+                            </td>
                         </tr>
                     </thead>
-                    {% for subsection in section.my_items %}
-                    <thead>
-                        <tr>
-                            <td class="table_subsection" colspan="{{colspan}}">{{subsection.name | capitalize}}</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in subsection.my_items %} {% set row_type = 'function' if item.isFunction else 'data' %}
-                        <tr class="{{row_type}}_row">
-                            <td><span class='hide_text export'>{{item.id}}</span>{% if section.name != 'Global Parameters' %}<a href="/functions?preload={{item.id}}"><i class="material-icons pull-right edit_function">functions</i></a>{% endif %}</td>
-                            <td class='export'>{{item.name}}</td>
-                            <td class='export'>{{item.unit}}</td>
-                            {% for v in item.existing_values %} {% if item.isFunction%}
-                            <td class="function right_align export">{{v}}</td>
-                            {% else %}
-                            <td contenteditable="true" class="right_align export">{{'%0.4g'| format(v|float)}}</td>
-                            {% endif %} {% endfor %}
-                        </tr>
-                        {% endfor %}
+                    <tbody id="{{section.name|replace(' ', '_')|replace('\t', '_')|replace('(', '_')|replace(')', '_')}}" class="collapse">
+                        {% for subsection in section.my_items %}
+                        {% if section.name != 'Global Parameters' %}
+                        <!-- <thead> -->
+                            <tr class="table_subsection_row">
+                                <td class="table_subsection" colspan="3">{{subsection.name | capitalize}}</td>
+                                {% for n in args.ps_names %}
+                                    <td class="table_subsection hide_text align-center">{{n}}</td>
+                                {% endfor %}
+                            </tr>
+                        <!-- </thead> -->
+                        {% endif %}
+                        <!-- <tbody> -->
+                            {% for item in subsection.my_items %} {% set row_type = 'function' if item.isFunction else 'data' %}
+                            <tr class="{{row_type}}_row">
+                                <td><span class='hide_text export'>{{item.id}}</span>{% if section.name != 'Global Parameters' %}<a href="/functions?preload={{item.id}}"><i class="material-icons pull-right edit_function">functions</i></a>{% endif %}</td>
+                                <td class='export'>{{item.name}}</td>
+                                <td class='export'>{{item.unit}}</td>
+                                {% for v in item.existing_values %} {% if item.isFunction%}
+                                <td class="function right_align export">{{v}}</td>
+                                {% else %}
+                                <td contenteditable="true" class="right_align export">{{'%0.4g'| format(v|float)}}</td>
+                                {% endif %} {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        <!-- </tbody> -->
+                    
+                    {% endfor %} 
                     </tbody>
-                    {% endfor %} {% endfor %}
+                    {% endfor %}
                 </table>
             </div>
         </div>
@@ -68,4 +80,6 @@
         </div>
     </div>
 </div>
+
+<!-- <div id="snackbar">Some text some message..</div>-->
 {% endblock %}

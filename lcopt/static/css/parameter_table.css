@@ -16,6 +16,8 @@
 .table_section{
 	background-color: #ddd;
 	font-weight: bold;
+	border-bottom: 1px solid #bbb !important;
+	cursor:pointer;
 }
 
 .table_subsection{
@@ -45,4 +47,38 @@
 .edit_function{
 	visibility: hidden;
 	cursor: pointer;
+}
+
+tr.collapse.in {
+  display:table-row;
+}
+
+.g_params{
+	background-color: #555;
+	color: white;
+}
+
+.material-icons{
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.changer{
+  cursor:pointer;
+}
+.changer.collapsed>.table_section>.row_icon:before
+{
+    content:'arrow_right' ;
+    display:inline-flex;
+    width:25px;
+}
+.changer>.table_section>.row_icon:before
+{
+    content:'arrow_drop_down' ;
+    display:inline-flex;
+    width:25px;
+}
+
+.align-center{
+   text-align: center;  
 }

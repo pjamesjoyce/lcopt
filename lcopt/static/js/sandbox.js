@@ -236,6 +236,20 @@ var jsPlumbsetup = function (nodes, links,linklabels, outputlabels) {
       update_status();
     });
 
+    // add ctrl+s save option
+    $(window).bind('keydown', function(event) {
+    if (event.ctrlKey || event.metaKey) {
+        switch (String.fromCharCode(event.which).toLowerCase()) {
+        case 's':
+            event.preventDefault();
+            showToastTemp('Saving...');
+            saveModel();
+            update_status();
+            break;
+        }
+    }
+  });
+
     //This one is the add process button
     $('#addProcess').click(function(e){
 	  //console.log("Add a new process");
