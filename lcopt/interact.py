@@ -122,13 +122,21 @@ class FlaskSandbox():
                 item = db[(m.database['name'], p)]
                 el = item.get('ext_link')
                 if el:
-                    ext_db_ix = ext_dbs.index(el[0])
-                    ext_db_items = m.external_databases[ext_db_ix]['items']
-                    ext_item = ext_db_items[el]
-                    ext_ref_prod = ext_item.get('reference product','')
-                    ext_name = ext_item.get('name', '')
-                    ext_location = ext_item.get('location', '')
-                    ext_item_data = "<div><b>Database: </b>{}</br><b>Reference product: </b>{}</br><b>Process: </b>{}</br><b>Location: </b>{}</br></div>".format(el[0], ext_ref_prod, ext_name, ext_location)
+                    if el[0] == m.database['name']:
+                        ext_db_items = m.database['items']
+                        ext_item = ext_db_items[el]
+                        #ext_ref_prod = ext_item.get('reference product','')
+                        ext_name = ext_item.get('name', '')
+                        ext_location = ext_item.get('location', '')
+                        ext_item_data = "<div><i><b>This is an internal link</b></i></br><b>Database: </b>{}</br><b>Process: </b>{}</br><b>Location: </b>{}</br></div>".format(el[0], ext_name, ext_location)
+                    else:
+                        ext_db_ix = ext_dbs.index(el[0])
+                        ext_db_items = m.external_databases[ext_db_ix]['items']
+                        ext_item = ext_db_items[el]
+                        ext_ref_prod = ext_item.get('reference product','')
+                        ext_name = ext_item.get('name', '')
+                        ext_location = ext_item.get('location', '')
+                        ext_item_data = "<div><b>Database: </b>{}</br><b>Reference product: </b>{}</br><b>Process: </b>{}</br><b>Location: </b>{}</br></div>".format(el[0], ext_ref_prod, ext_name, ext_location)
                 else:
                     ext_item_data = "<div><i><b>This is a burden free input</b></i></div>"
 
@@ -370,7 +378,11 @@ class FlaskSandbox():
         
         if 'ext_link' in myInput.keys():
             ext_link = myInput['ext_link']
-            ext_db = [x['items'] for x in m.external_databases if x['name'] == ext_link[0]][0]
+            if ext_link[0] == m.database['name']:
+                print('this is an internal external link')
+                ext_db = m.database['items'] #[x['items'] for x in m.external_databases if x['name'] == ext_link[0]][0]
+            else:
+                ext_db = [x['items'] for x in m.external_databases if x['name'] == ext_link[0]][0]
             full_link = ext_db[ext_link]
             if postData['format'] == 'ecoinvent':
                 full_link_string = "{} {{{}}} [{}]".format(full_link['name'], full_link['location'], full_link['unit'])

@@ -597,7 +597,7 @@ class LcoptModel(object):
             #Search all of the databases available
             data = Dictionaries(self.database['items'], *[x['items'] for x in self.external_databases])
         else:
-            data = Dictionaries(*[x['items'] for x in self.external_databases if x['name'] in databases_to_search])
+            data = Dictionaries(self.database['items'], *[x['items'] for x in self.external_databases if x['name'] in databases_to_search])
 
         query = Query()
 
