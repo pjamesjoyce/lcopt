@@ -190,7 +190,7 @@ function doSetup(ps, m){
 
 function createSvg(parentElement) {
     d3.select(parentElement).select("svg").remove();
-    waterfall.svg = d3.select(parentElement).append("svg");
+    waterfall.svg = d3.select(parentElement).append("svg").attr("id", "waterfall_svg");
 
     waterfall.svg.append("g")
         .attr("class", "chart-group")
@@ -466,3 +466,11 @@ d3.json("results.json", function(error, data) {
 
 */
 
+$(document).ready(function(){
+     $('#waterfall_export_button').click(function(){
+
+    var waterfallWidth = waterfall.chartWidth + waterfall.yAxisWidth + waterfall.margin.left + waterfall.margin.right;
+    var waterfallHeight = waterfall.xAxisHeight + chartHeight + waterfall.margin.top + waterfall.margin.bottom;
+    export_StyledSVG('waterfall_svg', 'waterfall.png', waterfallHeight, waterfallWidth);
+  });
+})

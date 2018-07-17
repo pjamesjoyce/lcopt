@@ -15,9 +15,9 @@ function setDPI(canvas, dpi) {
 var ContainerElements = ["svg","g", "foreignObject"],
         RelevantStyles ={
                          "rect":["fill","stroke","stroke-width"],
-                         "path":["fill","stroke","stroke-width"],
+                         "path":["fill","stroke","stroke-width","display"],
                          "circle":["fill","stroke","stroke-width"],
-                         "line":["stroke","stroke-width"],
+                         "line":["stroke","stroke-width","display"],
                          "polyline":["stroke", "stroke-width", "fill", "opacity"],
                          "text":["fill","font-size","text-anchor", "font-family"],
                          "polygon":["stroke","fill"],

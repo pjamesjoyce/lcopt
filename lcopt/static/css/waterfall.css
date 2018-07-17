@@ -26,12 +26,12 @@
 }
 
 .bar text{
-  font: 12px 'Muli';
+  font: 12px 'Muli', 'Arial';
 }
 
 .y.axis > .tick text,
 .x.axis > .tick text,
 .top.axis > .tick text {
-    font: 12px 'Muli';
+    font: 12px 'Muli', 'Arial';
 }
 
