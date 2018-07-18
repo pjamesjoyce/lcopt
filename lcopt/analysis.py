@@ -1,5 +1,5 @@
 from lcopt.bw2_export import Bw2Exporter
-from lcopt.utils import DEFAULT_DB_NAME, FORWAST_DB_NAME
+from lcopt.utils import DEFAULT_PROJECT_STEM, FORWAST_PROJECT_NAME
 from .mass_balance import recurse_mass
 from .multi_tagged import multi_traverse_tagged_databases, get_cum_impact, drop_pass_through_levels
 import brightway2 as bw2
@@ -36,14 +36,14 @@ class Bw2Analysis():
         else:
         
             if self.modelInstance.useForwast:
-                if FORWAST_DB_NAME in bw2.projects:
-                    bw2.projects.set_current(FORWAST_DB_NAME)
+                if FORWAST_PROJECT_NAME in bw2.projects:
+                    bw2.projects.set_current(FORWAST_PROJECT_NAME)
                     bw2.projects.copy_project(self.bw2_project_name, switch=True)
                     print('Created new bw2 project - {}'.format(self.bw2_project_name))
                     return True
 
-            elif DEFAULT_DB_NAME in bw2.projects:                                       # pragma: no cover
-                bw2.projects.set_current(DEFAULT_DB_NAME)
+            elif DEFAULT_PROJECT_STEM + self.modelInstance.ecoinventName in bw2.projects:                       # pragma: no cover
+                bw2.projects.set_current(DEFAULT_PROJECT_STEM + self.modelInstance.ecoinventName)
                 bw2.projects.copy_project(self.bw2_project_name, switch=True)
                 print('Created new bw2 project - {}'.format(self.bw2_project_name))
                 return True

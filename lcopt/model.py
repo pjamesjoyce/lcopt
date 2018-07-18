@@ -11,6 +11,7 @@ from lcopt.io import *
 from lcopt.interact import FlaskSandbox
 from lcopt.bw2_export import Bw2Exporter
 from lcopt.analysis import Bw2Analysis
+from .utils import check_for_config, lcopt_bw2_autosetup, DEFAULT_PROJECT_STEM, bw2_project_exists, write_search_index, FORWAST_PROJECT_NAME, upgrade_old_default
 # This is a copy straight from bw2data.query, extracted so as not to cause a dependency.
 #from lcopt.bw2query import Query, Dictionaries, Filter
 from bw2data.query import Query, Dictionaries, Filter
@@ -27,6 +28,7 @@ from random import randint
 from jinja2 import Environment, PackageLoader
 
 import os
+import getpass
 
 #From bw2 - edited to reinsert capitalisation of units
 
@@ -95,7 +97,7 @@ class LcoptModel(object):
 
     """
 
-    def __init__(self, name=hex(random.getrandbits(128))[2:-1], load=None, useForwast=False):
+    def __init__(self, name=hex(random.getrandbits(128))[2:-1], load=None, useForwast=False, ecoinvent_version='3.3', ecoinvent_system_model='cutoff', ei_username = None, ei_password = None, write_config=None):
         super(LcoptModel, self).__init__()
         
         # name the instance
@@ -118,20 +120,22 @@ class LcoptModel(object):
         self.sandbox_positions = {}
 
         # set the default names of the external databases - these can be changed if needs be
-        self.ecoinventName = "Ecoinvent3_3_cutoff"
+        ei_name = "Ecoinvent{}_{}_{}".format(*ecoinvent_version.split("."), ecoinvent_system_model) #"Ecoinvent3_3_cutoff"
+        self.ecoinventName = ei_name # "Ecoinvent3_3_cutoff"
         self.biosphereName = "biosphere3"
-        self.ecoinventFilename = "ecoinvent3_3"
+        self.ecoinventFilename = ei_name # "ecoinvent3_3"
         self.biosphereFilename = "biosphere3"
         self.forwastName = "forwast"
         self.forwastFilename = "forwast"
         self.useForwast = useForwast
-        
-        if self.useForwast:
-            self.technosphere_databases = [self.forwastName]
-        else:
-            self.technosphere_databases = [self.ecoinventName]
+        self.technosphere_databases = []
+        #if self.useForwast:
+        #    self.technosphere_databases = [self.forwastName]
+        #else:
+        #    self.technosphere_databases = [self.ecoinventName]
 
-        self.biosphere_databases = [self.biosphereName]
+        #self.biosphere_databases = [self.biosphereName]
+        self.biosphere_databases = []
 
         # default settings for bw2 analysis
         self.analysis_settings = {'amount': 1, 
@@ -143,6 +147,28 @@ class LcoptModel(object):
 
         # initialise with a blank result set
         self.result_set = None
+
+        # check if lcopt is set up, and if not, set it up
+
+        if not self.useForwast:
+
+            project_name = DEFAULT_PROJECT_STEM + ei_name
+            old_default = DEFAULT_PROJECT_STEM[:-1]
+            is_default = ecoinvent_version == "3.3" and ecoinvent_system_model == "cutoff"
+
+            if bw2_project_exists(project_name):
+                # make sure the search index file is there too
+                write_search_index(project_name, ei_name)
+            elif is_default and bw2_project_exists(old_default):
+                upgrade_old_default()
+            else:
+                print("Lcopt needs to be set up to integrate with brightway2 - this only needs to be done once per version/system model combo")
+                lcopt_bw2_autosetup(ei_username = ei_username, ei_password = ei_password, write_config=write_config, ecoinvent_version=ecoinvent_version, ecoinvent_system_model = ecoinvent_system_model, overwrite=True)
+
+        else:
+            if not bw2_project_exists(FORWAST_PROJECT_NAME):
+                print("Lcopt needs to be set up to integrate with brightway2")
+                lcopt_bw2_forwast_setup()
          
         if load is not None:
             self.load(load)
