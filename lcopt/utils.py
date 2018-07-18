@@ -112,7 +112,7 @@ def lcopt_biosphere_setup():
 
 
 
-def lcopt_bw2_autosetup(ei_username=None, ei_password=None, write_config=None, ecoinvent_version='3.3', ecoinvent_system_model = "cutoff", overwrite=False, project_stem=DEFAULT_PROJECT_STEM):  # pragma: no cover
+def lcopt_bw2_autosetup(ei_username=None, ei_password=None, write_config=None, ecoinvent_version='3.3', ecoinvent_system_model = "cutoff", overwrite=False, project_stem=DEFAULT_PROJECT_STEM):  
 
     """
     Utility function to automatically set up brightway2 to work correctly with lcopt.
@@ -180,7 +180,7 @@ def lcopt_bw2_autosetup(ei_username=None, ei_password=None, write_config=None, e
 
     return True
 
-def forwast_autodownload(FORWAST_URL):      # pragma: no cover 
+def forwast_autodownload(FORWAST_URL):      
 
     """
     Autodowloader for forwast database package for brightway. Used by `lcopt_bw2_forwast_setup` to get the database data. Not designed to be used on its own
@@ -192,7 +192,7 @@ def forwast_autodownload(FORWAST_URL):      # pragma: no cover
     return os.path.join(dirpath, 'forwast.bw2package')
 
 
-def lcopt_bw2_forwast_setup(use_autodownload=True, forwast_path=None, db_name=FORWAST_PROJECT_NAME, overwrite=False):        # pragma: no cover 
+def lcopt_bw2_forwast_setup(use_autodownload=True, forwast_path=None, db_name=FORWAST_PROJECT_NAME, overwrite=False):        
 
     """
     Utility function to set up brightway2 to work correctly with lcopt using the FORWAST database instead of ecoinvent
@@ -224,8 +224,12 @@ def lcopt_bw2_forwast_setup(use_autodownload=True, forwast_path=None, db_name=FO
             print('Looks like bw2 is already set up for the FORWAST database - if you want to overwrite the existing version run lcopt.utils.lcopt_bw2_forwast_setup in a python shell using overwrite = True')
             return False
 
-    bw2.projects.set_current(db_name)
-    bw2.bw2setup()
+    # no need to keep running bw2setup - we can just copy a blank project which has been set up before
+    if not bw2_project_exists(DEFAULT_BIOSPHERE_PROJECT):
+        lcopt_biosphere_setup()
+    
+    bw2.projects.set_current(DEFAULT_BIOSPHERE_PROJECT)
+    bw2.projects.copy_project(db_name, switch=True)
 
     bw2.BW2Package.import_file(forwast_filepath)
 

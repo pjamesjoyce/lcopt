@@ -11,7 +11,7 @@ from lcopt.io import *
 from lcopt.interact import FlaskSandbox
 from lcopt.bw2_export import Bw2Exporter
 from lcopt.analysis import Bw2Analysis
-from .utils import check_for_config, lcopt_bw2_autosetup, DEFAULT_PROJECT_STEM, bw2_project_exists, write_search_index, FORWAST_PROJECT_NAME, upgrade_old_default
+from .utils import check_for_config, lcopt_bw2_autosetup, DEFAULT_PROJECT_STEM, bw2_project_exists, write_search_index, FORWAST_PROJECT_NAME, upgrade_old_default, lcopt_bw2_forwast_setup
 # This is a copy straight from bw2data.query, extracted so as not to cause a dependency.
 #from lcopt.bw2query import Query, Dictionaries, Filter
 from bw2data.query import Query, Dictionaries, Filter
