@@ -1,7 +1,7 @@
 import pytest
 from lcopt import LcoptModel
 from lcopt.interact import FlaskSandbox
-from lcopt.utils import DEFAULT_DB_NAME
+from lcopt.utils import DEFAULT_DB_NAME, check_for_config
 import os
 import brightway2 as bw2
 
@@ -29,11 +29,23 @@ FULL_MODEL_PATH = r"assets/{}".format(TEST_MODEL_NAME)
 
 IS_TRAVIS = 'TRAVIS' in os.environ
 
+if IS_TRAVIS:
+    EI_USERNAME = os.environ['EI_USERNAME']
+    EI_PASSWORD = os.environ['EI_PASSWORD']
+    WRITE_CONFIG = False
+else:
+    config = check_for_config()
+    if config is not None:
+        if "ecoinvent" in config:
+            EI_USERNAME = config['ecoinvent'].get('username')
+            EI_PASSWORD = config['ecoinvent'].get('password')
+            WRITE_CONFIG = False
+
 
 @pytest.fixture
 def blank_model():
     
-    return LcoptModel(MODEL_NAME)
+    return LcoptModel(MODEL_NAME, ei_username=EI_USERNAME, ei_password=EI_PASSWORD, write_config=WRITE_CONFIG)
 
 
 @pytest.fixture
@@ -113,7 +125,7 @@ def fully_formed_model():
     
     script_path = os.path.dirname(os.path.realpath(__file__))
     loadpath = os.path.join(script_path, FULL_MODEL_PATH)
-    return LcoptModel(load = loadpath)
+    return LcoptModel(load = loadpath, ei_username=EI_USERNAME, ei_password=EI_PASSWORD, write_config=WRITE_CONFIG)
 
 @pytest.fixture
 def blank_app(blank_model):

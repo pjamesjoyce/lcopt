@@ -26,6 +26,8 @@ requirements:
     - bw2data >=3.4.2
     - brightway2 >=2.1.2
     - pandas
+    - pyyaml
+    - eidl
 
 about:
   home: https://github.com/pjamesjoyce/lcopt/
