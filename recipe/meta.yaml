@@ -55,6 +55,8 @@ requirements:
     - whoosh
     - xlrd
     - xlsxwriter
+    - pyyaml
+    - eidl
   run:
     - appdirs
     - asteval
@@ -86,6 +88,8 @@ requirements:
     - whoosh
     - xlrd
     - xlsxwriter
+    - pyyaml
+    - eidl
 
 test:
   imports:
