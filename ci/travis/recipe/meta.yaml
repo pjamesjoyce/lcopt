@@ -28,7 +28,7 @@ requirements:
     - pandas
     - pyyaml
     - eidl
-    - flask = 0.12.2
+    - flask =0.12.2
 
 about:
   home: https://github.com/pjamesjoyce/lcopt/
