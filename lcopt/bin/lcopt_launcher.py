@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog, simpledialog
-from lcopt.utils import DEFAULT_DB_NAME, FORWAST_DB_NAME
+from lcopt.utils import DEFAULT_DB_NAME, FORWAST_PROJECT_NAME
 from lcopt import LcoptModel
 from brightway2 import *
 import os
@@ -10,7 +10,7 @@ from pathlib import Path
 
 def check_databases():
 
-    return DEFAULT_DB_NAME in projects, FORWAST_DB_NAME in projects
+    return DEFAULT_DB_NAME in projects, FORWAST_PROJECT_NAME in projects
 
 
 def main():
