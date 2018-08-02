@@ -856,5 +856,5 @@ class LcoptModel(object):
         return True
 
 # << Disclosures >> #
-    def export_disclosure(self, parameter_set=None):
-        return export_disclosure(self, parameter_set)
+    def export_disclosure(self, parameter_set=None, folder_path=None):
+        return export_disclosure(self, parameter_set, folder_path)
