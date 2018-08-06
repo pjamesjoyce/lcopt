@@ -22,6 +22,8 @@ try:
 except:                                                         # pragma: no cover
     raise ImportError('Please install the brightway2 package first')
 
+from lcopt.data_store import storage
+
 DEFAULT_PROJECT_STEM = "LCOPT_Setup_"
 DEFAULT_BIOSPHERE_PROJECT = "LCOPT_Setup_biosphere"
 #DEFAULT_DB_NAME = "LCOPT_Setup"
@@ -80,14 +82,12 @@ def upgrade_old_default():
 def check_for_config():
 
     config = None
-    
-    for loc in os.curdir, os.path.join(os.path.expanduser("~"), "lcopt"), ASSET_PATH:
-        try: 
-            with open(os.path.join(loc,"lcopt_config.yml")) as ymlfile:
-                config = yaml.load(ymlfile)
-                break
-        except IOError:
-            pass
+
+    try:
+        with open(storage.config_file) as config_file:
+            config = yaml.load(config_file)
+    except IOError:
+        pass
 
     return config
 
@@ -159,7 +159,7 @@ def lcopt_bw2_autosetup(ei_username=None, ei_password=None, write_config=None, e
         write_config = input('store username and password on this computer? y/[n]') in ['y', 'Y', 'yes', 'YES', 'Yes']
 
     if write_config:
-        with open(os.path.join(ASSET_PATH, "lcopt_config.yml"), "w") as cfg:
+        with open(storage.config_file, "w") as cfg:
             cfg.write("ecoinvent:\n")
             cfg.write("  username: {}\n".format(ei_username))
             cfg.write("  password: {}\n".format(ei_password))
