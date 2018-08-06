@@ -1,9 +1,17 @@
 import os
 import yaml
 import glob
+import shutil
 
 import appdirs
 
+from .constants import (ASSET_PATH,
+                        BIOSPHERE_SI, 
+                        FORWAST_SI, 
+                        ECOINVENT_EXAMPLE, 
+                        FORWAST_EXAMPLE,
+                        DEFAULT_CONFIG,
+                        DEFAULT_SINGLE_PROJECT)
 
 class LcoptStorage():
     def __init__(self):
@@ -19,13 +27,32 @@ class LcoptStorage():
         if not os.path.isdir(self.model_dir):
             os.mkdir(self.model_dir)
 
+        # Copy the example models
+        if not os.path.isfile(os.path.join(self.model_dir, ECOINVENT_EXAMPLE)):
+            shutil.copy(os.path.join(ASSET_PATH, ECOINVENT_EXAMPLE), os.path.join(self.model_dir, ECOINVENT_EXAMPLE))
+
+        if not os.path.isfile(os.path.join(self.model_dir, FORWAST_EXAMPLE)):
+            shutil.copy(os.path.join(ASSET_PATH, FORWAST_EXAMPLE), os.path.join(self.model_dir, FORWAST_EXAMPLE))
+
         # config
         self.config_file = os.path.join(self.lcopt_dir, 'lcopt_config.yml')
         if not os.path.exists(self.config_file):
             with open(self.config_file, 'w') as cfg:
-                cfg.write("")
+                yaml.dump(DEFAULT_CONFIG, cfg, default_flow_style=False)
 
         self.config = self.load_config()
+
+        # Search indices
+        self.search_index_dir = os.path.join(self.lcopt_dir, 'search')
+        if not os.path.isdir(self.search_index_dir):
+            os.mkdir(self.search_index_dir)
+
+        # copy the default search indices
+        if not os.path.isfile(os.path.join(self.search_index_dir, BIOSPHERE_SI)):
+            shutil.copy(os.path.join(ASSET_PATH, BIOSPHERE_SI), os.path.join(self.search_index_dir, BIOSPHERE_SI))
+
+        if not os.path.isfile(os.path.join(self.search_index_dir, FORWAST_SI)):
+            shutil.copy(os.path.join(ASSET_PATH, FORWAST_SI), os.path.join(self.search_index_dir, FORWAST_SI))
 
     def load_config(self):
         with open(self.config_file, 'r') as cf:
@@ -37,5 +64,28 @@ class LcoptStorage():
         models = glob.glob(os.path.join(self.model_dir, '*.lcopt'))
         return models
 
+    @property
+    def search_indices(self):
+        search_indices = glob.glob(os.path.join(self.search_index_dir, '*.pickle'))
+        return search_indices
+
+    @property
+    def project_type(self):
+        if 'model_storage' in self.config:
+            store_option = self.config['model_storage'].get('project', 'unique')
+        else:
+            store_option = 'unique'
+        return store_option
+
+    @property
+    def single_project_name(self):
+
+        project_name = None
+        
+        if 'model_storage' in self.config:
+            if self.config['model_storage'].get('project') == 'single':
+                project_name = self.config['model_storage'].get('single_project_name', DEFAULT_SINGLE_PROJECT)
+       
+        return project_name
 
 storage = LcoptStorage()

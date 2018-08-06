@@ -153,9 +153,16 @@ class LcoptModel(object):
 
         # check if lcopt is set up, and if not, set it up
 
-        if not self.useForwast:
+        if storage.project_type == 'single':
 
-            project_name = DEFAULT_PROJECT_STEM + ei_name
+            self.base_project_name = storage.single_project_name
+
+            if bw2_project_exists(self.base_project_name):
+                lcopt_bw2_autosetup(ei_username = ei_username, ei_password = ei_password, write_config=write_config, ecoinvent_version=ecoinvent_version, ecoinvent_system_model = ecoinvent_system_model, overwrite=False)
+
+        elif not self.useForwast:
+
+            self.base_project_name = DEFAULT_PROJECT_STEM + ei_name
             old_default = DEFAULT_PROJECT_STEM[:-1]
             is_default = ecoinvent_version == "3.3" and ecoinvent_system_model == "cutoff"
 
@@ -176,7 +183,7 @@ class LcoptModel(object):
         if load is not None:
             self.load(load)
                     
-        asset_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'assets')
+        asset_path = storage.search_index_dir #os.path.join(os.path.dirname(os.path.realpath(__file__)), 'assets')
         ecoinventPath = os.path.join(asset_path, self.ecoinventFilename)
         biospherePath = os.path.join(asset_path, self.biosphereFilename)
         forwastPath = os.path.join(asset_path, self.forwastFilename)

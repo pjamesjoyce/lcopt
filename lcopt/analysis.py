@@ -1,14 +1,15 @@
 from lcopt.bw2_export import Bw2Exporter
-from lcopt.utils import DEFAULT_PROJECT_STEM, FORWAST_PROJECT_NAME
+from .constants import DEFAULT_PROJECT_STEM, FORWAST_PROJECT_NAME, DEFAULT_SINGLE_PROJECT
 from .mass_balance import recurse_mass
 from .multi_tagged import multi_traverse_tagged_databases, get_cum_impact, drop_pass_through_levels
+from .data_store import storage
 import brightway2 as bw2
 #from bw2analyzer.tagged import recurse_tagged_database, aggregate_tagged_graph
 #from .tagged_copy import recurse_tagged_database, aggregate_tagged_graph
 from copy import deepcopy
 import time
 import datetime
-
+from .data_store import storage
 from bw2data.parameters import DatabaseParameter, ActivityParameter
 
 #import presamples as ps
@@ -21,11 +22,31 @@ class Bw2Analysis():
         
         self.bw2_database_name, self.bw2_database = self.exporter.export_to_bw2()
         
-        if self.modelInstance.useForwast:
+        config = storage.config
+
+        if 'model_storage' in config:
+            store_option = config['model_storage'].get('project')
+        else:
+            store_option = 'unique'
+
+        if store_option == 'single':
+            self.bw2_project_name = config['model_storage'].get('single_project_name', DEFAULT_SINGLE_PROJECT)
+
+        elif self.modelInstance.useForwast:
+
             self.bw2_project_name = '{}_FORWAST'.format(self.modelInstance.name)
+        
         else:
             self.bw2_project_name = self.modelInstance.name
-        
+
+    def setup_unique(self):
+
+        pass
+
+    def setup_single(self):
+
+        pass
+       
     def setup_bw2(self):
 
         if self.bw2_project_name in bw2.projects:
@@ -67,6 +88,7 @@ class Bw2Analysis():
         
         ready = self.setup_bw2()
         name = self.bw2_database_name
+        bw2_ps_name = "{}_all".format(name)
         
         if ready:
             if name in bw2.databases:
@@ -88,10 +110,10 @@ class Bw2Analysis():
             for a in new_db:
                 for e in a.exchanges():
                     if e.get('formula'):
-                        bw2.parameters.add_exchanges_to_group("all", a)
+                        bw2.parameters.add_exchanges_to_group(bw2_ps_name, a)
                         break                
 
-            ActivityParameter.recalculate_exchanges("all")
+            ActivityParameter.recalculate_exchanges(bw2_ps_name)
             
             #print ('trying to get {}'.format(demand_item_code))
             product_demand = new_db.get(demand_item_code)
