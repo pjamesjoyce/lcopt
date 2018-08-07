@@ -14,7 +14,8 @@ from lcopt.analysis import Bw2Analysis
 from lcopt.data_store import storage
 from .export_disclosure import export_disclosure
 
-from .utils import check_for_config, lcopt_bw2_autosetup, DEFAULT_PROJECT_STEM, bw2_project_exists, write_search_index, FORWAST_PROJECT_NAME, upgrade_old_default, lcopt_bw2_forwast_setup
+from .utils import check_for_config, lcopt_bw2_autosetup, bw2_project_exists, write_search_index, upgrade_old_default, lcopt_bw2_forwast_setup
+from .constants import DEFAULT_PROJECT_STEM, FORWAST_PROJECT_NAME, DEFAULT_ECOINVENT_VERSION, DEFAULT_ECOINVENT_SYSTEM_MODEL, LEGACY_SAVE_OPTION
 # This is a copy straight from bw2data.query, extracted so as not to cause a dependency.
 #from lcopt.bw2query import Query, Dictionaries, Filter
 from bw2data.query import Query, Dictionaries, Filter
@@ -100,7 +101,7 @@ class LcoptModel(object):
 
     """
 
-    def __init__(self, name=hex(random.getrandbits(128))[2:-1], load=None, useForwast=False, ecoinvent_version='3.3', ecoinvent_system_model='cutoff', ei_username = None, ei_password = None, write_config=None):
+    def __init__(self, name=hex(random.getrandbits(128))[2:-1], load=None, useForwast=False, ecoinvent_version=None, ecoinvent_system_model=None, ei_username = None, ei_password = None, write_config=None):
         super(LcoptModel, self).__init__()
         
         # name the instance
@@ -122,8 +123,15 @@ class LcoptModel(object):
 
         self.sandbox_positions = {}
 
-        # set the default names of the external databases - these can be changed if needs be
+        # If ecoinvent isn't specified in the setup, look for a default in the config and fall back on default set in constants
+        if ecoinvent_version is None:
+            ecoinvent_version = str(storage.ecoinvent_version)
+
+        if ecoinvent_system_model is None:
+            ecoinvent_system_model = storage.ecoinvent_system_model
+
         ei_name = "Ecoinvent{}_{}_{}".format(*ecoinvent_version.split("."), ecoinvent_system_model) #"Ecoinvent3_3_cutoff"
+        
         self.ecoinventName = ei_name # "Ecoinvent3_3_cutoff"
         self.biosphereName = "biosphere3"
         self.ecoinventFilename = ei_name # "ecoinvent3_3"
@@ -150,6 +158,9 @@ class LcoptModel(object):
 
         # initialise with a blank result set
         self.result_set = None
+
+        # set the save option, this defaults to the config value but should be overwritten on load for existing models
+        self.save_option = storage.save_option
 
         # check if lcopt is set up, and if not, set it up
 
@@ -219,10 +230,16 @@ class LcoptModel(object):
     
     def save(self):
         """save the instance as a .lcopt file"""
-        model_path = os.path.join(
-            storage.model_dir,
-            '{}.lcopt'.format(self.name)
-        )
+        if self.save_option == 'curdir':
+            model_path = os.path.join(
+                os.getcwd(),
+                '{}.lcopt'.format(self.name)
+            )
+        else: # default to appdir
+            model_path = os.path.join(
+                storage.model_dir,
+                '{}.lcopt'.format(self.name)
+            )
         with open(model_path, 'wb') as model_file:
             pickle.dump(self, model_file)
 
@@ -230,7 +247,10 @@ class LcoptModel(object):
         """load data from a saved .lcopt file"""
         if filename[-6:] != ".lcopt":
             filename += ".lcopt"
-        savedInstance = pickle.load(open("{}".format(filename), "rb"))
+        try:
+            savedInstance = pickle.load(open("{}".format(filename), "rb"))
+        except FileNotFoundError:
+            savedInstance = pickle.load(open(os.path.join(storage.model_dir, "{}".format(filename)), "rb"))
         
         attributes = ['name',
                       'database',
@@ -254,13 +274,19 @@ class LcoptModel(object):
                       'biosphere_databases',
                       'result_set',
                       'evaluated_parameter_sets',
-                      'useForwast'
+                      'useForwast',
+                      'base_project_name',
+                      'save_option',
                       ]
 
         for attr in attributes:
 
             if hasattr(savedInstance, attr):
                 setattr(self, attr, getattr(savedInstance, attr))
+
+        # use legacy save option if this is missing from the model
+        if not hasattr(savedInstance, 'save_option'):
+            setattr(self, 'save_option', LEGACY_SAVE_OPTION)
 
     def create_product (self, name, location='GLO', unit='kg', **kwargs):
 

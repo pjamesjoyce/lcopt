@@ -12,13 +12,19 @@ BIOSPHERE_SI = 'biosphere3.pickle'
 FORWAST_SI = 'forwast.pickle'
 ECOINVENT_EXAMPLE = 'ecoinvent_example.lcopt'
 FORWAST_EXAMPLE = 'forwast_example.lcopt'
+DEFAULT_ECOINVENT_VERSION = '3.3'
+DEFAULT_ECOINVENT_SYSTEM_MODEL = 'cutoff'
+DEFAULT_SAVE_OPTION = 'appdir'
+DEFAULT_PROJECT_TYPE = 'unique'
+LEGACY_SAVE_OPTION = 'curdir'
+
 DEFAULT_CONFIG = {
     'ecoinvent':{
-        'version':'3.3',
-        'system_model': 'cutoff',
+        'version': DEFAULT_ECOINVENT_VERSION,
+        'system_model': DEFAULT_ECOINVENT_SYSTEM_MODEL,
     },
     'model_storage': {
-        'location': 'appdir',
-        'project': 'unique',
+        'location': DEFAULT_SAVE_OPTION,
+        'project': DEFAULT_PROJECT_TYPE,
         },
     }

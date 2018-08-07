@@ -11,7 +11,11 @@ from .constants import (ASSET_PATH,
                         ECOINVENT_EXAMPLE, 
                         FORWAST_EXAMPLE,
                         DEFAULT_CONFIG,
-                        DEFAULT_SINGLE_PROJECT)
+                        DEFAULT_SINGLE_PROJECT,
+                        DEFAULT_ECOINVENT_VERSION,
+                        DEFAULT_ECOINVENT_SYSTEM_MODEL,
+                        DEFAULT_SAVE_OPTION,
+                        DEFAULT_PROJECT_TYPE)
 
 class LcoptStorage():
     def __init__(self):
@@ -72,7 +76,7 @@ class LcoptStorage():
     @property
     def project_type(self):
         if 'model_storage' in self.config:
-            store_option = self.config['model_storage'].get('project', 'unique')
+            store_option = self.config['model_storage'].get('project', DEFAULT_PROJECT_TYPE)
         else:
             store_option = 'unique'
         return store_option
@@ -87,5 +91,36 @@ class LcoptStorage():
                 project_name = self.config['model_storage'].get('single_project_name', DEFAULT_SINGLE_PROJECT)
        
         return project_name
+
+    @property
+    def ecoinvent_version(self):
+
+        version = None
+
+        if 'ecoinvent' in self.config:
+            version = self.config['ecoinvent'].get('version', DEFAULT_ECOINVENT_VERSION)
+
+        return version
+    
+    @property
+    def ecoinvent_system_model(self):
+
+        system_model = None
+
+        if 'ecoinvent' in self.config:
+            system_model = self.config['ecoinvent'].get('system_model', DEFAULT_ECOINVENT_SYSTEM_MODEL)
+
+        return system_model
+
+    @property
+    def save_option(self):
+
+        save_option = None
+
+        if 'model_storage' in self.config:
+            save_option = self.config['ecoinvent'].get('location', DEFAULT_SAVE_OPTION)
+
+        return save_option
+
 
 storage = LcoptStorage()
