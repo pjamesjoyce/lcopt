@@ -165,8 +165,10 @@ def lcopt_bw2_autosetup(ei_username=None, ei_password=None, write_config=None, e
 
     if config is not None:
         if "ecoinvent" in config:
-            ei_username = config['ecoinvent'].get('username')
-            ei_password = config['ecoinvent'].get('password')
+            if ei_username is None:
+                ei_username = config['ecoinvent'].get('username')
+            if ei_password is None:
+                ei_password = config['ecoinvent'].get('password')
             write_config = False
 
     if ei_username is None:
