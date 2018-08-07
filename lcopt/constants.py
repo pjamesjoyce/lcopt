@@ -16,7 +16,7 @@ DEFAULT_CONFIG = {
     'ecoinvent':{
         'version':'3.3',
         'system_model': 'cutoff',
-    }
+    },
     'model_storage': {
         'location': 'appdir',
         'project': 'unique',
