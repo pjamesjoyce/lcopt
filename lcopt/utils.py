@@ -191,7 +191,7 @@ def lcopt_bw2_autosetup(ei_username=None, ei_password=None, write_config=None, e
         if bw2_project_exists(project_name):
             bw2.projects.set_current(project_name)
         else:
-            projects.set_current(project_name)
+            bw2.projects.set_current(project_name)
             bw2.bw2setup()
 
     else:    #if store_option == 'unique':

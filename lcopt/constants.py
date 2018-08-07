@@ -13,6 +13,10 @@ FORWAST_SI = 'forwast.pickle'
 ECOINVENT_EXAMPLE = 'ecoinvent_example.lcopt'
 FORWAST_EXAMPLE = 'forwast_example.lcopt'
 DEFAULT_CONFIG = {
+    'ecoinvent':{
+        'version':'3.3',
+        'system_model': 'cutoff',
+    }
     'model_storage': {
         'location': 'appdir',
         'project': 'unique',
