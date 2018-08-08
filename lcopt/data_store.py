@@ -41,8 +41,7 @@ class LcoptStorage():
         # config
         self.config_file = os.path.join(self.lcopt_dir, 'lcopt_config.yml')
         if not os.path.exists(self.config_file):
-            with open(self.config_file, 'w') as cfg:
-                yaml.dump(DEFAULT_CONFIG, cfg, default_flow_style=False)
+           self.write_default_config()
 
         self.config = self.load_config()
 
@@ -76,7 +75,19 @@ class LcoptStorage():
     def load_config(self):
         with open(self.config_file, 'r') as cf:
             config = yaml.load(cf)
+            if config is None:
+                self.write_default_config()
+                config = DEFAULT_CONFIG
             return config
+
+    def refresh(self):
+        with open(self.config_file, 'r') as cf:
+            self.config = yaml.load(cf)
+
+    def write_default_config(self):
+         with open(self.config_file, 'w') as cfg:
+                yaml.dump(DEFAULT_CONFIG, cfg, default_flow_style=False)
+
 
     @property
     def models(self):
