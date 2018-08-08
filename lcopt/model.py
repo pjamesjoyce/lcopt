@@ -523,7 +523,18 @@ class LcoptModel(object):
         parameter_sets = self.parameter_sets
 
         p_set = []
-        p_set_name = "ParameterSet_{}_input_file.xlsx".format(self.name)
+        filename = "ParameterSet_{}_input_file.xlsx".format(self.name)
+
+        if self.save_option == 'curdir':
+            base_dir = os.path.join(os.getcwd(), self.name.replace(" ", "_"))
+        else:
+            base_dir = storage.simapro_dir
+
+        if not os.path.isdir(base_dir):
+            os.mkdir(base_dir)
+
+        p_set_name = os.path.join(base_dir, filename)
+
         p = self.params
         for k in p.keys():
             if p[k]['function'] is None:
@@ -555,6 +566,8 @@ class LcoptModel(object):
         
         my_columns.extend(ps_columns)
         #print (my_columns)
+
+        #?
 
         df.to_excel(writer, sheet_name=self.name, columns=my_columns, index=False, merge_cells=False)
        
@@ -842,13 +855,23 @@ class LcoptModel(object):
             loader=PackageLoader('lcopt', 'templates'),
         )
 
-        fname = "{}_database_export.csv".format(self.name)
+        filename = "{}_database_export.csv".format(self.name.replace(" ", "_"))
 
         csv_template = env.get_template('export.csv')
         
         output = csv_template.render(**csv_args)
 
-        with open(fname, "w") as f:
+        if self.save_option == 'curdir':
+            base_dir = os.path.join(os.getcwd(), self.name.replace(" ", "_"))
+        else:
+            base_dir = storage.simapro_dir
+
+        if not os.path.isdir(base_dir):
+            os.mkdir(base_dir)
+
+        efn = os.path.join(base_dir, filename)
+
+        with open(efn, "w") as f:
             f.write(output)
         
         return fname

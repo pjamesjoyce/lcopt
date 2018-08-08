@@ -1,5 +1,6 @@
 import pickle
-
+from .data_store import storage
+import os
 
 class LcoptView(object):
     def __init__(self, modelInstance):
@@ -40,4 +41,13 @@ class LcoptView(object):
         if filename[-10:] != '.lcoptview':
             filename += '.lcoptview'
 
-        pickle.dump(self.view_data, open(filename, "wb"))
+        if self.modelInstance.save_option == 'curdir':
+            base_dir = os.getcwd()
+        else:
+            base_dir = storage.lcoptview_dir
+
+        efn = os.path.join(base_dir, filename)
+
+        pickle.dump(self.view_data, open(efn, "wb"))
+
+        return efn

@@ -2,6 +2,7 @@ import numpy as np
 import json
 from scipy.sparse import coo_matrix
 import os
+from .data_store import storage
 
 def matrix_to_coo(m):
     m_coo = coo_matrix(m)
@@ -29,15 +30,26 @@ def export_disclosure(model, parameter_set=None, folder_path=None):
     
     if parameter_set is None:
         matrix = model.matrix.copy()
-        efn = '{}_unspecified.json'.format(model.name.replace(" ", "_"))
+        filename = '{}_unspecified.json'.format(model.name.replace(" ", "_"))
 
     else:
         matrix = specify_matrix(model, parameter_set)
-        efn = '{}_ps_{}.json'.format(model.name.replace(" ", "_"), parameter_set)
+        filename = '{}_ps_{}.json'.format(model.name.replace(" ", "_"), parameter_set)
+
+    if model.save_option == 'curdir':
+        base_dir = os.getcwd()
+    else:
+        base_dir = storage.disclosures_dir
 
     if isinstance(folder_path, str):
-        efn = os.path.join(folder_path, efn)
+        export_folder = os.path.join(base_dir, folder_path)
+        if not os.path.isdir(export_folder):
+            os.mkdir(export_folder)
+    else:
+        export_folder = base_dir            
     
+    efn = os.path.join(export_folder, filename)
+
     background = [(i, x) for i, x in enumerate(model.names) if list(matrix.sum(axis=0))[i] == 0]
     foreground = [(i, x) for i, x in enumerate(model.names) if list(matrix.sum(axis=0))[i] != 0]
     fu = [(i, x) for i, x in enumerate(model.names) if list(matrix.sum(axis=1))[i] == 0 and list(matrix.sum(axis=0))[i] != 0]

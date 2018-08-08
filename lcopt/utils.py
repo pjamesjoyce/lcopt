@@ -149,7 +149,7 @@ def lcopt_bw2_autosetup(ei_username=None, ei_password=None, write_config=None, e
         if bw2_project_exists(project_name):
             bw2.projects.set_current(project_name)
             if ei_name in bw2.databases and overwrite == False:
-                print ('{} is already set up'.format(ei_name))
+                #print ('{} is already set up'.format(ei_name))
                 return True
 
     else: # default to 'unique'

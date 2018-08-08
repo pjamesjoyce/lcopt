@@ -87,39 +87,46 @@ def test_link_processes(populated_model):
 
 
 def test_database_to_SimaPro_csv(linked_model):
-    expected = "{}_database_export.csv".format(linked_model.name)
-    observed = linked_model.database_to_SimaPro_csv()
-    assert observed == expected
+    
+    linked_model.save_option = 'appdir'
+    efn = linked_model.database_to_SimaPro_csv()
+    assert os.path.isfile(efn) 
+    
 
 
 def test_generate_parameter_set_excel_file(linked_model):
-    expected = "ParameterSet_{}_input_file.xlsx".format(linked_model.name) 
-    observed = linked_model.generate_parameter_set_excel_file()
-    assert observed == expected
+
+    linked_model.save_option = 'appdir'
+    efn = linked_model.generate_parameter_set_excel_file()
+    assert os.path.isfile(efn) 
 
 
 def test_database_to_SimaPro_csv_ext_params(parameterised_model):
-    expected = "{}_database_export.csv".format(parameterised_model.name)
-    observed = parameterised_model.database_to_SimaPro_csv()
-    assert observed == expected
+    
+    parameterised_model.save_option = 'appdir'
+    efn = parameterised_model.database_to_SimaPro_csv()
+    assert os.path.isfile(efn) 
 
 
 def test_generate_parameter_set_excel_file_ext_params(parameterised_model):
-    expected = "ParameterSet_{}_input_file.xlsx".format(parameterised_model.name) 
-    observed = parameterised_model.generate_parameter_set_excel_file()
-    assert observed == expected     
+
+    parameterised_model.save_option = 'appdir'
+    efn = parameterised_model.generate_parameter_set_excel_file()
+    assert os.path.isfile(efn) 
 
 
 def test_database_to_SimaPro_csv_ff_model(fully_formed_model):
-    expected = "{}_database_export.csv".format(fully_formed_model.name)
-    observed = fully_formed_model.database_to_SimaPro_csv()
-    assert observed == expected
+
+    fully_formed_model.save_option = 'appdir'
+    efn = fully_formed_model.database_to_SimaPro_csv()
+    assert os.path.isfile(efn) 
 
 
 def test_generate_parameter_set_excel_file_ff_model(fully_formed_model):
-    expected = "ParameterSet_{}_input_file.xlsx".format(fully_formed_model.name) 
-    observed = fully_formed_model.generate_parameter_set_excel_file()
-    assert observed == expected     
+
+    fully_formed_model.save_option = 'appdir'
+    efn = fully_formed_model.generate_parameter_set_excel_file()
+    assert os.path.isfile(efn)     
 
 
 def test_add_parameter(linked_model):

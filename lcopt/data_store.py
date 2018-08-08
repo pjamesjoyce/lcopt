@@ -58,6 +58,21 @@ class LcoptStorage():
         if not os.path.isfile(os.path.join(self.search_index_dir, FORWAST_SI)):
             shutil.copy(os.path.join(ASSET_PATH, FORWAST_SI), os.path.join(self.search_index_dir, FORWAST_SI))
 
+        # lcoptview files
+        self.lcoptview_dir = os.path.join(self.lcopt_dir, 'lcoptview')
+        if not os.path.isdir(self.lcoptview_dir):
+            os.mkdir(self.lcoptview_dir)
+
+        # disclosures
+        self.disclosures_dir = os.path.join(self.lcopt_dir, 'disclosures')
+        if not os.path.isdir(self.disclosures_dir):
+            os.mkdir(self.disclosures_dir)
+
+        # simapro
+        self.simapro_dir = os.path.join(self.lcopt_dir, 'simapro')
+        if not os.path.isdir(self.simapro_dir):
+            os.mkdir(self.simapro_dir)
+
     def load_config(self):
         with open(self.config_file, 'r') as cf:
             config = yaml.load(cf)
