@@ -874,7 +874,7 @@ class LcoptModel(object):
         with open(efn, "w") as f:
             f.write(output)
         
-        return fname
+        return efn
 
 
 # << Flask >> #
