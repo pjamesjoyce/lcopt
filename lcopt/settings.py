@@ -7,6 +7,15 @@ class SettingsDict(object):
         for k, v in contents.items():
             setattr(self, k, v)
 
+    def __repr__(self):
+
+        string = "Lcopt settings section with the following entries:\n\n"
+
+        for k, v in self.as_dict().items():
+            string += "{}: {}\n".format(k,v)
+
+        return string
+
     def __getattr__(self, name, value=None):
         """edit __getattr__ to allow dot notation writing of attributes to a SettingsDict object"""
         try:
