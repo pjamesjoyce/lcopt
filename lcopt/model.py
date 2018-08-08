@@ -526,9 +526,9 @@ class LcoptModel(object):
         filename = "ParameterSet_{}_input_file.xlsx".format(self.name)
 
         if self.save_option == 'curdir':
-            base_dir = os.path.join(os.getcwd(), self.name.replace(" ", "_"))
+            base_dir = os.getcwd()
         else:
-            base_dir = storage.simapro_dir
+            base_dir = os.path.join(storage.simapro_dir, self.name.replace(" ", "_"))
 
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
@@ -862,9 +862,9 @@ class LcoptModel(object):
         output = csv_template.render(**csv_args)
 
         if self.save_option == 'curdir':
-            base_dir = os.path.join(os.getcwd(), self.name.replace(" ", "_"))
+            base_dir = os.getcwd()
         else:
-            base_dir = storage.simapro_dir
+            base_dir = os.path.join(storage.simapro_dir, self.name.replace(" ", "_"))
 
         if not os.path.isdir(base_dir):
             os.mkdir(base_dir)
