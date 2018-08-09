@@ -1,11 +1,27 @@
 from .data_store import storage
 import yaml
+import types
+
+ALLOWED_TYPES = [str, bool, int, float]
 
 class SettingsDict(object):
-    def __init__(self, contents):
+    
+    _allowed_types = tuple([types.MethodType, tuple] + ALLOWED_TYPES)
 
-        for k, v in contents.items():
-            setattr(self, k, v)
+    def __init__(self, contents, write_function, **kwargs):
+
+        self._autowrite = False # disable autowriting for initialisation
+        
+        self.write = write_function # set the write function to the callback from the parent instantiation
+
+        self._allowed_types = tuple(ALLOWED_TYPES)
+
+        for k, v in contents.items(): # write the contents of the config dict to the SettingsDict
+            setattr(self, k, str(v))
+
+        self._autowrite = kwargs.get('autowrite', True) # set the autowrite attribute (default is True)
+
+        
 
     def __repr__(self):
 
@@ -16,22 +32,23 @@ class SettingsDict(object):
 
         return string
 
-    def __getattr__(self, name, value=None):
-        """edit __getattr__ to allow dot notation writing of attributes to a SettingsDict object"""
-        try:
-            ret_value = object.__getattribute__(self, name)    
 
-        except AttributeError:
-            if value is not None:
-                setattr(self, name, value)
-                
-        ret_value = object.__getattribute__(self, name)
+    def __setattr__(self, name, value):
 
-        return ret_value
+        if isinstance(value, self._allowed_types): # only allow certain types of variable to be specified 
+            object.__setattr__(self, name, value) # run the default version from object
+        else:
+            raise TypeError("Attribute '{}' ({}) of type {} is not able to be stored in a SettingsDict.\nAllowed types are {}".format(name, value, type(value), self._allowed_types))
+        
+        # write the settings
+        if self._autowrite:
+            self.write()
 
     def delete(self, attr):
         try:
             delattr(self, attr)
+            if self._autowrite:
+                self.write()
         except AttributeError:
             raise AttributeError('{} does not exist'.format(attr))
 
@@ -39,20 +56,22 @@ class SettingsDict(object):
         d = {}
         attributes = [a for a in dir(self) if not a.startswith('_') and not callable(getattr(self,a))]
         for k in attributes:#self._keys:
-            d[k] = getattr(self, k)
+            d[k] = str(getattr(self, k))
         return d
 
 class LcoptSettings(object):
 
-    def __init__(self):
+    def __init__(self, **kwargs):
 
         self.config = storage.load_config()
 
         self._sections = []
 
         for section, content in self.config.items():
-            setattr(self, section, SettingsDict(content))
+            setattr(self, section, SettingsDict(content, self.write, **kwargs))
             self._sections.append(section)
+
+        self.write() # if floats get conveted to strings during setup, it might auto-overwite with a partial config - this makes sure it doesn't
 
     def as_dict(self):
         d = {}

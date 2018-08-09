@@ -21,3 +21,5 @@ lcopt.egg-info/
 /lcopt/__pycache__/
 /lcopt/assets/Ecoinvent*
 /lcopt/assets/lcopt_config.yml
+__pycache__/
+tests/__pycache__/
