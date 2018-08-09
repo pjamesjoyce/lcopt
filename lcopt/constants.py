@@ -20,6 +20,8 @@ LEGACY_SAVE_OPTION = 'curdir'
 
 DEFAULT_CONFIG = {
     'ecoinvent':{
+    	'username': None,
+    	'password': None,
         'version': DEFAULT_ECOINVENT_VERSION,
         'system_model': DEFAULT_ECOINVENT_SYSTEM_MODEL,
     },
