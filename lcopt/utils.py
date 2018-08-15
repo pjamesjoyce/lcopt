@@ -251,9 +251,9 @@ def lcopt_bw2_forwast_setup(use_autodownload=True, forwast_path=None, db_name=FO
     if storage.project_type  == 'single':
         db_name = storage.single_project_name
         if bw2_project_exists(db_name):
-            projects.set_current(db_name)
+            bw2.projects.set_current(db_name)
         else:
-            projects.set_current(db_name)
+            bw2.projects.set_current(db_name)
             bw2.bw2setup()
 
     else:
