@@ -29,6 +29,7 @@ requirements:
     - pyyaml
     - eidl
     - flask =0.12.2
+    - pywin32 # [win]
 
 about:
   home: https://github.com/pjamesjoyce/lcopt/

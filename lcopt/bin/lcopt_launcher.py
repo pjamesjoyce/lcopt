@@ -7,6 +7,7 @@ from brightway2 import *
 import os
 from pathlib import Path
 
+asset_path = os.path.join(Path(os.path.dirname(os.path.realpath(__file__))).parent, 'assets')
 
 def check_databases():
 
@@ -16,6 +17,7 @@ def check_databases():
 def main():
     
     CHECK_ECOINVENT, CHECK_FORWAST = check_databases()
+
 
     def create_model(*args):
         print("Create")
@@ -47,8 +49,6 @@ def main():
 
         root.withdraw()
 
-        asset_path = os.path.join(Path(os.path.dirname(os.path.realpath(__file__))).parent, 'assets')
-
         if CHECK_ECOINVENT:
             file_path = os.path.join(asset_path, 'ecoinvent_example.lcopt')
         elif CHECK_FORWAST:
@@ -62,8 +62,10 @@ def main():
 
         root.destroy()
 
+    icon = os.path.join(asset_path, 'lcopt_icon.ico')
     root = Tk()
     root.title("LCOPT Launcher")
+    root.iconbitmap(icon)
     
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
@@ -74,6 +76,7 @@ def main():
 
     root.geometry('{}x{}+{}+{}'.format(initial_width, initial_height, initial_x, initial_y))
 
+    
     #TODO: Maybe figure out how to use a custom icon - not urgent 
     #img = PhotoImage(file = r'C:\Users\pjjoyce\Dropbox\04. REDMUD IP LCA Project\04. Modelling\lcopt\static\img\lcoptIcon2.gif')
     #root.tk.call('wm', 'iconphoto', root._w, img)
