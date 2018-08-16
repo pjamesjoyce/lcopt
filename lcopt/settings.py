@@ -2,6 +2,7 @@ from .data_store import storage
 import yaml
 import types
 
+
 ALLOWED_TYPES = [str, bool, int, float]
 
 class SettingsDict(object):
@@ -63,14 +64,7 @@ class LcoptSettings(object):
 
     def __init__(self, **kwargs):
 
-        self.config = storage.load_config()
-
-        self._sections = []
-
-        for section, content in self.config.items():
-            setattr(self, section, SettingsDict(content, self.write, **kwargs))
-            self._sections.append(section)
-
+        self.refresh(**kwargs)
         self.write() # if floats get conveted to strings during setup, it might auto-overwite with a partial config - this makes sure it doesn't
 
     def as_dict(self):
@@ -90,6 +84,16 @@ class LcoptSettings(object):
 
         return "Lcopt settings: \n\n{}".format(string)
 
+    def refresh(self, **kwargs):
+
+        self.config = storage.load_config()
+
+        self._sections = []
+
+        for section, content in self.config.items():
+            setattr(self, section, SettingsDict(content, self.write, **kwargs))
+            self._sections.append(section)
+
 
     def write(self):
         """write the current settings to the config file"""
@@ -97,5 +101,12 @@ class LcoptSettings(object):
             yaml.dump(self.as_dict(), cfg, default_flow_style=False)
 
         storage.refresh()
+
+    def launch_interact(self):
+        from .settings_gui import FlaskSettingsGUI
+        s = FlaskSettingsGUI()
+        s.run()
+        self.refresh()
+        self.write()
 
 settings = LcoptSettings()
