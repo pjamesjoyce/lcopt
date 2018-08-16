@@ -78,13 +78,12 @@ def create_win_shortcuts():
     desktopFolder = os.path.expandvars(os.path.normpath(get_reg('Desktop',regPath)))
     startmenuFolder = os.path.expandvars(os.path.normpath(get_reg('Start Menu',regPath)))
     startmenuFolder = os.path.join(startmenuFolder, 'Programs', 'Lcopt')
-    print(root_dir)
     icon = os.path.join(root_dir, 'lcopt', 'assets', 'lcopt_icon.ico')
-    print(icon)
-    target = "lcopt-launcher"
+    #target = "lcopt-launcher"
 
     #create_shortcut(desktopFolder, target, icon)
-    create_shortcut(startmenuFolder, target, icon)
+    create_shortcut(startmenuFolder, "lcopt-launcher", icon)
+    create_shortcut(startmenuFolder, "lcopt-settings", icon)
 
     return 0
 
