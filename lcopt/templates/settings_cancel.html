@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %} Cancel
+{% endblock %}
+
+{% block logo %}
+<div class="logo">
+  <strong><a href="/" title="LCOPT:Settings"><span class="grey">LCOPT</span><span class="red">Settings</span></a></strong>
+</div>
+{% endblock %}
+
+<!--Overwrite the quit button as blank-->
+{% block quitbutton %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+	<div class="row">
+	  	<div class="sandboxTitle col-xs-10 col-xs-offset-1">
+			<h2>Canceled - No changes made to settings</h2>
+			<p>You should close this window now... Thanks</p>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
