@@ -70,9 +70,11 @@
 
     <header id="header">
       <nav class="navbar navbar-default nav-top-pad main navbar-static-top">
+        {% block logo %}
         <div class="logo">
           <strong><a href="/" title="LCOPT:Interact"><span class="grey">LCOPT</span><span class="red">Interact</span></a></strong>
         </div>
+        {% endblock %}
         <div class="right">
           <ul class="menu">
             <!--<li class="{% block nav_class_home %}{% endblock %}"><a class="menu-block" href="/">Home</a></li>-->

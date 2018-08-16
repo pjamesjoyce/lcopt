@@ -1,0 +1,104 @@
+{% extends 'base.html'%}
+
+{% block title %}Settings{% endblock%}
+
+{% block head_postload %}
+    <script src="{{ url_for('static', filename = 'js/cdn_cache/selectize.js') }}"></script>
+    <link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/cdn_cache/selectize.css') }}" />
+
+{% endblock %}
+
+{% block logo %}
+<div class="logo">
+  <strong><a href="/" title="LCOPT:Settings"><span class="grey">LCOPT</span><span class="red">Settings</span></a></strong>
+</div>
+{% endblock %}
+
+{% block quitbutton %}
+<li class="menu-highlight">
+  <a class="menu-highlight"  href="/settings_cancel">Quit</a>
+</li>
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="col-xs-10 col-xs-offset-1">
+        <form class="form" action="/save_settings" method="post">
+            <div class="row">
+                {% for k, v in args.settings.items()%}
+                <div class="col-xs-6">
+                    <h1>{{k|replace("_", " ")|uc_first}}</h1>
+
+                        {% for ks in args.known_settings[k]%}
+
+                            {% if args.known_settings_meta[(k,ks)]['type']=='text' %}
+                                <div class="form-group" id = "{{k}}|{{ks}}_group">
+                                    <label class="control-label" for="{{k}}|{{ks}}">{{args.known_settings_meta[(k,ks)]['label']|uc_first}}</label>
+                                    <input class="form-control" type="text" name="{{k}}|{{ks}}" id="{{k}}|{{ks}}" value="{{args.settings[k][ks]}}"/>
+                                </div>
+                            {% elif  args.known_settings_meta[(k,ks)]['type']=='password' %}
+                                <div class="form-group" id = "{{k}}|{{ks}}_group">
+                                    <label class="control-label" for="{{k}}|{{ks}}">{{args.known_settings_meta[(k,ks)]['label']|uc_first}}</label>
+                                    <input class="form-control" type="password" name="{{k}}|{{ks}}" id="{{k}}|{{ks}}" value="{{args.settings[k][ks]}}"/>
+                                </div>
+                            {% elif  args.known_settings_meta[(k,ks)]['type']=='select' %}
+                                <div class="form-group" id = "{{k}}|{{ks}}_group">
+                                    <label class="control-label" for="{{k}}|{{ks}}">{{args.known_settings_meta[(k,ks)]['label']|uc_first}}</label>
+                                    <select class="form-control" name="{{k}}|{{ks}}" id="{{k}}|{{ks}}">
+                                        {% for o in args.known_settings_meta[(k,ks)]['options'] %}
+                                            <option value={{o[0]}} {% if o[0] == args.settings[k][ks] %}selected{% endif %}>{{o[1]}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                            {% endif %}
+
+                        {% endfor%}
+
+
+                        {% for s, t in v.items()%}
+                            {% if s  not in args.known_settings[k] %}
+                                <div class="form-group" id = "{{k}}|{{s}}_group">
+                                    <label class="control-label" for="{{k}}|{{s}}">{{s}}</label>
+                                    <input class="form-control" type="text" name="{{k}}|{{s}}" id="{{k}}|{{s}}" value="{{t}}"/>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <input type="submit" class="btn btn-primary" value="Save">
+                    <a href="/settings_cancel" class="btn btn-danger">Cancel</a>
+                </div>
+            </div>
+        </form>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        check_single = function(){
+            if ($('#model_storage\\|project').val() == 'single'){
+                console.log('single project');
+                $('#model_storage\\|single_project_name_group').show();
+            }else{
+                console.log($('#model_storage\\|project').val());
+                $('#model_storage\\|single_project_name_group').hide();
+            }    
+        }
+
+        $('#model_storage\\|project').change(function(){
+            check_single();            
+        })
+
+        check_single();
+        
+    })
+</script>
+{% endblock %}
+
