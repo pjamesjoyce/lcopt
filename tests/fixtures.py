@@ -30,8 +30,12 @@ FULL_MODEL_PATH = r"assets/{}".format(TEST_MODEL_NAME)
 IS_TRAVIS = 'TRAVIS' in os.environ
 
 if IS_TRAVIS:
-    EI_USERNAME = os.environ['EI_USERNAME']
-    EI_PASSWORD = os.environ['EI_PASSWORD']
+    if os.environ['TRAVIS_PULL_REQUEST'] == "false":
+        EI_USERNAME = os.environ['EI_USERNAME']
+        EI_PASSWORD = os.environ['EI_PASSWORD']
+    else:
+        EI_USERNAME = 'user'
+        EI_PASSWORD = 'pwd'
     WRITE_CONFIG = False
 else:
     config = check_for_config()
