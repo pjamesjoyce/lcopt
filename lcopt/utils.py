@@ -16,6 +16,7 @@ from functools import partial
 import yaml
 import pickle
 import getpass
+import socket
 
 try:
     import brightway2 as bw2
@@ -297,3 +298,12 @@ def create_search_index(project_name, ei_name):
     return search_dict
 
 
+def find_port():
+    for port in range(5000, 5100):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        result = sock.connect_ex(('127.0.0.1', port))
+
+        if result != 0:
+            return port
+        else:
+            print('port {} is in use, checking {}'.format(port, port + 1))
