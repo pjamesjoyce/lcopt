@@ -194,8 +194,13 @@ def lcopt_bw2_autosetup(ei_username=None, ei_password=None, write_config=None, e
         if bw2_project_exists(project_name):
             bw2.projects.set_current(project_name)
         else:
-            bw2.projects.set_current(project_name)
-            bw2.bw2setup()
+            
+            if not bw2_project_exists(DEFAULT_BIOSPHERE_PROJECT):
+                bw2.projects.set_current(project_name)
+                bw2.bw2setup()
+            else:
+                bw2.projects.set_current(DEFAULT_BIOSPHERE_PROJECT)
+                bw2.projects.copy_project(project_name, switch=True)
 
     else:    #if store_option == 'unique':
 
@@ -236,6 +241,7 @@ def forwast_autosetup(forwast_name = 'forwast'):
             if forwast_name in bw2.databases:
                 return True
 
+
     else: # default to 'unique'
         project_name = FORWAST_PROJECT_NAME
 
@@ -247,9 +253,13 @@ def forwast_autosetup(forwast_name = 'forwast'):
         if bw2_project_exists(project_name):
             bw2.projects.set_current(project_name)
         else:
-            bw2.projects.set_current(project_name)
-            bw2.bw2setup()
-
+            
+            if not bw2_project_exists(DEFAULT_BIOSPHERE_PROJECT):
+                bw2.projects.set_current(project_name)
+                bw2.bw2setup()
+            else:
+                bw2.projects.set_current(DEFAULT_BIOSPHERE_PROJECT)
+                bw2.projects.copy_project(project_name, switch=True)
     else:    #if store_option == 'unique':
 
         if not bw2_project_exists(DEFAULT_BIOSPHERE_PROJECT):

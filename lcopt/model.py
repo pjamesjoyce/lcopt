@@ -167,12 +167,15 @@ class LcoptModel(object):
         if storage.project_type == 'single':
 
             if self.useForwast:
+
                 forwast_autosetup()
 
-            self.base_project_name = storage.single_project_name
+            else:
 
-            #if bw2_project_exists(self.base_project_name):
-            lcopt_bw2_autosetup(ei_username = ei_username, ei_password = ei_password, write_config=write_config, ecoinvent_version=ecoinvent_version, ecoinvent_system_model = ecoinvent_system_model, overwrite=False)
+                self.base_project_name = storage.single_project_name
+
+                #if bw2_project_exists(self.base_project_name):
+                lcopt_bw2_autosetup(ei_username = ei_username, ei_password = ei_password, write_config=write_config, ecoinvent_version=ecoinvent_version, ecoinvent_system_model = ecoinvent_system_model, overwrite=False)
 
         elif not self.useForwast:
 
