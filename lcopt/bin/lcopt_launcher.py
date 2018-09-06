@@ -1,21 +1,65 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog, simpledialog
-from lcopt.utils import DEFAULT_DB_NAME, FORWAST_PROJECT_NAME
+from lcopt.utils import DEFAULT_DB_NAME, FORWAST_PROJECT_NAME, check_for_config, DEFAULT_CONFIG, bw2_project_exists, DEFAULT_PROJECT_STEM
+from lcopt.data_store import storage
 from lcopt import LcoptModel
+import yaml
 from brightway2 import *
 import os
 from pathlib import Path
 
 
+
 def check_databases():
 
-    return DEFAULT_DB_NAME in projects, FORWAST_PROJECT_NAME in projects
+    #TODO update this to match the new checks depending on settings
+
+    ecoinvent_present = False
+    forwast_present = False
+
+    example_ecoinvent_version = "3.3"
+    example_ecoinvent_system_model = "cutoff"
+
+    ei_name = "Ecoinvent{}_{}_{}".format(*example_ecoinvent_version.split('.'), example_ecoinvent_system_model)
+
+    config = check_for_config()
+    # If, for some reason, there's no config file, write the defaults
+    if config is None:
+        config = DEFAULT_CONFIG
+        with open(storage.config_file, "w") as cfg:
+            yaml.dump(config, cfg, default_flow_style=False)
+
+    store_option = storage.project_type
+
+    # Check if there's already a project set up that matches the current configuration
+    
+    if store_option == 'single':
+
+        project_name = storage.single_project_name
+
+        if bw2_project_exists(project_name):
+            projects.set_current(project_name)
+            if ei_name in databases:
+                ecoinvent_present = True
+            if 'forwast' in databases:
+                forwast_present = True
+
+    else: # default to 'unique'
+        project_name = DEFAULT_PROJECT_STEM + ei_name
+
+        ecoinvent_present =  bw2_project_exists(project_name)
+
+        forwast_present = bw2_project_exists(FORWAST_PROJECT_NAME)
+
+
+    return ecoinvent_present, forwast_present
 
 
 def main():
     
     CHECK_ECOINVENT, CHECK_FORWAST = check_databases()
+    print("ecoinvent:{}\nforwast:{}".format(CHECK_ECOINVENT, CHECK_FORWAST))
 
     def create_model(*args):
         print("Create")

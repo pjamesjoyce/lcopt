@@ -214,6 +214,57 @@ def lcopt_bw2_autosetup(ei_username=None, ei_password=None, write_config=None, e
 
     return True
 
+def forwast_autosetup(forwast_name = 'forwast'):
+
+    config = check_for_config()
+    # If, for some reason, there's no config file, write the defaults
+    if config is None:
+        config = DEFAULT_CONFIG
+        with open(storage.config_file, "w") as cfg:
+            yaml.dump(config, cfg, default_flow_style=False)
+
+    store_option = storage.project_type
+
+    # Check if there's already a project set up that matches the current configuration
+    
+    if store_option == 'single':
+
+        project_name = storage.single_project_name
+
+        if bw2_project_exists(project_name):
+            bw2.projects.set_current(project_name)
+            if forwast_name in bw2.databases:
+                return True
+
+    else: # default to 'unique'
+        project_name = FORWAST_PROJECT_NAME
+
+        if bw2_project_exists(project_name):
+                return True
+
+    if store_option == 'single':
+        print('its a single setup')
+        if bw2_project_exists(project_name):
+            bw2.projects.set_current(project_name)
+        else:
+            bw2.projects.set_current(project_name)
+            bw2.bw2setup()
+
+    else:    #if store_option == 'unique':
+
+        if not bw2_project_exists(DEFAULT_BIOSPHERE_PROJECT):
+            lcopt_biosphere_setup()
+        
+        bw2.projects.set_current(DEFAULT_BIOSPHERE_PROJECT)
+        bw2.projects.copy_project(project_name, switch=True)
+
+    print('doing the setup')
+    forwast_filepath = forwast_autodownload(FORWAST_URL)
+    bw2.BW2Package.import_file(forwast_filepath)
+
+    return True
+
+
 def forwast_autodownload(FORWAST_URL):      
 
     """

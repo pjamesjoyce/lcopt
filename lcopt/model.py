@@ -14,7 +14,7 @@ from lcopt.analysis import Bw2Analysis
 from lcopt.data_store import storage
 from .export_disclosure import export_disclosure
 
-from .utils import check_for_config, lcopt_bw2_autosetup, bw2_project_exists, write_search_index, upgrade_old_default, lcopt_bw2_forwast_setup
+from .utils import check_for_config, lcopt_bw2_autosetup, bw2_project_exists, write_search_index, upgrade_old_default, lcopt_bw2_forwast_setup, forwast_autosetup
 from .constants import DEFAULT_PROJECT_STEM, FORWAST_PROJECT_NAME, DEFAULT_ECOINVENT_VERSION, DEFAULT_ECOINVENT_SYSTEM_MODEL, LEGACY_SAVE_OPTION
 # This is a copy straight from bw2data.query, extracted so as not to cause a dependency.
 #from lcopt.bw2query import Query, Dictionaries, Filter
@@ -103,7 +103,7 @@ class LcoptModel(object):
 
     def __init__(self, name=hex(random.getrandbits(128))[2:-1], load=None, useForwast=False, ecoinvent_version=None, ecoinvent_system_model=None, ei_username = None, ei_password = None, write_config=None):
         super(LcoptModel, self).__init__()
-        
+
         # name the instance
         self.name = name
         
@@ -166,6 +166,9 @@ class LcoptModel(object):
 
         if storage.project_type == 'single':
 
+            if self.useForwast:
+                forwast_autosetup()
+
             self.base_project_name = storage.single_project_name
 
             #if bw2_project_exists(self.base_project_name):
@@ -187,9 +190,7 @@ class LcoptModel(object):
                 lcopt_bw2_autosetup(ei_username = ei_username, ei_password = ei_password, write_config=write_config, ecoinvent_version=ecoinvent_version, ecoinvent_system_model = ecoinvent_system_model, overwrite=True)
 
         else:
-            if not bw2_project_exists(FORWAST_PROJECT_NAME):
-                print("Lcopt needs to be set up to integrate with brightway2")
-                lcopt_bw2_forwast_setup()
+            forwast_autosetup()
          
         if load is not None:
             self.load(load)
