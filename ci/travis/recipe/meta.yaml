@@ -29,6 +29,7 @@ requirements:
     - pyyaml
     - eidl
     - flask =0.12.2
+    - bw2io =0.6
 
 about:
   home: https://github.com/pjamesjoyce/lcopt/
