@@ -3,7 +3,7 @@ To create the wheel run - python setup.py bdist_wheel
 '''
 
 from setuptools import setup
-import os
+import os, sys
 
 packages = []
 root_dir = os.path.dirname(__file__)
@@ -32,7 +32,60 @@ my_package_files.extend(package_files(os.path.join('lcopt', 'assets')))
 my_package_files.extend(package_files(os.path.join('lcopt', 'static')))
 my_package_files.extend(package_files(os.path.join('lcopt', 'templates')))
 my_package_files.extend(package_files(os.path.join('lcopt', 'bin')))
-print(my_package_files)
+
+def create_win_shortcuts():
+    try:
+        import winreg, sysconfig
+        from win32com.client import Dispatch
+    except:
+        return 1
+
+    def get_reg(name,path):
+        # Read variable from Windows Registry
+        # From https://stackoverflow.com/a/35286642
+        try:
+            registry_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, path, 0,
+                                           winreg.KEY_READ)
+            value, regtype = winreg.QueryValueEx(registry_key, name)
+            winreg.CloseKey(registry_key)
+            return value
+        except WindowsError:
+            return None
+
+    def create_shortcut(where, script_name, icon=None):
+
+        scriptsDir = sysconfig.get_path('scripts')
+        target = os.path.join(scriptsDir, script_name + '.exe')
+        link_name = script_name + '.lnk'
+
+        link = os.path.join(where, link_name)
+
+        if icon is None:
+            icon = target
+
+        if not os.path.isdir(where):
+            os.mkdir(where)
+        
+        shell = Dispatch('WScript.Shell')
+
+        shortcut = shell.CreateShortCut(link)
+        shortcut.Targetpath = target
+        shortcut.WorkingDirectory = scriptsDir
+        shortcut.IconLocation = icon
+        shortcut.save()
+
+    regPath = r'Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders'
+    desktopFolder = os.path.expandvars(os.path.normpath(get_reg('Desktop',regPath)))
+    startmenuFolder = os.path.expandvars(os.path.normpath(get_reg('Start Menu',regPath)))
+    startmenuFolder = os.path.join(startmenuFolder, 'Programs', 'Lcopt')
+    icon = os.path.join(root_dir, 'lcopt', 'assets', 'lcopt_icon.ico')
+    #target = "lcopt-launcher"
+
+    #create_shortcut(desktopFolder, target, icon)
+    create_shortcut(startmenuFolder, "lcopt-launcher", icon)
+    create_shortcut(startmenuFolder, "lcopt-settings", icon)
+
+    return 0
 
 setup(
     name='lcopt',
@@ -75,6 +128,11 @@ setup(
         'Topic :: Scientific/Engineering :: Visualization',
     ],
 )
+
+if sys.platform == 'win32':
+    shortcuts = create_win_shortcuts()
+    if shortcuts != 0:
+        print("Couldn't create shortcuts")
 
 # Also consider:
 # http://code.activestate.com/recipes/577025-loggingwebmonitor-a-central-logging-server-and-mon/

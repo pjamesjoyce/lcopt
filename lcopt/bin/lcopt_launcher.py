@@ -10,9 +10,9 @@ from brightway2 import *
 import os
 from pathlib import Path
 
+asset_path = os.path.join(Path(os.path.dirname(os.path.realpath(__file__))).parent, 'assets')
 example_ecoinvent_version = "3.3"
 example_ecoinvent_system_model = "cutoff"
-
 
 def check_databases():
 
@@ -62,6 +62,7 @@ def main():
     ECOINVENT_USER = settings.ecoinvent.username not in [None, 'None']
     print("ecoinvent:{}\nforwast:{}\necoinvent user:{}".format(CHECK_ECOINVENT, CHECK_FORWAST, ECOINVENT_USER))
 
+
     def create_model(*args):
         print("Create")
         root.withdraw()
@@ -95,8 +96,6 @@ def main():
 
         root.withdraw()
 
-        asset_path = os.path.join(Path(os.path.dirname(os.path.realpath(__file__))).parent, 'assets')
-
         if CHECK_ECOINVENT:
             file_path = os.path.join(asset_path, 'ecoinvent_example.lcopt')
             useForwast = False
@@ -126,8 +125,10 @@ def main():
 
         root.destroy()
 
+    icon = os.path.join(asset_path, 'lcopt_icon.ico')
     root = Tk()
     root.title("LCOPT Launcher")
+    root.iconbitmap(icon)
     
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
@@ -138,6 +139,7 @@ def main():
 
     root.geometry('{}x{}+{}+{}'.format(initial_width, initial_height, initial_x, initial_y))
 
+    
     #TODO: Maybe figure out how to use a custom icon - not urgent 
     #img = PhotoImage(file = r'C:\Users\pjjoyce\Dropbox\04. REDMUD IP LCA Project\04. Modelling\lcopt\static\img\lcoptIcon2.gif')
     #root.tk.call('wm', 'iconphoto', root._w, img)
