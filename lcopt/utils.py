@@ -17,6 +17,7 @@ import yaml
 import pickle
 import getpass
 import socket
+import subprocess
 
 try:
     import brightway2 as bw2
@@ -160,7 +161,7 @@ def lcopt_bw2_autosetup(ei_username=None, ei_password=None, write_config=None, e
             if overwrite:                                           
                 bw2.projects.delete_project(name=project_name, delete_dir=True)
 
-    auto_ecoinvent = partial(eidl.get_ecoinvent,db_name=ei_name, auto_write=True, version=ecoinvent_version, system_model=ecoinvent_system_model)
+    auto_ecoinvent = partial(eidl.get_ecoinvent,db_name=ei_name, auto_write=True, version=ecoinvent_version, system_model=ecoinvent_system_model, download_path=storage.ecoinvent_dir)
 
     # check for a config file (lcopt_config.yml)
 
@@ -200,6 +201,7 @@ def lcopt_bw2_autosetup(ei_username=None, ei_password=None, write_config=None, e
                 bw2.bw2setup()
             else:
                 bw2.projects.set_current(DEFAULT_BIOSPHERE_PROJECT)
+                bw2.create_core_migrations()
                 bw2.projects.copy_project(project_name, switch=True)
 
     else:    #if store_option == 'unique':
@@ -208,12 +210,24 @@ def lcopt_bw2_autosetup(ei_username=None, ei_password=None, write_config=None, e
             lcopt_biosphere_setup()
         
         bw2.projects.set_current(DEFAULT_BIOSPHERE_PROJECT)
+        bw2.create_core_migrations()
         bw2.projects.copy_project(project_name, switch=True)
-            
-    if ei_username is not None and ei_password is not None:
-        auto_ecoinvent(username=ei_username, password=ei_password)
+
+    # check if downloaded file exists
+
+    file_name = '{}{}.7z'.format(ecoinvent_system_model, ecoinvent_version.replace('.', ''))
+
+    if os.path.isfile(os.path.join(storage.ecoinvent_dir, file_name)):
+        
+        print ("Using previously downloaded version of {}".format(file_name))
+        import_predownloaded_ecoinvent(os.path.join(storage.ecoinvent_dir, file_name), ei_name)
+
     else:
-        auto_ecoinvent()
+            
+        if ei_username is not None and ei_password is not None:
+            auto_ecoinvent(username=ei_username, password=ei_password)
+        else:
+            auto_ecoinvent()
 
     write_search_index(project_name, ei_name, overwrite=overwrite)
 
@@ -259,6 +273,7 @@ def forwast_autosetup(forwast_name = 'forwast'):
                 bw2.bw2setup()
             else:
                 bw2.projects.set_current(DEFAULT_BIOSPHERE_PROJECT)
+                bw2.create_core_migrations()
                 bw2.projects.copy_project(project_name, switch=True)
     else:    #if store_option == 'unique':
 
@@ -266,6 +281,7 @@ def forwast_autosetup(forwast_name = 'forwast'):
             lcopt_biosphere_setup()
         
         bw2.projects.set_current(DEFAULT_BIOSPHERE_PROJECT)
+        bw2.create_core_migrations()
         bw2.projects.copy_project(project_name, switch=True)
 
     print('doing the setup')
@@ -332,6 +348,7 @@ def lcopt_bw2_forwast_setup(use_autodownload=True, forwast_path=None, db_name=FO
             lcopt_biosphere_setup()
         
         bw2.projects.set_current(DEFAULT_BIOSPHERE_PROJECT)
+        bw2.create_core_migrations()
         bw2.projects.copy_project(db_name, switch=True)
 
     bw2.BW2Package.import_file(forwast_filepath)
@@ -368,3 +385,25 @@ def find_port():
             return port
         else:
             print('port {} is in use, checking {}'.format(port, port + 1))
+
+def import_predownloaded_ecoinvent(file_path, db_name):
+
+    with tempfile.TemporaryDirectory() as td:
+        extract = '7za x {} -o{}'.format(file_path, td)
+        print('Extracting datasets from .7z file')
+        subprocess.call(extract.split())
+
+        datasets_path = os.path.join(td, 'datasets')
+        importer = bw2.SingleOutputEcospold2Importer(datasets_path, db_name)
+        importer.apply_strategies()
+        datasets, exchanges, unlinked = importer.statistics()
+
+    if not unlinked:
+        print('\nWriting database {} in project {}'.format(
+        db_name, bw2.projects.current))
+        importer.write_database()
+    else:
+        print('\nWrite database {} in project {}?'.format(
+            db_name, bw2.projects.current))
+        if input('[y]/n ') in {'y', ''}:
+            importer.write_database()

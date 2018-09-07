@@ -72,6 +72,11 @@ class LcoptStorage():
         if not os.path.isdir(self.simapro_dir):
             os.mkdir(self.simapro_dir)
 
+        # ecoinvent databases
+        self.ecoinvent_dir = os.path.join(self.lcopt_dir, 'ecoinvent')
+        if not os.path.isdir(self.ecoinvent_dir):
+            os.mkdir(self.ecoinvent_dir)
+
     def load_config(self):
         with open(self.config_file, 'r') as cf:
             config = yaml.load(cf)
