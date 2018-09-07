@@ -112,6 +112,7 @@ class LcoptModel(object):
         self.external_databases = []
         self.params = OrderedDict()
         self.production_params = OrderedDict()
+        self.allocation_params = OrderedDict()
         self.ext_params = []
         self.matrix = None
         self.names = None
@@ -155,6 +156,8 @@ class LcoptModel(object):
                                   #'gt_cutoff': 0.01, 
                                   'pie_cutoff': 0.05
                                   }
+
+        self.allow_allocation = False
 
         # initialise with a blank result set
         self.result_set = None
@@ -260,6 +263,7 @@ class LcoptModel(object):
                       'database',
                       'params',
                       'production_params',
+                      'allocation_params',
                       'ext_params',
                       'matrix',
                       'names',
@@ -281,6 +285,7 @@ class LcoptModel(object):
                       'useForwast',
                       'base_project_name',
                       'save_option',
+                      'allow_allocation'
                       ]
 
         for attr in attributes:
@@ -456,6 +461,15 @@ class LcoptModel(object):
                                 'from_name': self.get_name(e['input'][1]),
                                 'type': 'production',
                             }
+                        if not 'p_{}_allocation'.format(col_code) in self.allocation_params:
+                            self.allocation_params['p_{}_allocation'.format(col_code)] = {
+                                'function': None,
+                                'description': 'Allocation parameter for {}'.format(self.get_name(e['input'][1])),
+                                'unit': "% (as decimal)", 
+                                'from': e['input'],
+                                'from_name': self.get_name(e['input'][1]),
+                                'type': 'allocation',
+                            }
 
                     elif e['type'] == 'technosphere':
                         #print(cr_list)
@@ -482,7 +496,7 @@ class LcoptModel(object):
                     if not 'p_{}_{}'.format(coords[0], coords[1]) in self.params:
                         self.params['p_{}_{}'.format(coords[0], coords[1])] = {
                             'function': None,
-                            'normalisation_parameter': 'p_{}_production'.format(coords[1]),
+                            'normalisation_parameter': '(p_{}_production / p_{}_allocation)'.format(coords[1], coords[1]),
                             'description': 'Input of {} to create {}'.format(self.get_name(p_from), self.get_name(p_to)),
                             'coords': coords,
                             'unit': self.get_unit(p_from),
@@ -493,14 +507,17 @@ class LcoptModel(object):
                             'type': from_item_type,
                         }
 
-                    elif 'normalisation_parameter' not in self.params['p_{}_{}'.format(coords[0], coords[1])].keys():
+                    #elif 'normalisation_parameter' not in self.params['p_{}_{}'.format(coords[0], coords[1])].keys():
                         #print("Adding normalisation_parameter to {}".format('p_{}_{}'.format(coords[0], coords[1])))
-                        self.params['p_{}_{}'.format(coords[0], coords[1])]['normalisation_parameter'] = 'p_{}_production'.format(coords[1])
+                        #self.params['p_{}_{}'.format(coords[0], coords[1])]['normalisation_parameter'] = '(p_{}_production / p_{}_allocation)'.format(coords[1], coords[1])
                         
                         #print('p_{}_{} already exists'.format(coords[0],coords[1]))
 
                     else:
                         pass  # print("SOMETHING WRONG HERE\n{}\n".format(self.params['p_{}_{}'.format(coords[0], coords[1])]))
+
+                    # make sure the parameter is being normalised and allocated properly
+                    self.params['p_{}_{}'.format(coords[0], coords[1])]['normalisation_parameter'] = '(p_{}_production / p_{}_allocation)'.format(coords[1], coords[1])
 
                     if not 'p_{}_{}'.format(coords[0], coords[1]) in self.parameter_map:
                         self.parameter_map[(p_from, p_to)] = 'p_{}_{}'.format(coords[0], coords[1])

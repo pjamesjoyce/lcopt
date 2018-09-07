@@ -12,6 +12,7 @@ import os
 from lcopt.bw2_export import Bw2Exporter
 from lcopt.export_view import LcoptView
 from lcopt.utils import find_port
+from lcopt.settings import settings
 
 
 class FlaskSandbox():
@@ -461,6 +462,8 @@ class FlaskSandbox():
         production_params = self.modelInstance.production_params
         ext_params = self.modelInstance.ext_params
 
+        allocation_params = self.modelInstance.allocation_params
+
         # create a default parameter set if there isn't one yet
         if len(self.modelInstance.parameter_sets) == 0:
             print ('No parameter sets - creating a default set')
@@ -469,6 +472,9 @@ class FlaskSandbox():
                 self.modelInstance.parameter_sets['ParameterSet_1'][param] = 0
 
             for param in production_params:
+                self.modelInstance.parameter_sets['ParameterSet_1'][param] = 1
+
+            for param in allocation_params:
                 self.modelInstance.parameter_sets['ParameterSet_1'][param] = 1
 
             for param in ext_params:
@@ -490,6 +496,7 @@ class FlaskSandbox():
         type_of = lambda x: parameters[x]['type']
 
         rev_p_params = {v['from_name']: k for k, v in production_params.items()}
+        rev_a_params = {v['from_name']: k for k, v in allocation_params.items()}
 
         sorted_keys = sorted(parameters, key=input_order)
 
@@ -498,6 +505,7 @@ class FlaskSandbox():
         for target, items in groupby(sorted_keys, to_name):
 
             section = {'name': target, 'my_items': []}
+
             this_p_param = rev_p_params[target]
             if production_params[this_p_param].get('function'):
                 #print ('{} determined by a function'.format(this_p_param))
@@ -511,6 +519,21 @@ class FlaskSandbox():
             #subsection['my_items'].append({'id': this_p_param, 'name': 'Output of {}'.format(production_params[this_p_param]['from_name']), 'existing_values': values, 'unit': production_params[this_p_param]['unit'], 'isFunction': isFunction})
             subsection['my_items'].append({'id': this_p_param, 'name': '{}'.format(production_params[this_p_param]['from_name']), 'existing_values': values, 'unit': production_params[this_p_param]['unit'], 'isFunction': isFunction})
             section['my_items'].append(subsection)
+
+            if self.modelInstance.allow_allocation:
+
+                this_a_param = rev_a_params[target]
+                if allocation_params[this_a_param].get('function'):
+                    #print ('{} determined by a function'.format(this_p_param))
+                    values = ['{} = {:.3f}'.format(allocation_params[this_a_param]['function'], e_ps[this_a_param]) for e_ps_name, e_ps in evaluated_parameters.items()]
+                    isFunction = True
+                else:
+                    values = [ps[this_a_param] if this_a_param in ps.keys() else '' for ps_name, ps in self.modelInstance.parameter_sets.items()]
+                    isFunction = False
+
+                subsection = {'name': 'Allocation parameter', 'my_items': []}
+                subsection['my_items'].append({'id': this_a_param, 'name': '{}'.format(allocation_params[this_a_param]['from_name']), 'existing_values': values, 'unit': allocation_params[this_a_param]['unit'], 'isFunction': isFunction})
+                section['my_items'].append(subsection)
 
             sorted_exchanges = sorted(items, key=type_of)
             #print (sorted_exchanges)
@@ -615,7 +638,7 @@ class FlaskSandbox():
 
     def update_settings(self, postData):
 
-        #print(postData)
+        print(postData)
 
         try: 
             new_amount = float(postData['settings_amount'])
@@ -628,7 +651,12 @@ class FlaskSandbox():
         myjson = json.loads(postData['settings_methods'])
         self.modelInstance.analysis_settings['methods'] = [tuple(x) for x in myjson]
 
-        #print (self.modelInstance.analysis_settings)
+        if postData['allow_allocation'] == 'true':
+            self.modelInstance.allow_allocation = True
+        else:
+            self.modelInstance.allow_allocation = False
+
+        print (self.modelInstance.allow_allocation)
 
         return "OK"
 
@@ -1021,24 +1049,29 @@ class FlaskSandbox():
         def methods_as_json():
 
             import brightway2 as bw2
-            from lcopt.utils import DEFAULT_DB_NAME
+            from lcopt.constants import DEFAULT_BIOSPHERE_PROJECT
 
-            if self.modelInstance.name in bw2.projects:
-                #print('getting custom methods')
-                bw2.projects.set_current(self.modelInstance.name)
+            if settings.model_storage.project == "single":
+                bw2.projects.set_current(settings.model_storage.single_project_name)
             else:
-                #print('getting default methods')
-                bw2.projects.set_current(DEFAULT_DB_NAME)
+
+                if self.modelInstance.name in bw2.projects:
+                    #print('getting custom methods')
+                    bw2.projects.set_current(self.modelInstance.name)
+                else:
+                    #print('getting default methods')
+                    bw2.projects.set_current(DEFAULT_BIOSPHERE_PROJECT)
 
             method_list = list(bw2.methods)
 
             return json.dumps(method_list)
 
         @app.route('/settings')
-        def settings():
+        def model_settings():
             args = {}
             args['current_methods'] = json.dumps(self.modelInstance.analysis_settings['methods'])
             args['current_amount'] = self.modelInstance.analysis_settings['amount']
+            args['allow_allocation'] = self.modelInstance.allow_allocation
             return render_template('settings.html', args=args)
 
         @app.errorhandler(404)

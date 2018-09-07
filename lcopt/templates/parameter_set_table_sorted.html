@@ -15,11 +15,11 @@
                 <table id="myTable" class="table table-bordered table-condensed table-hover">
                     <thead>
                         <tr class="table_header">
-                            <th class='hide_text_header'style="width: 10%">id</th>
+                            <th class='hide_text_header'style="width: 15%">id</th>
                             <th style="width: 20%">Name</th>
-                            <th style="width: 5%">Unit</th>
+                            <th style="width: 10%">Unit</th>
                             {% for n in args.ps_names %}
-                            <th style="width: {{65 / (args.ps_names | length)}}%" class="ps_name" contenteditable="true">{{n}}</th>
+                            <th style="width: {{55 / (args.ps_names | length)}}%" class="ps_name" contenteditable="true">{{n}}</th>
                             {% endfor %}
                         </tr>
                     </thead>

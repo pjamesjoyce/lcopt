@@ -17,7 +17,7 @@ class LcoptParameterSet(ParameterSet):
 
         self.check_production_parameters_exist()
         
-        self.all_params = {**self.modelInstance.params, **self.modelInstance.production_params, **self.norm_params}
+        self.all_params = {**self.modelInstance.params, **self.modelInstance.production_params, **self.norm_params, **self.modelInstance.allocation_params}
         
         self.bw2_params, self.bw2_global_params, self.bw2_export_params = self.lcopt_to_bw2_params(0)
         
@@ -57,7 +57,8 @@ class LcoptParameterSet(ParameterSet):
     def normalise_parameters(self):
         
         param_copy = deepcopy(self.modelInstance.params)
-        production_params = deepcopy(self.modelInstance.production_params)
+        #production_params = deepcopy(self.modelInstance.production_params)
+        #allocation_params = deepcopy(self.modelInstance.allocation_params)
         norm_params = OrderedDict()
         for k, v in param_copy.items():
             norm_params['n_{}'.format(k)] = {}
@@ -105,4 +106,12 @@ class LcoptParameterSet(ParameterSet):
                     pass
                 else:
                     #print('No production parameter called {} - setting it to 1'.format(p_id))
-                    v[p_id] = 1
+                    v[p_id] = 1.0
+
+            for p_id in self.modelInstance.allocation_params.keys():
+                if v.get(p_id):
+                    #print('{} already exists'.format(p_id))
+                    pass
+                else:
+                    #print('No production parameter called {} - setting it to 1'.format(p_id))
+                    v[p_id] = 1.0

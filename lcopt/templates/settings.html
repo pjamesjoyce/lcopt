@@ -15,37 +15,53 @@
 
 <div class="container-fluid">
 
-  <div class="row">
-    <div class="col-xs-10 col-xs-offset-1">
-      
-    <form class="form-horizontal">
-    	<div class="row">
-    		<div class="col-xs-3">
-		    	<div class="form-group">
-		    		<label class="control-label" for="settings_amount">Default amount to analyse</label>
-		    		<input class="form-control" type="text" name="settings_amount" id="settings_amount" value="{{args.current_amount}}"/>
-		    	</div>
-	    	</div>
-    	</div>
-    	<div class="row">
-    		<div class="col-xs-12">
-		    	<div class="form-group">
-		    		<label class="control-label" for="settings_methods">Methods</label>
-		    		 <select multiple name="settings_methods" id="settings_methods"></select>
-		    		 <!--<input type="text" name="settings_methods" id="settings_methods">-->
-		                
-		            </select>
-		    	</div>
-		    </div>
-    	</div>
-    </form>
+	<form class="form-horizontal">
+		<fieldset>
 
-    <div class="form-group">
-    		<button id="export-btn" class="btn btn-primary">Save</button>
-    	</div>
+		<!-- Form Name -->
+		<legend>Model settings</legend>
 
-    </div>
-  </div>
+		<!-- Text input-->
+		<div class="form-group">
+		  <label class="col-md-4 control-label" for="settings_amount">Amount to analyse</label>  
+		  <div class="col-md-4">
+		  <input id="settings_amount" name="settings_amount" type="text" class="form-control input-md" value="{{args.current_amount}}">
+		  <span class="help-block">Recommended value is 1</span>  
+		  </div>
+		</div>
+
+		<!-- Select with Selectize -->
+		<div class="form-group">
+		  <label class="col-md-4 control-label" for="settings_methods">Methods</label>
+		  <div class="col-md-4">
+		    <select multiple id="settings_methods" name="settings_methods" ><!--class="form-control">-->
+		    </select>
+		  </div>
+		</div>
+
+		<!-- Multiple Checkboxes -->
+		<div class="form-group">
+		  <label class="col-md-4 control-label" for="checkboxes">Additional options</label>
+		  <div class="col-md-4">
+		    <div class="checkbox">
+		      <label for="allow_allocation">
+		        <input type="checkbox" name="allow_allocation" id="allow_allocation" value="" {% if args.allow_allocation %} checked {% endif %}>
+		        Allow allocation
+		      </label>
+			</div>
+		  </div>
+		</div>
+
+		</fieldset>
+	</form>
+
+		<!-- Button -->
+	<div class="form-group">
+	  <label class="col-md-4 control-label" for="export-btn"></label>
+	  <div class="col-md-4">
+	    <button id="export-btn" name="export-btn" class="btn btn-primary">Save</button>
+	  </div>
+	</div>
 
 </div>
 
@@ -53,10 +69,11 @@
 	
 	$(document).ready(function(){
 
-
 		var $select
 
-		current_methods = {{args.current_methods|safe}}
+		current_methods = {{args.current_methods|safe}};
+
+		console.log(current_methods)
 
 		$.getJSON('/methods.json', function(data){
 			//////console.log(data);
@@ -87,6 +104,7 @@
 		action : 'update_settings',
 		settings_amount : $('#settings_amount').val(),
 		settings_methods : json_methods,
+		allow_allocation : $('#allow_allocation').is(':checked'),
 	}
 
 	$.post('/process_post', postData)
