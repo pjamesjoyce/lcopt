@@ -8,10 +8,10 @@ from itertools import groupby
 import xlsxwriter
 from io import BytesIO
 import os
-import socket
 
 from lcopt.bw2_export import Bw2Exporter
 from lcopt.export_view import LcoptView
+from lcopt.utils import find_port
 
 
 class FlaskSandbox():
@@ -1098,21 +1098,14 @@ class FlaskSandbox():
 
         return app
 
-    def run(self):                      # pragma: no cover
+    def run(self, port=None, open_browser=True):                      # pragma: no cover
         app = self.create_app()
-        
-        for port in range(5000, 5100):
 
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            result = sock.connect_ex(('127.0.0.1', port))
-            
-            if result != 0:
-                break
-            else:
-                print("port {} is in use, checking {}".format(port, port + 1))
+        if port is None:
+            port = find_port()
 
-        url = 'http://127.0.0.1:{}/'.format(port)
-        webbrowser.open_new(url)
-        #print ("running from the module")
-        
+        if open_browser:
+            url = 'http://127.0.0.1:{}/'.format(port)
+            webbrowser.open_new(url)
+
         app.run(port=port)
