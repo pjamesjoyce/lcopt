@@ -686,7 +686,7 @@ class LcoptModel(object):
             raise Exception
             print ("Database type must be 'technosphere' or 'biosphere'")
 
-    def search_databases(self, search_term, location=None, markets_only=False, databases_to_search=None):
+    def search_databases(self, search_term, location=None, markets_only=False, databases_to_search=None, allow_internal=False):
 
         """
         Search external databases linked to your lcopt model.
@@ -694,11 +694,26 @@ class LcoptModel(object):
         To restrict the search to particular databases (e.g. technosphere or biosphere only) use a list of database names in the ``database_to_search`` variable
         """
 
+        dict_list = []
+
+        if allow_internal:
+            internal_dict = {}
+            for k, v in self.database['items'].items():
+                if v.get('lcopt_type') == 'intermediate':
+                    internal_dict[k] = v
+            
+            dict_list.append(internal_dict)
+
         if databases_to_search is None:
             #Search all of the databases available
-            data = Dictionaries(self.database['items'], *[x['items'] for x in self.external_databases])
+            #data = Dictionaries(self.database['items'], *[x['items'] for x in self.external_databases])
+            dict_list += [x['items'] for x in self.external_databases]
         else:
-            data = Dictionaries(self.database['items'], *[x['items'] for x in self.external_databases if x['name'] in databases_to_search])
+            #data = Dictionaries(self.database['items'], *[x['items'] for x in self.external_databases if x['name'] in databases_to_search])
+            dict_list += [x['items'] for x in self.external_databases if x['name'] in databases_to_search]
+
+        data = Dictionaries(*dict_list)
+        #data = Dictionaries(self.database['items'], *[x['items'] for x in self.external_databases if x['name'] in databases_to_search])
 
         query = Query()
 
@@ -707,7 +722,7 @@ class LcoptModel(object):
             query.add(market_filter)
         
         if location is not None:
-            location_filter = Filter("location", "has", location)
+            location_filter = Filter("location", "is", location)
             query.add(location_filter)
         
         query.add(Filter("name", "ihas", search_term))

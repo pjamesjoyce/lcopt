@@ -503,7 +503,8 @@ def test_alter_methods(flask_client, fully_formed_model):
     postData = {
         'action' : 'update_settings',
         'settings_amount' : 1,
-        'settings_methods' : method_json
+        'settings_methods' : method_json,
+        'allow_allocation': False,
     }
 
     response = flask_client.post('/process_post', data = postData)

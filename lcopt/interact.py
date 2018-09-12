@@ -75,6 +75,7 @@ class FlaskSandbox():
         processes = OrderedDict((k, v) for k, v in db.items() if v['type'] == 'process')
         process_codes = [k[1] for k in processes.keys()]
         process_name_map = {k[1]: v['name'] for k, v in processes.items()}
+        self.reverse_process_name_map = {value: key for key, value in process_name_map.items()}
 
         # note this maps from output code to process
         process_output_map = {self.output_code(x): x[1] for x in processes.keys()}
@@ -86,6 +87,7 @@ class FlaskSandbox():
         intermediates = {k: v for k, v in products.items() if v['lcopt_type'] == 'intermediate'}
         intermediate_codes = [k[1] for k in intermediates.keys()]
         intermediate_map = {k[1]: v['name'] for k, v in intermediates.items()}
+        self.reverse_intermediate_map = {value: key for key, value in intermediate_map.items()}
 
         #process_output_name_map = {process_code: output_name for x in processes.keys()}
         process_output_name_map = {x[1]: intermediate_map[self.reverse_process_output_map[x[1]]] for x in processes.keys()}
@@ -422,7 +424,7 @@ class FlaskSandbox():
             #print ('no location')
             location = None
             
-        result = m.search_databases(search_term, location, markets_only, databases_to_search=m.technosphere_databases)
+        result = m.search_databases(search_term, location, markets_only, databases_to_search=m.technosphere_databases, allow_internal=True)
         
         json_dict = {str(k): v for k, v in dict(result).items()}
         
@@ -435,7 +437,7 @@ class FlaskSandbox():
         
         m = self.modelInstance
             
-        result = m.search_databases(search_term, databases_to_search=m.biosphere_databases)
+        result = m.search_databases(search_term, databases_to_search=m.biosphere_databases, allow_internal=False)
         
         json_dict = {str(k): v for k, v in dict(result).items()}
         
@@ -450,6 +452,8 @@ class FlaskSandbox():
         function_for = postData['for']
         if function_for.split("_")[-1] == "production":
             parameter = self.modelInstance.production_params[function_for]
+        elif function_for.split("_")[-1] == "allocation":
+            parameter = self.modelInstance.allocation_params[function_for]
         else:
             parameter = self.modelInstance.params[function_for]
         parameter['function'] = new_function
@@ -887,6 +891,30 @@ class FlaskSandbox():
             to_json = [{'name': k, 'code': v} for k, v in self.reverse_biosphere_map.items()]
             biosphere_json = json.dumps(to_json)
             return biosphere_json
+
+        @app.route('/intermediates.json')
+        def intermediates_as_json():
+            """creates a json file of the reverse intermediate map to send from the server"""
+            self.get_sandbox_variables()
+            # to_json = [x for x in self.reverse_input_map.keys()]
+            #to_json = reverse_input_map
+            to_json = [{'name': k, 'code': v} for k, v in self.reverse_intermediate_map.items()]
+            intermediate_json = json.dumps(to_json)
+            return intermediate_json
+
+        @app.route('/usednames.json')
+        def usednames_as_json():
+            """creates a json file of the names already used"""
+            self.get_sandbox_variables()
+
+            names = []
+            names.extend([k.lower() for k in self.reverse_input_map.keys()])
+            names.extend([k.lower() for k in self.reverse_intermediate_map.keys()])
+            names.extend([k.lower() for k in self.reverse_biosphere_map.keys()])
+            names.extend([k.lower() for k in self.reverse_process_name_map.keys()])
+            
+            names_json = json.dumps(names)
+            return names_json
         
         @app.route('/testing')
         def testbed():
@@ -917,8 +945,12 @@ class FlaskSandbox():
         def param_query(param_id):
             if self.modelInstance.params.get(param_id):
                 param = self.modelInstance.params[param_id]
-            else:
+            elif self.modelInstance.production_params.get(param_id):
                 param = self.modelInstance.production_params[param_id]
+            elif self.modelInstance.allocation_params.get(param_id):
+                param = self.modelInstance.allocation_params[param_id]
+            else:
+                param = []
 
             #print(param)
 

@@ -40,7 +40,8 @@ function setUpSelectize(external_data){
 			'intermediate':'input',
 			'biosphere': 'local_florist',
 			'global':'language',
-			'production': 'forward'
+			'production': 'forward',
+			'allocation': 'call_split'
 		},
 
 		name_map = {};
@@ -73,8 +74,11 @@ function setUpSelectize(external_data){
 					option_text = name;
 					option_custom_type = 'global';
 				}else if(subsection_name == 'Production exchange (Output)'){
-					option_text = name;
+					option_text = 'Output of ' + name;
 					option_custom_type = 'production';
+				}else if(subsection_name == 'Allocation parameter'){
+					option_text = 'Allocation parameter for ' + name;
+					option_custom_type = 'allocation';
 				}
 				else{
 					option_text = "Input of "+ name + " to " + to;
@@ -94,6 +98,9 @@ function setUpSelectize(external_data){
 
 	full_options = my_options.concat(operators);
 	full_optgroups = my_optgroups.concat(operator_optgroup);
+
+	console.log(settable_options);
+	console.log(settable_optgroups);
 
 	$('#select-to').selectize({
 		//plugins: ['drag_drop'],
