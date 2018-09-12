@@ -1,8 +1,11 @@
 {% extends 'base.html' %} {% block head_postload %}
 <script src="{{ url_for('static', filename = 'js/table-edit.js') }}"></script>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/parameter_table.css') }}" />
+{% endblock %} 
 
-{% endblock %} {% block content%} {% set colspan = (args.ps_names | length) + 3 %}
+{% block title %}Parameters{% endblock%}
+
+{% block content%} {% set colspan = (args.ps_names | length) + 3 %}
 <div class="container-fluid">
     <div class="row">
         <div class="sandboxTitle col-xs-10 col-xs-offset-1">
@@ -15,11 +18,11 @@
                 <table id="myTable" class="table table-bordered table-condensed table-hover">
                     <thead>
                         <tr class="table_header">
-                            <th class='hide_text_header'style="width: 10%">id</th>
+                            <th class='hide_text_header'style="width: 15%">id</th>
                             <th style="width: 20%">Name</th>
-                            <th style="width: 5%">Unit</th>
+                            <th style="width: 10%">Unit</th>
                             {% for n in args.ps_names %}
-                            <th style="width: {{65 / (args.ps_names | length)}}%" class="ps_name" contenteditable="true">{{n}}</th>
+                            <th style="width: {{55 / (args.ps_names | length)}}%" class="ps_name" contenteditable="true">{{n}}</th>
                             {% endfor %}
                         </tr>
                     </thead>

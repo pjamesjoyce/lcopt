@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 
-{% block title %} Sandbox
+{% block title %} Flow sheet
 {% endblock %}
 
 {% block head_postload %}
@@ -18,6 +18,9 @@
 <script src="{{ url_for('static', filename = 'js/cdn_cache/selectize.js') }}"></script>
 <script src="{{ url_for('static', filename = 'js/location_selectize.js') }}"></script>
 <link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/cdn_cache/selectize.css') }}" />
+
+<link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'css/search_table.css') }}" />
+<script src="{{ url_for('static', filename = 'js/search_table.js') }}"></script>
 
 {% endblock %}
 

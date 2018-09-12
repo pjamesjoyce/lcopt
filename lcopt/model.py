@@ -112,6 +112,7 @@ class LcoptModel(object):
         self.external_databases = []
         self.params = OrderedDict()
         self.production_params = OrderedDict()
+        self.allocation_params = OrderedDict()
         self.ext_params = []
         self.matrix = None
         self.names = None
@@ -155,6 +156,8 @@ class LcoptModel(object):
                                   #'gt_cutoff': 0.01, 
                                   'pie_cutoff': 0.05
                                   }
+
+        self.allow_allocation = False
 
         # initialise with a blank result set
         self.result_set = None
@@ -260,6 +263,7 @@ class LcoptModel(object):
                       'database',
                       'params',
                       'production_params',
+                      'allocation_params',
                       'ext_params',
                       'matrix',
                       'names',
@@ -281,6 +285,7 @@ class LcoptModel(object):
                       'useForwast',
                       'base_project_name',
                       'save_option',
+                      'allow_allocation'
                       ]
 
         for attr in attributes:
@@ -456,6 +461,15 @@ class LcoptModel(object):
                                 'from_name': self.get_name(e['input'][1]),
                                 'type': 'production',
                             }
+                        if not 'p_{}_allocation'.format(col_code) in self.allocation_params:
+                            self.allocation_params['p_{}_allocation'.format(col_code)] = {
+                                'function': None,
+                                'description': 'Allocation parameter for {}'.format(self.get_name(e['input'][1])),
+                                'unit': "% (as decimal)", 
+                                'from': e['input'],
+                                'from_name': self.get_name(e['input'][1]),
+                                'type': 'allocation',
+                            }
 
                     elif e['type'] == 'technosphere':
                         #print(cr_list)
@@ -482,7 +496,7 @@ class LcoptModel(object):
                     if not 'p_{}_{}'.format(coords[0], coords[1]) in self.params:
                         self.params['p_{}_{}'.format(coords[0], coords[1])] = {
                             'function': None,
-                            'normalisation_parameter': 'p_{}_production'.format(coords[1]),
+                            'normalisation_parameter': '(p_{}_production / p_{}_allocation)'.format(coords[1], coords[1]),
                             'description': 'Input of {} to create {}'.format(self.get_name(p_from), self.get_name(p_to)),
                             'coords': coords,
                             'unit': self.get_unit(p_from),
@@ -493,14 +507,17 @@ class LcoptModel(object):
                             'type': from_item_type,
                         }
 
-                    elif 'normalisation_parameter' not in self.params['p_{}_{}'.format(coords[0], coords[1])].keys():
+                    #elif 'normalisation_parameter' not in self.params['p_{}_{}'.format(coords[0], coords[1])].keys():
                         #print("Adding normalisation_parameter to {}".format('p_{}_{}'.format(coords[0], coords[1])))
-                        self.params['p_{}_{}'.format(coords[0], coords[1])]['normalisation_parameter'] = 'p_{}_production'.format(coords[1])
+                        #self.params['p_{}_{}'.format(coords[0], coords[1])]['normalisation_parameter'] = '(p_{}_production / p_{}_allocation)'.format(coords[1], coords[1])
                         
                         #print('p_{}_{} already exists'.format(coords[0],coords[1]))
 
                     else:
                         pass  # print("SOMETHING WRONG HERE\n{}\n".format(self.params['p_{}_{}'.format(coords[0], coords[1])]))
+
+                    # make sure the parameter is being normalised and allocated properly
+                    self.params['p_{}_{}'.format(coords[0], coords[1])]['normalisation_parameter'] = '(p_{}_production / p_{}_allocation)'.format(coords[1], coords[1])
 
                     if not 'p_{}_{}'.format(coords[0], coords[1]) in self.parameter_map:
                         self.parameter_map[(p_from, p_to)] = 'p_{}_{}'.format(coords[0], coords[1])
@@ -562,18 +579,18 @@ class LcoptModel(object):
 
         df = pd.DataFrame(p_set)
 
-        writer = pd.ExcelWriter(p_set_name, engine='xlsxwriter')
+        with pd.ExcelWriter(p_set_name, engine='xlsxwriter') as writer:
 
-        ps_columns = [k for k in parameter_sets.keys()]
-        #print (ps_columns)
-        my_columns = ['name', 'unit', 'id']
-        
-        my_columns.extend(ps_columns)
-        #print (my_columns)
+            ps_columns = [k for k in parameter_sets.keys()]
+            print (ps_columns)
+            my_columns = ['name', 'unit', 'id']
+            
+            my_columns.extend(ps_columns)
+            print (my_columns)
 
-        #?
+            print(df)
 
-        df.to_excel(writer, sheet_name=self.name, columns=my_columns, index=False, merge_cells=False)
+            df.to_excel(writer, sheet_name=self.name, columns=my_columns, index=False, merge_cells=False)
        
         return p_set_name
         
@@ -669,7 +686,7 @@ class LcoptModel(object):
             raise Exception
             print ("Database type must be 'technosphere' or 'biosphere'")
 
-    def search_databases(self, search_term, location=None, markets_only=False, databases_to_search=None):
+    def search_databases(self, search_term, location=None, markets_only=False, databases_to_search=None, allow_internal=False):
 
         """
         Search external databases linked to your lcopt model.
@@ -677,11 +694,26 @@ class LcoptModel(object):
         To restrict the search to particular databases (e.g. technosphere or biosphere only) use a list of database names in the ``database_to_search`` variable
         """
 
+        dict_list = []
+
+        if allow_internal:
+            internal_dict = {}
+            for k, v in self.database['items'].items():
+                if v.get('lcopt_type') == 'intermediate':
+                    internal_dict[k] = v
+            
+            dict_list.append(internal_dict)
+
         if databases_to_search is None:
             #Search all of the databases available
-            data = Dictionaries(self.database['items'], *[x['items'] for x in self.external_databases])
+            #data = Dictionaries(self.database['items'], *[x['items'] for x in self.external_databases])
+            dict_list += [x['items'] for x in self.external_databases]
         else:
-            data = Dictionaries(self.database['items'], *[x['items'] for x in self.external_databases if x['name'] in databases_to_search])
+            #data = Dictionaries(self.database['items'], *[x['items'] for x in self.external_databases if x['name'] in databases_to_search])
+            dict_list += [x['items'] for x in self.external_databases if x['name'] in databases_to_search]
+
+        data = Dictionaries(*dict_list)
+        #data = Dictionaries(self.database['items'], *[x['items'] for x in self.external_databases if x['name'] in databases_to_search])
 
         query = Query()
 
@@ -690,7 +722,7 @@ class LcoptModel(object):
             query.add(market_filter)
         
         if location is not None:
-            location_filter = Filter("location", "has", location)
+            location_filter = Filter("location", "is", location)
             query.add(location_filter)
         
         query.add(Filter("name", "ihas", search_term))
@@ -706,6 +738,7 @@ class LcoptModel(object):
 
         The file will be called "<ModelName>_database_export.csv"
         """
+        self.parameter_scan()
 
         csv_args = {}
         csv_args['processes'] = []
@@ -747,7 +780,8 @@ class LcoptModel(object):
                     formatted_name = self.get_name(this_code)
                     this_exchange['formatted_name'] = formatted_name
                     
-                    param_key = (this_code, output_code)
+                    param_key = (this_code,  output_code)
+                    print(param_key)
                     #param_check = (formatted_name, item['name'])
                     this_param = self.parameter_map[param_key]
                     
@@ -796,44 +830,48 @@ class LcoptModel(object):
                 if 'ext_link' in this_item.keys():
                     
                     ext_link = this_item['ext_link']
+                    if ext_link[0] != self.database['name']:
+                        db_filter = lambda x: x['name'] == ext_link[0]
+                        #print('jello')
+                        #print(db_filter)
+                        #print(list(filter(db_filter, self.external_databases)))
+                        extdb = list(filter(db_filter, self.external_databases))[0]['items']
 
-                    db_filter = lambda x: x['name'] == ext_link[0]
-                    extdb = list(filter(db_filter, self.external_databases))[0]['items']
-                    ext_item = extdb[ext_link]
-                    if ext_link[0] != self.biosphereName:
-                        ref_prod = ext_item['reference product']
-                        name = ext_item['name'].replace(" " + ref_prod, "")
-                        location = ext_item['location']
-                        system_model = "Alloc Def"
-                        process_type = "U"
-                        unit = unnormalise_unit(ext_item['unit'])
+                        ext_item = extdb[ext_link]
+                        if ext_link[0] != self.biosphereName:
+                            ref_prod = ext_item['reference product']
+                            name = ext_item['name'].replace(" " + ref_prod, "")
+                            location = ext_item['location']
+                            system_model = "Alloc Def"
+                            process_type = "U"
+                            unit = unnormalise_unit(ext_item['unit'])
 
-                        simaPro_name = "{} {{{}}}| {} | {}, {}".format(ref_prod.capitalize(), location, name, system_model, process_type)
+                            simaPro_name = "{} {{{}}}| {} | {}, {}".format(ref_prod.capitalize(), location, name, system_model, process_type)
 
-                        #print ('{} has an external link to {}'.format(this_name, simaPro_name))
-                        
-                        current['exchanges'] = [{'formatted_name': simaPro_name, 'unit': unit, 'amount': 1}]
-                    else:
-                        #print('{} has a biosphere exchange - need to sort this out'.format(this_name))
-                        #print(ext_item)
-                        unit = unnormalise_unit(ext_item['unit'])
-                        formatted_name = ext_item['name']
-
-                        if 'air' in ext_item['categories']:
-                            current['air_emissions'] = [{'formatted_name': formatted_name, 'subcompartment': '', 'unit': unit, 'amount': 1, 'comment': 'emission of {} to air'.format(formatted_name)}]
-
-                        elif 'water' in ext_item['categories']:
-                            current['water_emissions'] = [{'formatted_name': formatted_name, 'subcompartment': '', 'unit': unit, 'amount': 1, 'comment': 'emission of {} to water'.format(formatted_name)}]
-
-                        elif 'soil' in ext_item['categories']:
-                            current['soil_emissions'] = [{'formatted_name': formatted_name, 'subcompartment': '', 'unit': unit, 'amount': 1, 'comment': 'emission of {} to soil'.format(formatted_name)}]
-
+                            #print ('{} has an external link to {}'.format(this_name, simaPro_name))
+                            
+                            current['exchanges'] = [{'formatted_name': simaPro_name, 'unit': unit, 'amount': 1}]
                         else:
-                            print('{} has a biosphere exchange that isnt to air water or soil')
-                            print(ext_item)
-                    
-                else:
-                    warnings.warn('{} has NO internal or external link - it is burden free'.format(this_name))
+                            #print('{} has a biosphere exchange - need to sort this out'.format(this_name))
+                            #print(ext_item)
+                            unit = unnormalise_unit(ext_item['unit'])
+                            formatted_name = ext_item['name']
+
+                            if 'air' in ext_item['categories']:
+                                current['air_emissions'] = [{'formatted_name': formatted_name, 'subcompartment': '', 'unit': unit, 'amount': 1, 'comment': 'emission of {} to air'.format(formatted_name)}]
+
+                            elif 'water' in ext_item['categories']:
+                                current['water_emissions'] = [{'formatted_name': formatted_name, 'subcompartment': '', 'unit': unit, 'amount': 1, 'comment': 'emission of {} to water'.format(formatted_name)}]
+
+                            elif 'soil' in ext_item['categories']:
+                                current['soil_emissions'] = [{'formatted_name': formatted_name, 'subcompartment': '', 'unit': unit, 'amount': 1, 'comment': 'emission of {} to soil'.format(formatted_name)}]
+
+                            else:
+                                print('{} has a biosphere exchange that isnt to air water or soil')
+                                print(ext_item)
+                        
+                    else:
+                        warnings.warn('{} has NO internal or external link - it is burden free'.format(this_name))
                     
                 csv_args['processes'].append(current)
                 created_exchanges.append(this_name)

@@ -21,6 +21,13 @@
 	border-radius: 2px;
 }
 
+.item_allocation{
+	background-color: #fffdd0;
+	padding-left:5px;
+	padding-right:5px;
+	border-radius: 2px;
+}
+
 .item_operator{
 	background-color: aliceblue;
 	border-radius: 2px;

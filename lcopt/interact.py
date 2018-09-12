@@ -12,6 +12,7 @@ import os
 from lcopt.bw2_export import Bw2Exporter
 from lcopt.export_view import LcoptView
 from lcopt.utils import find_port
+from lcopt.settings import settings
 
 
 class FlaskSandbox():
@@ -74,6 +75,7 @@ class FlaskSandbox():
         processes = OrderedDict((k, v) for k, v in db.items() if v['type'] == 'process')
         process_codes = [k[1] for k in processes.keys()]
         process_name_map = {k[1]: v['name'] for k, v in processes.items()}
+        self.reverse_process_name_map = {value: key for key, value in process_name_map.items()}
 
         # note this maps from output code to process
         process_output_map = {self.output_code(x): x[1] for x in processes.keys()}
@@ -85,6 +87,7 @@ class FlaskSandbox():
         intermediates = {k: v for k, v in products.items() if v['lcopt_type'] == 'intermediate'}
         intermediate_codes = [k[1] for k in intermediates.keys()]
         intermediate_map = {k[1]: v['name'] for k, v in intermediates.items()}
+        self.reverse_intermediate_map = {value: key for key, value in intermediate_map.items()}
 
         #process_output_name_map = {process_code: output_name for x in processes.keys()}
         process_output_name_map = {x[1]: intermediate_map[self.reverse_process_output_map[x[1]]] for x in processes.keys()}
@@ -421,7 +424,7 @@ class FlaskSandbox():
             #print ('no location')
             location = None
             
-        result = m.search_databases(search_term, location, markets_only, databases_to_search=m.technosphere_databases)
+        result = m.search_databases(search_term, location, markets_only, databases_to_search=m.technosphere_databases, allow_internal=True)
         
         json_dict = {str(k): v for k, v in dict(result).items()}
         
@@ -434,7 +437,7 @@ class FlaskSandbox():
         
         m = self.modelInstance
             
-        result = m.search_databases(search_term, databases_to_search=m.biosphere_databases)
+        result = m.search_databases(search_term, databases_to_search=m.biosphere_databases, allow_internal=False)
         
         json_dict = {str(k): v for k, v in dict(result).items()}
         
@@ -449,6 +452,8 @@ class FlaskSandbox():
         function_for = postData['for']
         if function_for.split("_")[-1] == "production":
             parameter = self.modelInstance.production_params[function_for]
+        elif function_for.split("_")[-1] == "allocation":
+            parameter = self.modelInstance.allocation_params[function_for]
         else:
             parameter = self.modelInstance.params[function_for]
         parameter['function'] = new_function
@@ -461,6 +466,8 @@ class FlaskSandbox():
         production_params = self.modelInstance.production_params
         ext_params = self.modelInstance.ext_params
 
+        allocation_params = self.modelInstance.allocation_params
+
         # create a default parameter set if there isn't one yet
         if len(self.modelInstance.parameter_sets) == 0:
             print ('No parameter sets - creating a default set')
@@ -469,6 +476,9 @@ class FlaskSandbox():
                 self.modelInstance.parameter_sets['ParameterSet_1'][param] = 0
 
             for param in production_params:
+                self.modelInstance.parameter_sets['ParameterSet_1'][param] = 1
+
+            for param in allocation_params:
                 self.modelInstance.parameter_sets['ParameterSet_1'][param] = 1
 
             for param in ext_params:
@@ -490,6 +500,7 @@ class FlaskSandbox():
         type_of = lambda x: parameters[x]['type']
 
         rev_p_params = {v['from_name']: k for k, v in production_params.items()}
+        rev_a_params = {v['from_name']: k for k, v in allocation_params.items()}
 
         sorted_keys = sorted(parameters, key=input_order)
 
@@ -498,6 +509,7 @@ class FlaskSandbox():
         for target, items in groupby(sorted_keys, to_name):
 
             section = {'name': target, 'my_items': []}
+
             this_p_param = rev_p_params[target]
             if production_params[this_p_param].get('function'):
                 #print ('{} determined by a function'.format(this_p_param))
@@ -511,6 +523,21 @@ class FlaskSandbox():
             #subsection['my_items'].append({'id': this_p_param, 'name': 'Output of {}'.format(production_params[this_p_param]['from_name']), 'existing_values': values, 'unit': production_params[this_p_param]['unit'], 'isFunction': isFunction})
             subsection['my_items'].append({'id': this_p_param, 'name': '{}'.format(production_params[this_p_param]['from_name']), 'existing_values': values, 'unit': production_params[this_p_param]['unit'], 'isFunction': isFunction})
             section['my_items'].append(subsection)
+
+            if self.modelInstance.allow_allocation:
+
+                this_a_param = rev_a_params[target]
+                if allocation_params[this_a_param].get('function'):
+                    #print ('{} determined by a function'.format(this_p_param))
+                    values = ['{} = {:.3f}'.format(allocation_params[this_a_param]['function'], e_ps[this_a_param]) for e_ps_name, e_ps in evaluated_parameters.items()]
+                    isFunction = True
+                else:
+                    values = [ps[this_a_param] if this_a_param in ps.keys() else '' for ps_name, ps in self.modelInstance.parameter_sets.items()]
+                    isFunction = False
+
+                subsection = {'name': 'Allocation parameter', 'my_items': []}
+                subsection['my_items'].append({'id': this_a_param, 'name': '{}'.format(allocation_params[this_a_param]['from_name']), 'existing_values': values, 'unit': allocation_params[this_a_param]['unit'], 'isFunction': isFunction})
+                section['my_items'].append(subsection)
 
             sorted_exchanges = sorted(items, key=type_of)
             #print (sorted_exchanges)
@@ -615,7 +642,7 @@ class FlaskSandbox():
 
     def update_settings(self, postData):
 
-        #print(postData)
+        print(postData)
 
         try: 
             new_amount = float(postData['settings_amount'])
@@ -628,7 +655,12 @@ class FlaskSandbox():
         myjson = json.loads(postData['settings_methods'])
         self.modelInstance.analysis_settings['methods'] = [tuple(x) for x in myjson]
 
-        #print (self.modelInstance.analysis_settings)
+        if postData['allow_allocation'] == 'true':
+            self.modelInstance.allow_allocation = True
+        else:
+            self.modelInstance.allow_allocation = False
+
+        print (self.modelInstance.allow_allocation)
 
         return "OK"
 
@@ -859,6 +891,30 @@ class FlaskSandbox():
             to_json = [{'name': k, 'code': v} for k, v in self.reverse_biosphere_map.items()]
             biosphere_json = json.dumps(to_json)
             return biosphere_json
+
+        @app.route('/intermediates.json')
+        def intermediates_as_json():
+            """creates a json file of the reverse intermediate map to send from the server"""
+            self.get_sandbox_variables()
+            # to_json = [x for x in self.reverse_input_map.keys()]
+            #to_json = reverse_input_map
+            to_json = [{'name': k, 'code': v} for k, v in self.reverse_intermediate_map.items()]
+            intermediate_json = json.dumps(to_json)
+            return intermediate_json
+
+        @app.route('/usednames.json')
+        def usednames_as_json():
+            """creates a json file of the names already used"""
+            self.get_sandbox_variables()
+
+            names = []
+            names.extend([k.lower() for k in self.reverse_input_map.keys()])
+            names.extend([k.lower() for k in self.reverse_intermediate_map.keys()])
+            names.extend([k.lower() for k in self.reverse_biosphere_map.keys()])
+            names.extend([k.lower() for k in self.reverse_process_name_map.keys()])
+            
+            names_json = json.dumps(names)
+            return names_json
         
         @app.route('/testing')
         def testbed():
@@ -889,8 +945,12 @@ class FlaskSandbox():
         def param_query(param_id):
             if self.modelInstance.params.get(param_id):
                 param = self.modelInstance.params[param_id]
-            else:
+            elif self.modelInstance.production_params.get(param_id):
                 param = self.modelInstance.production_params[param_id]
+            elif self.modelInstance.allocation_params.get(param_id):
+                param = self.modelInstance.allocation_params[param_id]
+            else:
+                param = []
 
             #print(param)
 
@@ -1021,24 +1081,29 @@ class FlaskSandbox():
         def methods_as_json():
 
             import brightway2 as bw2
-            from lcopt.utils import DEFAULT_DB_NAME
+            from lcopt.constants import DEFAULT_BIOSPHERE_PROJECT
 
-            if self.modelInstance.name in bw2.projects:
-                #print('getting custom methods')
-                bw2.projects.set_current(self.modelInstance.name)
+            if settings.model_storage.project == "single":
+                bw2.projects.set_current(settings.model_storage.single_project_name)
             else:
-                #print('getting default methods')
-                bw2.projects.set_current(DEFAULT_DB_NAME)
+
+                if self.modelInstance.name in bw2.projects:
+                    #print('getting custom methods')
+                    bw2.projects.set_current(self.modelInstance.name)
+                else:
+                    #print('getting default methods')
+                    bw2.projects.set_current(DEFAULT_BIOSPHERE_PROJECT)
 
             method_list = list(bw2.methods)
 
             return json.dumps(method_list)
 
         @app.route('/settings')
-        def settings():
+        def model_settings():
             args = {}
             args['current_methods'] = json.dumps(self.modelInstance.analysis_settings['methods'])
             args['current_amount'] = self.modelInstance.analysis_settings['amount']
+            args['allow_allocation'] = self.modelInstance.allow_allocation
             return render_template('settings.html', args=args)
 
         @app.errorhandler(404)

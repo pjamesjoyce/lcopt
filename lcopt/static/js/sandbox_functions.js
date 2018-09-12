@@ -3,64 +3,8 @@ var sayHello = function(){
 }
 
 
-// unit choices 
-var UNIT_CHOICES = {
-    'Mass': [
-        ['kg',  'kilogram'],
-        ['g',  'gram'],
-    ]
-    ,
-    'Energy': [
-        ['kWh',  'kilowatt hour'],
-        ['Wh',  'watt hour'],
-        ['GJ',  'gigajoule'],
-        ['kJ',  'kilojoule'],
-        ['MJ',  'megajoule'],
-    ]
-    ,
-    'Volume': [
-        ['l',  'litre'],
-        ['m3',  'cubic meter'],
-    ]
-    ,
-    'Radioactivity': [
-        ['Bq',  'Becquerel'],
-        ['kBq',  'kilo Becquerel'],
-    ]
-    ,
-    'Time': [
-        ['a',  'year'],
-        ['h',  'hour'],
-    ]
-    ,
-    'Amount': [
-        ['p',  'unit'],
-    ]
-    ,
-    'Area':[
-        ['ha',  'hectare'],
-        ['m2',  'square meter'],
-    ],
-    'Transport':[
-        ['kgkm',  'kilogram kilometer'],
-        ['tkm',  'ton kilometer'],
-        ['personkm',  'person kilometer'],
-        ['vkm',  'vehicle kilometer'],
-    ],
-    'Distance':[
-        ['km',  'kilometer'],
-        ['m',  'meter'],
-    ],
-    'Other':[
-        ['lu',  'livestock unit'],
-        ['m*year',  'meter-year'],
-        ['m2*year',  'square meter-year'],
-        ['m3*year',  'cubic meter-year'],
-        ['kg sw',  'kilogram separative work unit'],
-        ['km*year',  'kilometer-year'],
-        ['EUR2003', 'EUR2003']
-    ]
-} 
+// unit choices moved to searchtable
+
 
 // This function creates a new node from external data
 var newNodeExternal = function(name, type, id, x, y, ext_item_data = '', instance, outputlabel = ''){
@@ -426,20 +370,41 @@ var addInput = function(e, instance){
           }
         }
 
+         var full_list;
+
          function createNewTemplate(){
           current_input = $('#inputName').val()
-          $create_new = $('<div class="tt-footer"><p>Create new input called <strong>'+current_input+'<strong></p></div>')
-          $create_new.click(function(){
-            $message.find('#ext_search_button').removeClass('disabled').prop( "disabled", false )
-            $message.find('#unit').removeClass('disabled').prop( "disabled", false )
-            $message.find('#unlinked').removeClass('disabled').prop( "disabled", false ).prop('checked', false)
-            $('.typeahead').typeahead('close');
-          })
+          usednames = getUsedNames();
+
+          disallowed_list = $.grep(usednames, function(n,i){return $.inArray(n, full_list) == -1})
+
+          allowed = $.inArray(current_input.toLowerCase(), disallowed_list) == -1;
+            if(!allowed){
+              $create_new = $('<div class="tt-footer"><p>A different item called <strong>'+current_input+'</strong> already exists - Please choose another name</p></div>')
+            }else if($.inArray(current_input, full_list) != -1){
+              $create_new = $('<div>');
+            }else{
+              $create_new = $('<div class="tt-footer"><p>Create new input called <strong>'+current_input+'</strong></p></div>')
+              $create_new.click(function(){
+                $message.find('#ext_search_button').removeClass('disabled').prop( "disabled", false )
+                $message.find('#unit').removeClass('disabled').prop( "disabled", false )
+                $message.find('#unlinked').removeClass('disabled').prop( "disabled", false ).prop('checked', false)
+                $('.typeahead').typeahead('close');
+          })    
+            }
+          
+          $('#inputName').blur(function(){
+                usednames = getUsedNames();
+                disallowed_list = $.grep(usednames, function(n,i){return $.inArray(n, full_list) == -1})
+                allowed = $.inArray(current_input.toLowerCase(), disallowed_list) == -1;
+                if(!allowed){$('#inputName').val("");}
+              })
+
           return $create_new
           }
 
 
-
+        
         var inputs = new Bloodhound({
             //local: [{name: "James item", code:1},{name: "Claire item", code:2}],
             //local: [{"code": "acdf091633109d3b6b7744a602720412", "name": "Input of Unlinked input"}, {"code": "bc1d1b9e06255d25691d4bc25cbed054", "name": "Input of Quartz - linked"}, {"code": "440891b98348acaa325bb80b1e0080fb", "name": "Input of Energy, electricity"}],
@@ -451,7 +416,9 @@ var addInput = function(e, instance){
               prefetch: {
                 url: 'inputs.json',
                 transform: function(list) {
+                    full_list = [];
                     return $.map(list, function(item) {
+                        full_list.push(item.name.toLowerCase());
                         return {
                             name: item.name,
                             code: item.code,
@@ -531,14 +498,17 @@ var addInput = function(e, instance){
         var $button = $('<button type="button" id="ext_search_button" type="submit" class="pull-right btn btn-primary" data-toggle="popover" data-placement= "right" data-trigger="hover" title="Search for LCI data" data-content="Search for Life Cycle Inventory data for this process">Search for LCI data</button>')
 
         // This is the callback function that gets run by the search box once it has a result
-        function logResult(name, code){
+        function logResult(name_string, code, unit_name, location){
 
-          var unit_re = /\[([\w- ]*)\]$/
-          console.log(name)
-          var unit_name = unit_re.exec(name)[1]
+          //var unit_re = /\[([\w- ]*)\]$/
+          console.log(name_string)
+          //var unit_name = unit_re.exec(name)[1]
           var unit = unitMap[unit_name]
-          //console.log(unit[0])
 
+          console.log(unit[0])
+          name = name_string + ' {' + location + '} [' + unit_name +']' 
+
+          console.log(name)
 
 
           $message.find('#extLink').val(code);
@@ -617,24 +587,30 @@ var addInput = function(e, instance){
               console.log(ext_link_check);
               console.log(ext_link_name_check);
 
-              db_string = ext_link_check.split(",")[0];
-              db = db_string.substring(2,db_string.length-1);
-              name_list = ext_link_name_check.split("{");
-              loc_re = /{(.*)}/
-              ext_loc = loc_re.exec(ext_link_name_check)[1]
+              if(ext_link_check && ext_link_name_check){
+                db_string = ext_link_check.split(",")[0];
+                db = db_string.substring(2,db_string.length-1);
+                name_list = ext_link_name_check.split("{");
+                loc_re = /{(.*)}/
+                ext_loc = loc_re.exec(ext_link_name_check)[1]
 
-              ext_data_name = name_list[0]
+                ext_data_name = name_list[0]
 
-              
-              if(ext_data_name.substring(0,10) == 'market for'){
-                ext_data_rp = ext_data_name.substring(11,ext_data_name.length)
-              }else if(ext_data_name.slice(-11) == 'production '){
-                ext_data_rp = ext_data_name.substring(0, ext_data_name.length - 12)
-              }else{
-                ext_data_rp = ext_data_name
+                
+                if(ext_data_name.substring(0,10) == 'market for'){
+                  ext_data_rp = ext_data_name.substring(11,ext_data_name.length)
+                }else if(ext_data_name.slice(-11) == 'production '){
+                  ext_data_rp = ext_data_name.substring(0, ext_data_name.length - 12)
+                }else{
+                  ext_data_rp = ext_data_name
+                }
+                
+                var ext_link_data = "<div><b>Database: </b>"+db+"</br><b>Reference product: </b>"+ext_data_rp+"</br><b>Process: </b>"+ext_data_name+"</br><b>Location: </b>"+ext_loc+"</div>"
+              } else {
+                var ext_link_data = "<div><b><i>This is a burden free input</i></b></div>"
               }
+
               
-              var ext_link_data = "<div><b>Database: </b>"+db+"</br><b>Reference product: </b>"+ext_data_rp+"</br><b>Process: </b>"+ext_data_name+"</br><b>Location: </b>"+ext_loc+"</div>"
   
     
               // create a new node in the js side version for display on screen, and initiate it
@@ -818,15 +794,35 @@ var addBiosphere = function(e, instance){
           }
         }
 
+        var full_list;
+
          function createNewTemplate(){
           current_input = $('#exchangeName').val()
-          $create_new = $('<div class="tt-footer"><p>Create new named exchange called <strong>'+current_input+'<strong></p></div>')
-          $create_new.click(function(){
-            $message.find('#ext_search_button').removeClass('disabled').prop( "disabled", false )
-            $message.find('#unit').removeClass('disabled').prop( "disabled", false )
-            
-            $('.typeahead').typeahead('close');
-          })
+          usednames = getUsedNames();
+
+          disallowed_list = $.grep(usednames, function(n,i){return $.inArray(n, full_list) == -1})
+
+          allowed = $.inArray(current_input.toLowerCase(), disallowed_list) == -1;
+            if(!allowed){
+              $create_new = $('<div class="tt-footer"><p>A different item called <strong>'+current_input+'</strong> already exists - Please choose another name</p></div>')
+            }else if($.inArray(current_input, full_list) != -1){
+              $create_new = $('<div>');
+            }else{
+              $create_new = $('<div class="tt-footer"><p>Create new named exchange called <strong>'+current_input+'</strong></p></div>')
+              $create_new.click(function(){
+                $message.find('#ext_search_button').removeClass('disabled').prop( "disabled", false )
+                $message.find('#unit').removeClass('disabled').prop( "disabled", false )
+                $('.typeahead').typeahead('close');
+          })    
+            }
+          
+          $('#exchangeName').blur(function(){
+                usednames = getUsedNames();
+                disallowed_list = $.grep(usednames, function(n,i){return $.inArray(n, full_list) == -1})
+                allowed = $.inArray(current_input.toLowerCase(), disallowed_list) == -1;
+                if(!allowed){$('#exchangeName').val("");}
+              })
+
           return $create_new
           }
 
@@ -843,7 +839,9 @@ var addBiosphere = function(e, instance){
               prefetch: {
                 url: 'biosphere.json',
                 transform: function(list) {
+                    full_list=[]
                     return $.map(list, function(item) {
+                        full_list.push(item.name.toLowerCase())
                         return {
                             name: item.name,
                             code: item.code,
@@ -923,11 +921,12 @@ var addBiosphere = function(e, instance){
         var $button = $('<button type="button" id="ext_search_button" type="submit" class="btn btn-primary" data-toggle="popover" data-placement= "right" data-trigger="hover" title="Search for biosphere data" data-content="Search for the exchange with the environment you want to model">Search for biosphere data</button>')
 
         // This is the callback function that gets run by the search box once it has a result
-        function logResult(name, code){
+        function logResult(name_string, code, unit_name, categories){
 
-          var unit_re = /\[([\w ]*)\]$/
-          var unit_name = unit_re.exec(name)[1]
+          //var unit_re = /\[([\w ]*)\]$/
+          //var unit_name = unit_re.exec(name)[1]
           var unit = unitMap[unit_name]
+          name = name_string + ' (' + categories + ') [' + unit_name + ']'
           console.log(name)
           console.log(code)
 
@@ -1006,9 +1005,11 @@ var addBiosphere = function(e, instance){
               db_string = ext_link_check.split(",")[0];
               db = db_string.substring(2,db_string.length-1);
               name_list = ext_link_name_check.split("(");
+              console.log(ext_link_check)
               ext_data_name = name_list[0];
               ext_data_categories = name_list[1].split(")")[0];
-              is_emission = ext_data_categories.substring(0,8)
+              is_emission = ext_data_categories.substring(0,8);
+              is_emission = is_emission.toLowerCase();
               if(is_emission == "emission"){
                 ext_data_type = is_emission;
                 ext_data_category_display = ext_data_categories.substring(12)
@@ -1192,11 +1193,17 @@ var search_external_dialog = function(title, callback, action){
       buttons:[{
         label:'OK',
         action: function(dialogRef){
-          var selected_process = $('#ecoinventSelect :selected').val();
-          var selected_process_name = $('#ecoinventSelect :selected').text();
+
+          bla = $('#ecoinventResults').find('.active') 
+          console.log(bla.attr('id'));
+          var selected_process = bla.attr('id'); //$('#ecoinventSelect :selected').val();
+          var selected_process_name = bla.find('.name_field').text() //$('#ecoinventSelect :selected').text();
+          var selected_unit = bla.find('.unit_field').text()
+          var selected_location = bla.find('.location_field').text()
+
           
           // run the callback function from the calling modal
-          callback(selected_process_name, selected_process);
+          callback(selected_process_name, selected_process, selected_unit, selected_location);
           // close the search modal
           dialogRef.close();
         }
@@ -1237,19 +1244,25 @@ var process_search_results = function(data){
 
   results = data['result'];
 
+  console.log(results)
+
+  rendered_table = render_results_as_table(results, data['format'])
+
+  console.log(rendered_table);
+
   var result_count = 0
   var html = ""
   for(var key in results){
     if (results.hasOwnProperty(key)) {
       var item = results[key]
       if (data['format'] == 'ecoinvent'){
-        html += '<option value = "'+ key +'">'+item['name']+' {' + item['location'] + '} [' + item['unit'] +']</option>\n'
+        html += '<option value = "'+ key +'">'+item['name']+' {' + item['location'] + '} [' + item['unit'] +']\t('+ key.split(',')[0] +')</option>\n'
       }
       else if(data['format'] == 'biosphere'){
         if(item['type'] == 'emission'){
-          html += '<option value = "'+ key +'">'+item['name']+' (emission to ' + item['categories'] + ') [' + item['unit'] +']</option>\n'
+          html += '<option value = "'+ key +'">'+item['name']+' (emission to ' + item['categories'] + ') [' + item['unit'] +']\t('+ key[0] +')</option>\n'
         }else{
-          html += '<option value = "'+ key +'">'+item['name']+' (' + item['categories'] + ') [' + item['unit'] +']</option>\n'
+          html += '<option value = "'+ key +'">'+item['name']+' (' + item['categories'] + ') [' + item['unit'] +']\t('+ key[0] +')</option>\n'
         }
       }
       ////console.log(results[key]['name'] + '\t' + results[key]['location']);
@@ -1257,22 +1270,14 @@ var process_search_results = function(data){
     }
   }
   ////console.log(result_count)
-  $('#ecoinventResults').html(
-   `
-    <div class="form-group">
-      <select class="form-control" id="ecoinventSelect" size = `+ Math.min(result_count,15) +`>
-        
-      </select>
-    </div>
-   `
-   )
-  $('#ecoinventSelect').append(html)
+  $('#ecoinventResults').html('')
+  $('#ecoinventResults').append(rendered_table)
   // when focused on the select box, change enter key to trigger OK button
-  $('#ecoinventSelect').keypress(function(e){
+  /*$('#ecoinventSelect').keypress(function(e){
     if(e.keyCode==13){
            $('#confirm_button').trigger('click');
        }
-  })
+  })*/
   
   $('#ecoinventResultsTitle').text(result_count + " results")
 }
@@ -1418,15 +1423,20 @@ var addProcess = function(instance){
         action: function(dialogRef){
             // uuid is the md5 hash of name + type (process) + unit + location (GLO)
             // its created with the hex_md5() function from the md5 script
-
+            usednames = getUsedNames();
+            console.log(usednames);
             process_name = $('#processName').val()
             output_name = $('#outputName').val()
+
+            output_name_check = $.inArray(output_name.toLowerCase(), usednames) == -1
+            process_name_check = $.inArray(process_name.toLowerCase(), usednames) == -1
+
             unit = $('#outputUnit').val()
             to_hash = process_name + 'process' + unit + 'GLO'
             //console.log(to_hash)
             uuid = hex_md5(to_hash)
             //console.log(uuid)
-            if(process_name && output_name){
+            if(process_name && output_name && output_name_check && process_name_check){
               // send the info to the python side server to create the item in the model
               newProcess(uuid, process_name, output_name, unit)
 
@@ -1442,8 +1452,14 @@ var addProcess = function(instance){
               if(!process_name){
                 $('#processName').after('<div class="red inputMessage">Please give the process a name</div>');
               }
+              if(!process_name_check){
+                $('#processName').after('<div class="red inputMessage">An item with this name already exists - please choose another name</div>');
+              }
               if(!output_name){
                 $('#outputName').after('<div class="red inputMessage">Please give the process an output</div>');
+              }
+              if(!output_name_check){
+                $('#outputName').after('<div class="red inputMessage">An item with this name already exists - please choose another name</div>');
               }
             }
             
@@ -1465,6 +1481,22 @@ var addProcess = function(instance){
 
 update_status();
  };
+
+
+var getUsedNames = function(){
+  var name_data
+  $.ajax({
+    url: "/usednames.json",
+    dataType: 'json',
+    async: false,
+    //data: myData,
+    success: function(data) {
+      name_data = data;
+    }
+  });
+  return name_data
+}
+
 
 // This is the helper function that creates a bootstrap pop up modal
 // title is the title, body is whatever goes in the box - this can (and should) be html
