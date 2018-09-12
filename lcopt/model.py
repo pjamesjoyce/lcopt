@@ -579,18 +579,18 @@ class LcoptModel(object):
 
         df = pd.DataFrame(p_set)
 
-        writer = pd.ExcelWriter(p_set_name, engine='xlsxwriter')
+        with pd.ExcelWriter(p_set_name, engine='xlsxwriter') as writer:
 
-        ps_columns = [k for k in parameter_sets.keys()]
-        #print (ps_columns)
-        my_columns = ['name', 'unit', 'id']
-        
-        my_columns.extend(ps_columns)
-        #print (my_columns)
+            ps_columns = [k for k in parameter_sets.keys()]
+            print (ps_columns)
+            my_columns = ['name', 'unit', 'id']
+            
+            my_columns.extend(ps_columns)
+            print (my_columns)
 
-        #?
+            print(df)
 
-        df.to_excel(writer, sheet_name=self.name, columns=my_columns, index=False, merge_cells=False)
+            df.to_excel(writer, sheet_name=self.name, columns=my_columns, index=False, merge_cells=False)
        
         return p_set_name
         
@@ -738,6 +738,7 @@ class LcoptModel(object):
 
         The file will be called "<ModelName>_database_export.csv"
         """
+        self.parameter_scan()
 
         csv_args = {}
         csv_args['processes'] = []
@@ -779,7 +780,8 @@ class LcoptModel(object):
                     formatted_name = self.get_name(this_code)
                     this_exchange['formatted_name'] = formatted_name
                     
-                    param_key = (this_code, output_code)
+                    param_key = (this_code,  output_code)
+                    print(param_key)
                     #param_check = (formatted_name, item['name'])
                     this_param = self.parameter_map[param_key]
                     
@@ -828,44 +830,48 @@ class LcoptModel(object):
                 if 'ext_link' in this_item.keys():
                     
                     ext_link = this_item['ext_link']
+                    if ext_link[0] != self.database['name']:
+                        db_filter = lambda x: x['name'] == ext_link[0]
+                        #print('jello')
+                        #print(db_filter)
+                        #print(list(filter(db_filter, self.external_databases)))
+                        extdb = list(filter(db_filter, self.external_databases))[0]['items']
 
-                    db_filter = lambda x: x['name'] == ext_link[0]
-                    extdb = list(filter(db_filter, self.external_databases))[0]['items']
-                    ext_item = extdb[ext_link]
-                    if ext_link[0] != self.biosphereName:
-                        ref_prod = ext_item['reference product']
-                        name = ext_item['name'].replace(" " + ref_prod, "")
-                        location = ext_item['location']
-                        system_model = "Alloc Def"
-                        process_type = "U"
-                        unit = unnormalise_unit(ext_item['unit'])
+                        ext_item = extdb[ext_link]
+                        if ext_link[0] != self.biosphereName:
+                            ref_prod = ext_item['reference product']
+                            name = ext_item['name'].replace(" " + ref_prod, "")
+                            location = ext_item['location']
+                            system_model = "Alloc Def"
+                            process_type = "U"
+                            unit = unnormalise_unit(ext_item['unit'])
 
-                        simaPro_name = "{} {{{}}}| {} | {}, {}".format(ref_prod.capitalize(), location, name, system_model, process_type)
+                            simaPro_name = "{} {{{}}}| {} | {}, {}".format(ref_prod.capitalize(), location, name, system_model, process_type)
 
-                        #print ('{} has an external link to {}'.format(this_name, simaPro_name))
-                        
-                        current['exchanges'] = [{'formatted_name': simaPro_name, 'unit': unit, 'amount': 1}]
-                    else:
-                        #print('{} has a biosphere exchange - need to sort this out'.format(this_name))
-                        #print(ext_item)
-                        unit = unnormalise_unit(ext_item['unit'])
-                        formatted_name = ext_item['name']
-
-                        if 'air' in ext_item['categories']:
-                            current['air_emissions'] = [{'formatted_name': formatted_name, 'subcompartment': '', 'unit': unit, 'amount': 1, 'comment': 'emission of {} to air'.format(formatted_name)}]
-
-                        elif 'water' in ext_item['categories']:
-                            current['water_emissions'] = [{'formatted_name': formatted_name, 'subcompartment': '', 'unit': unit, 'amount': 1, 'comment': 'emission of {} to water'.format(formatted_name)}]
-
-                        elif 'soil' in ext_item['categories']:
-                            current['soil_emissions'] = [{'formatted_name': formatted_name, 'subcompartment': '', 'unit': unit, 'amount': 1, 'comment': 'emission of {} to soil'.format(formatted_name)}]
-
+                            #print ('{} has an external link to {}'.format(this_name, simaPro_name))
+                            
+                            current['exchanges'] = [{'formatted_name': simaPro_name, 'unit': unit, 'amount': 1}]
                         else:
-                            print('{} has a biosphere exchange that isnt to air water or soil')
-                            print(ext_item)
-                    
-                else:
-                    warnings.warn('{} has NO internal or external link - it is burden free'.format(this_name))
+                            #print('{} has a biosphere exchange - need to sort this out'.format(this_name))
+                            #print(ext_item)
+                            unit = unnormalise_unit(ext_item['unit'])
+                            formatted_name = ext_item['name']
+
+                            if 'air' in ext_item['categories']:
+                                current['air_emissions'] = [{'formatted_name': formatted_name, 'subcompartment': '', 'unit': unit, 'amount': 1, 'comment': 'emission of {} to air'.format(formatted_name)}]
+
+                            elif 'water' in ext_item['categories']:
+                                current['water_emissions'] = [{'formatted_name': formatted_name, 'subcompartment': '', 'unit': unit, 'amount': 1, 'comment': 'emission of {} to water'.format(formatted_name)}]
+
+                            elif 'soil' in ext_item['categories']:
+                                current['soil_emissions'] = [{'formatted_name': formatted_name, 'subcompartment': '', 'unit': unit, 'amount': 1, 'comment': 'emission of {} to soil'.format(formatted_name)}]
+
+                            else:
+                                print('{} has a biosphere exchange that isnt to air water or soil')
+                                print(ext_item)
+                        
+                    else:
+                        warnings.warn('{} has NO internal or external link - it is burden free'.format(this_name))
                     
                 csv_args['processes'].append(current)
                 created_exchanges.append(this_name)
