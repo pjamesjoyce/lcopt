@@ -28,7 +28,7 @@ requirements:
     - pandas
     - pyyaml
     - eidl
-    - flask =0.12.2
+    - flask
     - pywin32 # [win]
     - bw2io =0.6
 
