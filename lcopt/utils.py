@@ -200,6 +200,7 @@ def lcopt_bw2_autosetup(ei_username=None, ei_password=None, write_config=None, e
                 bw2.bw2setup()
             else:
                 bw2.projects.set_current(DEFAULT_BIOSPHERE_PROJECT)
+                bw2.create_core_migrations()
                 bw2.projects.copy_project(project_name, switch=True)
 
     else:    #if store_option == 'unique':
@@ -208,6 +209,7 @@ def lcopt_bw2_autosetup(ei_username=None, ei_password=None, write_config=None, e
             lcopt_biosphere_setup()
         
         bw2.projects.set_current(DEFAULT_BIOSPHERE_PROJECT)
+        bw2.create_core_migrations()
         bw2.projects.copy_project(project_name, switch=True)
             
     if ei_username is not None and ei_password is not None:
@@ -259,6 +261,7 @@ def forwast_autosetup(forwast_name = 'forwast'):
                 bw2.bw2setup()
             else:
                 bw2.projects.set_current(DEFAULT_BIOSPHERE_PROJECT)
+                bw2.create_core_migrations()
                 bw2.projects.copy_project(project_name, switch=True)
     else:    #if store_option == 'unique':
 
@@ -266,6 +269,7 @@ def forwast_autosetup(forwast_name = 'forwast'):
             lcopt_biosphere_setup()
         
         bw2.projects.set_current(DEFAULT_BIOSPHERE_PROJECT)
+        bw2.create_core_migrations()
         bw2.projects.copy_project(project_name, switch=True)
 
     print('doing the setup')
@@ -332,6 +336,7 @@ def lcopt_bw2_forwast_setup(use_autodownload=True, forwast_path=None, db_name=FO
             lcopt_biosphere_setup()
         
         bw2.projects.set_current(DEFAULT_BIOSPHERE_PROJECT)
+        bw2.create_core_migrations()
         bw2.projects.copy_project(db_name, switch=True)
 
     bw2.BW2Package.import_file(forwast_filepath)
