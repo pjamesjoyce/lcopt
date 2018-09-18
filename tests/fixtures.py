@@ -29,7 +29,7 @@ FULL_MODEL_PATH = r"assets/{}".format(TEST_MODEL_NAME)
 
 IS_TRAVIS = 'TRAVIS' in os.environ
 
-if IS_TRAVIS:
+if IS_TRAVIS or APPVEYOR:
     EI_USERNAME = os.environ['EI_USERNAME']
     EI_PASSWORD = os.environ['EI_PASSWORD']
     WRITE_CONFIG = False
