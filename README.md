@@ -1,46 +1,22 @@
-# lcopt
-An interactive tool for creating fully parameterised Life Cycle Assessment (LCA) foreground models
+# lcopt-dev
+Development branch for the interactive tool for creating fully parameterised Life Cycle Assessment (LCA) foreground models (lcopt)
 
-[![Build Status](https://travis-ci.org/pjamesjoyce/lcopt.svg?branch=master)](https://travis-ci.org/pjamesjoyce/lcopt)
-
-[![Coverage Status](https://coveralls.io/repos/github/pjamesjoyce/lcopt/badge.svg?branch=master)](https://coveralls.io/github/pjamesjoyce/lcopt?branch=master)
-
-[![Publication](http://joss.theoj.org/papers/c0b544bee185c9ac75e96d24b8573547/status.svg)](http://joss.theoj.org/papers/c0b544bee185c9ac75e96d24b8573547)
+| 	Platform		| Status 		|
+|---------------|---------------|
+| Unix     		|  [![Build Status](https://travis-ci.org/pjamesjoyce/lcopt.svg?branch=development)](https://travis-ci.org/pjamesjoyce/lcopt) |
+| Windows  		|  [![Windows Build status](https://ci.appveyor.com/api/projects/status/vwtfm3ml7hy070ku/branch/development?svg=true)](https://ci.appveyor.com/project/pjamesjoyce/lcopt/branch/development)   |
+| Test coverage | [![Coverage Status](https://coveralls.io/repos/github/pjamesjoyce/lcopt/badge.svg?branch=development)](https://coveralls.io/github/pjamesjoyce/lcopt?branch=development) |
+|Citation | [![Publication](http://joss.theoj.org/papers/c0b544bee185c9ac75e96d24b8573547/status.svg)](http://joss.theoj.org/papers/c0b544bee185c9ac75e96d24b8573547)|
 
 Lcopt is a python module for creating fully parameterised LCA foreground models using a Flask based interactive GUI developed by [James Joyce](https://pjamesjoyce.github.io/)
 
-It integrates with SimaPro and BrightWay2
+It integrates directly with BrightWay2, and can export models to SimaPro
 
 You can export and share your model and results as an .lcoptview file, and share them with a wider audience using [lcoptview](http://lcoptview.rtfd.io)
 
 Online documentation, including full installation instructions, is available [here](http://lcopt.readthedocs.io)
 
 ## Installation
-
-### Basic Installation
-
-The easiest way to install lcopt is via conda. This ensures the version of Python (3.6) is correct, all of the dependencies are correct and there are no conflicts.
-You can also do it in only 3 commands.
-
-If you don't have conda installed yet, first install Miniconda (available [here](https://conda.io/miniconda.html))
-
-1) On the command line/console, create a new environment called lcopt:
-```
-conda create -n lcopt python=3.6
-```
-
-2) Activate the lcopt environment using one of these:
-```
-# Mac/Linux
-source activate lcopt
-# Windows
-activate lcopt
-```
-
-3) Install lcopt:
-```
-conda install -y -q -c conda-forge -c cmutel -c haasad -c pjamesjoyce lcopt
-```
 
 ### Development installation
 
@@ -63,50 +39,39 @@ conda update -c conda-forge -c cmutel -c haasad -c pjamesjoyce lcopt-dev
 
 ### Linking lcopt to brightway
 
-To analyse any of the models you create in lcopt in brightway, there's an extra installation step to set up the default project and databases.
+`lcopt-dev` makes this easy, by using the excellent [`eidl`](https://github.com/haasad/EcoInventDownLoader) developed by [Adrian Haas](https://github.com/haasad).
 
-Full details of this step are in the [documentation](https://lcopt.readthedocs.io/en/latest/1_installation.html#setting-up-brightway2-for-lcopt)
+Lcopt-dev can create models using external LCI data from any version of the [ecoinvent database](http://www.ecoinvent.org/database/ecoinvent-33/ecoinvent-33.html) (ecoinvent license required) or the [FORWAST database](http://forwast.brgm.fr/)
 
-Lcopt can create models using external LCI data from the [ecoinvent 3.3 cutoff database](http://www.ecoinvent.org/database/ecoinvent-33/ecoinvent-33.html) (ecoinvent license required) or the [FORWAST database](http://forwast.brgm.fr/)
-
-Briefly, to set up lcopt to use ecoinvent 3.3:
-
-Log into [ecoinvent.org](http://www.ecoinvent.org/login-databases.html) and go to the Files tab
-
-Download the file called `ecoinvent 3.3_cutoff_ecoSpold02.7z`
-
-Extract the file somewhere sensible on your machine, you might need to download [7-zip](http://www.7-zip.org/download.html) to extract the files.
-
-Make a note of the folder path that contains the .ecospold files, its probably `<path/extracted/to>/datasets/`
-
-Open a command line/console and type:
+If you have an ecoinvent login, open up the command line/console and type:
 
 ```
-lcopt-bw2-setup path/to/ecospold/files # use "" if there are spaces in your path
+lcopt-settings
 ```
 
-To set up lcopt to use FORWAST there's no download step (the script downloads the latest version of the database). At the command line/console simply use:
+This will launch the settings page in your web browser. Enter your username and password, and choose your preferred version of ecoinvent. Click save.
 
-```
-lcopt-bw2-setup-forwast
-```
+![Lcopt settings](./docs/assets/lcopt_dev_settings.jpg)
 
-## Example Usage
+The first time you create a model, lcopt will automatically download and set up the ecoinvent database in brightway - just be patient as it takes a while. This only needs to happen once though.
+
+If you don't have an ecoinvent login, leave this blank and lcopt will automatically download and use FORWAST instead.
+
+## Using lcopt (Easy)
 
 Below are the basic commands to get lcopt's interactive GUI up and running to create your first model. A [Getting Started](https://lcopt.readthedocs.io/en/latest/2_Getting_Started.html) guide, including a [video runthrough](https://lcopt.readthedocs.io/en/latest/2_Getting_Started.html#video), as well as [more detailed instructions](https://lcopt.readthedocs.io/en/latest/3_use.html) are available in the [online documentation](https://lcopt.readthedocs.io/).
 
-Lcopt saves models in your current working directory, so before launching it, `cd` to the folder you want to save your models in.
-
 To launch lcopt and view an example model, at the command line use:
+
 ```
 lcopt-launcher
 ```
 
 Lcopt is written in Python, so you can also use it from within a Python shell. Open up a jupyter notebook or python shell and use the following commands:
 
-### Importing Lcopt
+## Using Lcopt from the python shell/Jupyter notebooks (Recommended)
 
-To import lcopt use 
+To import lcopt use: 
 
 ```python
 from lcopt import *
@@ -120,7 +85,14 @@ To create a model, you need to create an instance of the LcoptModel class using 
 model = LcoptModel('My First Model')
 ```
 
-By default the model will be populated in the background with the details to link to the ecoinvent 3.3 datasets. If you want your model to use FORWAST instead use:
+By default the model will be populated in the background with the details to link to the version of ecoinvent you specify in settings. If you want your model to use a dirfferent version or system model you can specify this using:
+
+
+```python
+model = LcoptModel('My First Ecoinvent 3.4 APOS Model', ecoinvent_version="3.4", ecoinvent_system_model="apos")
+```
+
+Or if you want to use FORWAST instead use:
 
 ```python
 model = LcoptModel('My First FORWAST Model', useForwast=True)
@@ -128,7 +100,11 @@ model = LcoptModel('My First FORWAST Model', useForwast=True)
 
 ### Loading an existing model
 
-To load a model, make sure the file (\*.lcopt) is in your working directory and use the model name (with or without the .lcopt extension) in this command:
+Lcopt saves models in your local APPDATA directory by default. In windows this is C:\Users\[your_name]\AppData\Local\Lcopt\Lcopt.
+
+You can optionally tell lcopt to save models in your current directory using `lcopt-settings`
+
+To load a model, use the model name (with or without the .lcopt extension) or the full file path (if it's not in the current directory or defualt directory), in this command:
 
 ```python
 model = LcoptModel(load='My First Model')
@@ -169,3 +145,7 @@ You can download the citation in BibTeX for use in LaTeX or importing into [Mend
 Or use the following citation:
 
 Joyce, P.J., 2017. Lcopt - An interactive tool for creating fully parameterised Life Cycle Assessment (LCA) foreground models. Journal of Open Source Software, 2:16. doi:10.21105/joss.00339
+
+## Thanks
+
+Thanks to [Adrian Haas](https://github.com/haasad) for contributing to the ongoing development of lcopt!

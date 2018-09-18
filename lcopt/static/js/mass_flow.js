@@ -13,7 +13,7 @@ function mass_flow(ps){
       height = full_height - margin.top - margin.bottom;
 
   // format variables
-  var formatNumber = d3.format(",.0f"),    // zero decimal places
+  var formatNumber = d3.format(",.2r"),    // zero decimal places
       format = function(d) { return formatNumber(d) + " " + units; };
       color = d3.scaleOrdinal(d3.schemeCategory20);
 
