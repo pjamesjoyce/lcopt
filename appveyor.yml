@@ -9,10 +9,6 @@ environment:
       PYTHON_ARCH: "64"
       CONDA_PY: "36"
       CONDA_ENV_PY: "3.6"
-  EI_USERNAME:
-    secure: "r1+104LjBo/mHWZDzeDOfA=="
-  EI_PASSWORD:
-    secure: "6WqHN8kuDL4H7Cuc9+V0eA=="
 
 install:
   - "powershell .\\ci\\appveyor\\install_miniconda.ps1"

@@ -68,7 +68,7 @@ def main():
         root.withdraw()
         model_name = simpledialog.askstring("New", "Enter a name for your model")
         if model_name:
-            if ECOINVENT_USER:
+            if ECOINVENT_USER or CHECK_ECOINVENT:
                 model = LcoptModel(model_name)
             else:
                 model = LcoptModel(model_name, useForwast=True)
