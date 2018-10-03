@@ -126,12 +126,18 @@ class LcoptModel(object):
 
         # If ecoinvent isn't specified in the setup, look for a default in the config and fall back on default set in constants
         if ecoinvent_version is None:
-            ecoinvent_version = str(storage.ecoinvent_version)
+            self.ecoinvent_version = str(storage.ecoinvent_version)
+        else:
+            self.ecoinvent_version = ecoinvent_version
 
         if ecoinvent_system_model is None:
-            ecoinvent_system_model = storage.ecoinvent_system_model
+            self.ecoinvent_system_model = storage.ecoinvent_system_model
+        else:
+            self.ecoinvent_system_model = ecoinvent_system_model
 
-        ei_name = "Ecoinvent{}_{}_{}".format(*ecoinvent_version.split("."), ecoinvent_system_model) #"Ecoinvent3_3_cutoff"
+        ei_name = "Ecoinvent{}_{}_{}".format(*self.ecoinvent_version.split("."), self.ecoinvent_system_model) #"Ecoinvent3_3_cutoff"
+
+        print(ei_name)
         
         self.ecoinventName = ei_name # "Ecoinvent3_3_cutoff"
         self.biosphereName = "biosphere3"
@@ -164,13 +170,14 @@ class LcoptModel(object):
 
         # set the save option, this defaults to the config value but should be overwritten on load for existing models
         self.save_option = storage.save_option
+        
+        if load is not None:
+            self.load(load)
+            print(self.ecoinventName)
 
         # check if lcopt is set up, and if not, set it up
         self.lcopt_setup(ei_username=ei_username, ei_password=ei_password, write_config=write_config,
-                         ecoinvent_version=ecoinvent_version, ecoinvent_system_model = ecoinvent_system_model)
-
-        if load is not None:
-            self.load(load)
+                         ecoinvent_version=self.ecoinvent_version, ecoinvent_system_model = self.ecoinvent_system_model)
 
         asset_path = storage.search_index_dir #os.path.join(os.path.dirname(os.path.realpath(__file__)), 'assets')
         ecoinventPath = os.path.join(asset_path, self.ecoinventFilename)
@@ -199,6 +206,7 @@ class LcoptModel(object):
         self.parameter_scan()
 
     def lcopt_setup(self, ei_username, ei_password, write_config, ecoinvent_version, ecoinvent_system_model):
+        print(ecoinvent_version, ecoinvent_system_model)
         if storage.project_type == 'single':
 
             if self.useForwast:
@@ -288,17 +296,36 @@ class LcoptModel(object):
                       'useForwast',
                       'base_project_name',
                       'save_option',
-                      'allow_allocation'
+                      'allow_allocation',
+                      'ecoinvent_version',
+                      'ecoinvent_system_model',
                       ]
 
         for attr in attributes:
 
             if hasattr(savedInstance, attr):
                 setattr(self, attr, getattr(savedInstance, attr))
+            else:
+                print ("can't set {}".format(attr))
 
         # use legacy save option if this is missing from the model
         if not hasattr(savedInstance, 'save_option'):
             setattr(self, 'save_option', LEGACY_SAVE_OPTION)
+
+        # figure out ecoinvent version and system model if these are missing from the model
+        if not hasattr(savedInstance, 'ecoinvent_version') or not hasattr(savedInstance, 'ecoinvent_system_model'):
+            
+            parts = savedInstance.ecoinventName.split("_")
+            main_version = parts[0][-1]
+            sub_version = parts[1]
+            system_model = parts[2]
+
+            print(parts)
+
+            setattr(self, 'ecoinvent_version', '{}.{}'.format(main_version, sub_version))
+            setattr(self, 'ecoinvent_system_model', system_model)
+
+
 
     def create_product (self, name, location='GLO', unit='kg', **kwargs):
 
