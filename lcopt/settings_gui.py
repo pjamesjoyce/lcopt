@@ -13,7 +13,7 @@ KNOWN_SETTINGS = {
 KNOWN_SETTINGS_META = {
                         ('ecoinvent', 'username'): {'type':'text', 'label':'username'},
                         ('ecoinvent', 'password'): {'type': 'password', 'label':'password'},
-                        ('ecoinvent', 'version'): {'type':'select', 'label':'version', 'options':[('3.01', '3.01'),('3.1', '3.1'),('3.2', '3.2'),('3.3', '3.3'),('3.4', '3.4'),]},
+                        ('ecoinvent', 'version'): {'type':'select', 'label':'version', 'options':[('3.2', '3.2'),('3.3', '3.3'),('3.4', '3.4'),('3.5', '3.5')]},
                         ('ecoinvent', 'system_model'): {'type':'select', 'label':'system model', 'options':[('cutoff', 'Cut-off'), ('apos', 'Allocation at the Point of Substitution (APOS)'), ('consequential', 'Consequential')]},
                         ('model_storage', 'location'): {'type':'select', 'label':'save location', 'options':[('appdir', 'Application directory'), ('curdir', 'Current directory')]},
                         ('model_storage', 'project'): {'type':'select', 'label':'project setup', 'options':[('single', 'One project containing all lcopt models'), ('unique', 'Each lcopt model has a separate project')]},
