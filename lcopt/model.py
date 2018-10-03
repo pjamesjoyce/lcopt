@@ -166,7 +166,39 @@ class LcoptModel(object):
         self.save_option = storage.save_option
 
         # check if lcopt is set up, and if not, set it up
+        self.lcopt_setup(ei_username=ei_username, ei_password=ei_password, write_config=write_config,
+                         ecoinvent_version=ecoinvent_version, ecoinvent_system_model = ecoinvent_system_model)
 
+        if load is not None:
+            self.load(load)
+
+        asset_path = storage.search_index_dir #os.path.join(os.path.dirname(os.path.realpath(__file__)), 'assets')
+        ecoinventPath = os.path.join(asset_path, self.ecoinventFilename)
+        biospherePath = os.path.join(asset_path, self.biosphereFilename)
+        forwastPath = os.path.join(asset_path, self.forwastFilename)
+
+        # Try and initialise the external databases if they're not there already
+        if self.useForwast:
+            if self.forwastName not in [x['name'] for x in self.external_databases]:
+                self.import_external_db(forwastPath, 'technosphere')
+
+        else:
+            if self.ecoinventName not in [x['name'] for x in self.external_databases]:
+                self.import_external_db(ecoinventPath, 'technosphere')
+
+        if self.biosphereName not in [x['name'] for x in self.external_databases]:
+            self.import_external_db(biospherePath, 'biosphere')
+
+        # create partial version of io functions
+        self.add_to_database = partial(add_to_specified_database, database=self.database)
+        self.get_exchange = partial(get_exchange_from_database, database=self.database)
+        self.exists_in_database = partial(exists_in_specific_database, database=self.database)
+        self.get_name = partial(get_exchange_name_from_database, database=self.database)
+        self.get_unit = partial(get_exchange_unit_from_database, database=self.database)
+
+        self.parameter_scan()
+
+    def lcopt_setup(self, ei_username, ei_password, write_config, ecoinvent_version, ecoinvent_system_model):
         if storage.project_type == 'single':
 
             if self.useForwast:
@@ -197,36 +229,7 @@ class LcoptModel(object):
 
         else:
             forwast_autosetup()
-         
-        if load is not None:
-            self.load(load)
-                    
-        asset_path = storage.search_index_dir #os.path.join(os.path.dirname(os.path.realpath(__file__)), 'assets')
-        ecoinventPath = os.path.join(asset_path, self.ecoinventFilename)
-        biospherePath = os.path.join(asset_path, self.biosphereFilename)
-        forwastPath = os.path.join(asset_path, self.forwastFilename)
 
-        # Try and initialise the external databases if they're not there already
-        if self.useForwast:
-            if self.forwastName not in [x['name'] for x in self.external_databases]:
-                self.import_external_db(forwastPath, 'technosphere')
-            
-        else:
-            if self.ecoinventName not in [x['name'] for x in self.external_databases]:
-                self.import_external_db(ecoinventPath, 'technosphere')
-
-        if self.biosphereName not in [x['name'] for x in self.external_databases]:
-            self.import_external_db(biospherePath, 'biosphere')
-
-        # create partial version of io functions
-        self.add_to_database = partial(add_to_specified_database, database=self.database)
-        self.get_exchange = partial(get_exchange_from_database, database=self.database)
-        self.exists_in_database = partial(exists_in_specific_database, database=self.database)
-        self.get_name = partial(get_exchange_name_from_database, database=self.database)
-        self.get_unit = partial(get_exchange_unit_from_database, database=self.database)
-
-        self.parameter_scan()
-        
     def rename(self, newname):
         """change the name of the model (i.e. what the .lcopt file will be saved as)"""
         self.name = newname
