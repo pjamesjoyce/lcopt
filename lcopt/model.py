@@ -126,12 +126,18 @@ class LcoptModel(object):
 
         # If ecoinvent isn't specified in the setup, look for a default in the config and fall back on default set in constants
         if ecoinvent_version is None:
-            ecoinvent_version = str(storage.ecoinvent_version)
+            self.ecoinvent_version = str(storage.ecoinvent_version)
+        else:
+            self.ecoinvent_version = ecoinvent_version
 
         if ecoinvent_system_model is None:
-            ecoinvent_system_model = storage.ecoinvent_system_model
+            self.ecoinvent_system_model = storage.ecoinvent_system_model
+        else:
+            self.ecoinvent_system_model = ecoinvent_system_model
 
-        ei_name = "Ecoinvent{}_{}_{}".format(*ecoinvent_version.split("."), ecoinvent_system_model) #"Ecoinvent3_3_cutoff"
+        ei_name = "Ecoinvent{}_{}_{}".format(*self.ecoinvent_version.split("."), self.ecoinvent_system_model) #"Ecoinvent3_3_cutoff"
+
+        print(ei_name)
         
         self.ecoinventName = ei_name # "Ecoinvent3_3_cutoff"
         self.biosphereName = "biosphere3"
@@ -164,43 +170,15 @@ class LcoptModel(object):
 
         # set the save option, this defaults to the config value but should be overwritten on load for existing models
         self.save_option = storage.save_option
-
-        # check if lcopt is set up, and if not, set it up
-
-        if storage.project_type == 'single':
-
-            if self.useForwast:
-
-                forwast_autosetup()
-
-            else:
-
-                self.base_project_name = storage.single_project_name
-
-                #if bw2_project_exists(self.base_project_name):
-                lcopt_bw2_autosetup(ei_username = ei_username, ei_password = ei_password, write_config=write_config, ecoinvent_version=ecoinvent_version, ecoinvent_system_model = ecoinvent_system_model, overwrite=False)
-
-        elif not self.useForwast:
-
-            self.base_project_name = DEFAULT_PROJECT_STEM + ei_name
-            old_default = DEFAULT_PROJECT_STEM[:-1]
-            is_default = ecoinvent_version == "3.3" and ecoinvent_system_model == "cutoff"
-
-            if bw2_project_exists(self.base_project_name):
-                # make sure the search index file is there too
-                write_search_index(self.base_project_name, ei_name)
-            elif is_default and bw2_project_exists(old_default):
-                upgrade_old_default()
-            else:
-                print("Lcopt needs to be set up to integrate with brightway2 - this only needs to be done once per version/system model combo")
-                lcopt_bw2_autosetup(ei_username = ei_username, ei_password = ei_password, write_config=write_config, ecoinvent_version=ecoinvent_version, ecoinvent_system_model = ecoinvent_system_model, overwrite=True)
-
-        else:
-            forwast_autosetup()
-         
+        
         if load is not None:
             self.load(load)
-                    
+            print(self.ecoinventName)
+
+        # check if lcopt is set up, and if not, set it up
+        self.lcopt_setup(ei_username=ei_username, ei_password=ei_password, write_config=write_config,
+                         ecoinvent_version=self.ecoinvent_version, ecoinvent_system_model = self.ecoinvent_system_model)
+
         asset_path = storage.search_index_dir #os.path.join(os.path.dirname(os.path.realpath(__file__)), 'assets')
         ecoinventPath = os.path.join(asset_path, self.ecoinventFilename)
         biospherePath = os.path.join(asset_path, self.biosphereFilename)
@@ -210,7 +188,7 @@ class LcoptModel(object):
         if self.useForwast:
             if self.forwastName not in [x['name'] for x in self.external_databases]:
                 self.import_external_db(forwastPath, 'technosphere')
-            
+
         else:
             if self.ecoinventName not in [x['name'] for x in self.external_databases]:
                 self.import_external_db(ecoinventPath, 'technosphere')
@@ -226,7 +204,40 @@ class LcoptModel(object):
         self.get_unit = partial(get_exchange_unit_from_database, database=self.database)
 
         self.parameter_scan()
-        
+
+    def lcopt_setup(self, ei_username, ei_password, write_config, ecoinvent_version, ecoinvent_system_model):
+        print(ecoinvent_version, ecoinvent_system_model)
+        if storage.project_type == 'single':
+
+            if self.useForwast:
+
+                forwast_autosetup()
+
+            else:
+
+                self.base_project_name = storage.single_project_name
+
+                #if bw2_project_exists(self.base_project_name):
+                lcopt_bw2_autosetup(ei_username = ei_username, ei_password = ei_password, write_config=write_config, ecoinvent_version=ecoinvent_version, ecoinvent_system_model = ecoinvent_system_model, overwrite=False)
+
+        elif not self.useForwast:
+
+            self.base_project_name = DEFAULT_PROJECT_STEM + self.ecoinventName
+            old_default = DEFAULT_PROJECT_STEM[:-1]
+            is_default = ecoinvent_version == "3.3" and ecoinvent_system_model == "cutoff"
+
+            if bw2_project_exists(self.base_project_name):
+                # make sure the search index file is there too
+                write_search_index(self.base_project_name, self.ecoinventName)
+            elif is_default and bw2_project_exists(old_default):
+                upgrade_old_default()
+            else:
+                print("Lcopt needs to be set up to integrate with brightway2 - this only needs to be done once per version/system model combo")
+                lcopt_bw2_autosetup(ei_username = ei_username, ei_password = ei_password, write_config=write_config, ecoinvent_version=ecoinvent_version, ecoinvent_system_model = ecoinvent_system_model, overwrite=True)
+
+        else:
+            forwast_autosetup()
+
     def rename(self, newname):
         """change the name of the model (i.e. what the .lcopt file will be saved as)"""
         self.name = newname
@@ -285,17 +296,36 @@ class LcoptModel(object):
                       'useForwast',
                       'base_project_name',
                       'save_option',
-                      'allow_allocation'
+                      'allow_allocation',
+                      'ecoinvent_version',
+                      'ecoinvent_system_model',
                       ]
 
         for attr in attributes:
 
             if hasattr(savedInstance, attr):
                 setattr(self, attr, getattr(savedInstance, attr))
+            else:
+                print ("can't set {}".format(attr))
 
         # use legacy save option if this is missing from the model
         if not hasattr(savedInstance, 'save_option'):
             setattr(self, 'save_option', LEGACY_SAVE_OPTION)
+
+        # figure out ecoinvent version and system model if these are missing from the model
+        if not hasattr(savedInstance, 'ecoinvent_version') or not hasattr(savedInstance, 'ecoinvent_system_model'):
+            
+            parts = savedInstance.ecoinventName.split("_")
+            main_version = parts[0][-1]
+            sub_version = parts[1]
+            system_model = parts[2]
+
+            print(parts)
+
+            setattr(self, 'ecoinvent_version', '{}.{}'.format(main_version, sub_version))
+            setattr(self, 'ecoinvent_system_model', system_model)
+
+
 
     def create_product (self, name, location='GLO', unit='kg', **kwargs):
 

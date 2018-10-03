@@ -30,7 +30,7 @@ requirements:
     - eidl
     - flask
     - pywin32 # [win]
-    - bw2io =0.6
+    - bw2io >=0.7.1
 
 about:
   home: https://github.com/pjamesjoyce/lcopt/
