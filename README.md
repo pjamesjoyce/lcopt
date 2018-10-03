@@ -24,16 +24,17 @@ Lcopt is continuing to develop, with new features and extensions being added. Th
 
 It's recommended that you create a new environment separate from the one with `lcopt` in to install `lcopt-dev`, as they will overwrite one another.
 
-Create a dev environment like this
+Create and activate a dev environment at the command line/terminal like this
 
 ```
 conda create -y -n lcopt-dev -c conda-forge -c cmutel -c haasad -c pjamesjoyce lcopt-dev
+activate lcopt-dev    # Note, use "source activate lcopt-dev" on Unix
 ```
 
-Or to get the most up to date version of `lcopt-dev`:
+Or to get the most up to date version of `lcopt-dev` in your existing environment:
 
 ```
-activate lcopt-dev
+activate lcopt-dev    # Note, use "source activate lcopt-dev" on Unix
 conda update -c conda-forge -c cmutel -c haasad -c pjamesjoyce lcopt-dev
 ```
 
