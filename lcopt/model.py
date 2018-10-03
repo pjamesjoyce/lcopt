@@ -214,13 +214,13 @@ class LcoptModel(object):
 
         elif not self.useForwast:
 
-            self.base_project_name = DEFAULT_PROJECT_STEM + ei_name
+            self.base_project_name = DEFAULT_PROJECT_STEM + self.ecoinventName
             old_default = DEFAULT_PROJECT_STEM[:-1]
             is_default = ecoinvent_version == "3.3" and ecoinvent_system_model == "cutoff"
 
             if bw2_project_exists(self.base_project_name):
                 # make sure the search index file is there too
-                write_search_index(self.base_project_name, ei_name)
+                write_search_index(self.base_project_name, self.ecoinventName)
             elif is_default and bw2_project_exists(old_default):
                 upgrade_old_default()
             else:
