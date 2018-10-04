@@ -142,12 +142,12 @@ def compute_layout(fs):
     return sandbox
 
 
-def create_LcoptModel_from_BW2Package(import_filename):
+def create_LcoptModel_from_BW2Package(import_filename, autosetup=True):
     
     import_data = BW2Package.load_file(import_filename)
     orig_db = import_data[0]['data']
     db_name = import_data[0]['name']
-    model = LcoptModel(db_name)
+    model = LcoptModel(db_name, autosetup=autosetup)
     db = deepcopy(orig_db)
 
     temp_param_set = []

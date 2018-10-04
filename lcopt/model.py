@@ -14,7 +14,7 @@ from lcopt.analysis import Bw2Analysis
 from lcopt.data_store import storage
 from .export_disclosure import export_disclosure
 
-from .utils import check_for_config, lcopt_bw2_autosetup, bw2_project_exists, write_search_index, upgrade_old_default, lcopt_bw2_forwast_setup, forwast_autosetup
+from .utils import check_for_config, lcopt_bw2_autosetup, bw2_project_exists, write_search_index, upgrade_old_default, lcopt_bw2_forwast_setup, forwast_autosetup, fix_mac_path_escapes
 from .constants import DEFAULT_PROJECT_STEM, FORWAST_PROJECT_NAME, DEFAULT_ECOINVENT_VERSION, DEFAULT_ECOINVENT_SYSTEM_MODEL, LEGACY_SAVE_OPTION
 # This is a copy straight from bw2data.query, extracted so as not to cause a dependency.
 #from lcopt.bw2query import Query, Dictionaries, Filter
@@ -101,7 +101,7 @@ class LcoptModel(object):
 
     """
 
-    def __init__(self, name=hex(random.getrandbits(128))[2:-1], load=None, useForwast=False, ecoinvent_version=None, ecoinvent_system_model=None, ei_username = None, ei_password = None, write_config=None):
+    def __init__(self, name=hex(random.getrandbits(128))[2:-1], load=None, useForwast=False, ecoinvent_version=None, ecoinvent_system_model=None, ei_username = None, ei_password = None, write_config=None, autosetup=True):
         super(LcoptModel, self).__init__()
 
         # name the instance
@@ -137,8 +137,6 @@ class LcoptModel(object):
 
         ei_name = "Ecoinvent{}_{}_{}".format(*self.ecoinvent_version.split("."), self.ecoinvent_system_model) #"Ecoinvent3_3_cutoff"
 
-        print(ei_name)
-        
         self.ecoinventName = ei_name # "Ecoinvent3_3_cutoff"
         self.biosphereName = "biosphere3"
         self.ecoinventFilename = ei_name # "ecoinvent3_3"
@@ -173,13 +171,15 @@ class LcoptModel(object):
         
         if load is not None:
             self.load(load)
-            print(self.ecoinventName)
 
         # check if lcopt is set up, and if not, set it up
-        self.lcopt_setup(ei_username=ei_username, ei_password=ei_password, write_config=write_config,
-                         ecoinvent_version=self.ecoinvent_version, ecoinvent_system_model = self.ecoinvent_system_model)
+        is_setup = self.lcopt_setup(ei_username=ei_username, ei_password=ei_password, write_config=write_config,
+                         ecoinvent_version=self.ecoinvent_version, ecoinvent_system_model = self.ecoinvent_system_model, autosetup=autosetup)
 
-        asset_path = storage.search_index_dir #os.path.join(os.path.dirname(os.path.realpath(__file__)), 'assets')
+        if not is_setup:
+            warnings.warn('lcopt autosetup did not run')
+
+        asset_path = fix_mac_path_escapes(storage.search_index_dir) #os.path.join(os.path.dirname(os.path.realpath(__file__)), 'assets')
         ecoinventPath = os.path.join(asset_path, self.ecoinventFilename)
         biospherePath = os.path.join(asset_path, self.biosphereFilename)
         forwastPath = os.path.join(asset_path, self.forwastFilename)
@@ -205,8 +205,10 @@ class LcoptModel(object):
 
         self.parameter_scan()
 
-    def lcopt_setup(self, ei_username, ei_password, write_config, ecoinvent_version, ecoinvent_system_model):
-        print(ecoinvent_version, ecoinvent_system_model)
+    def lcopt_setup(self, ei_username, ei_password, write_config, ecoinvent_version, ecoinvent_system_model, autosetup):
+        if not autosetup:
+            return False
+
         if storage.project_type == 'single':
 
             if self.useForwast:
@@ -238,6 +240,8 @@ class LcoptModel(object):
         else:
             forwast_autosetup()
 
+        return True
+
     def rename(self, newname):
         """change the name of the model (i.e. what the .lcopt file will be saved as)"""
         self.name = newname
@@ -258,6 +262,9 @@ class LcoptModel(object):
                 storage.model_dir,
                 '{}.lcopt'.format(self.name)
             )
+        
+        model_path = fix_mac_path_escapes(model_path)
+
         with open(model_path, 'wb') as model_file:
             pickle.dump(self, model_file)
 
@@ -268,7 +275,7 @@ class LcoptModel(object):
         try:
             savedInstance = pickle.load(open("{}".format(filename), "rb"))
         except FileNotFoundError:
-            savedInstance = pickle.load(open(os.path.join(storage.model_dir, "{}".format(filename)), "rb"))
+            savedInstance = pickle.load(open(fix_mac_path_escapes(os.path.join(storage.model_dir, "{}".format(filename))), "rb"))
         
         attributes = ['name',
                       'database',
@@ -306,7 +313,8 @@ class LcoptModel(object):
             if hasattr(savedInstance, attr):
                 setattr(self, attr, getattr(savedInstance, attr))
             else:
-                print ("can't set {}".format(attr))
+                pass
+                #print ("can't set {}".format(attr))
 
         # use legacy save option if this is missing from the model
         if not hasattr(savedInstance, 'save_option'):
@@ -320,7 +328,7 @@ class LcoptModel(object):
             sub_version = parts[1]
             system_model = parts[2]
 
-            print(parts)
+            #print(parts)
 
             setattr(self, 'ecoinvent_version', '{}.{}'.format(main_version, sub_version))
             setattr(self, 'ecoinvent_system_model', system_model)
@@ -337,7 +345,7 @@ class LcoptModel(object):
 
         if not self.exists_in_database(new_product['code']):
             self.add_to_database(new_product)
-            print ('{} added to database'.format(name))
+            #print ('{} added to database'.format(name))
             return self.get_exchange(name)
         else:
             #print('{} already exists in this database'.format(name))
@@ -416,10 +424,10 @@ class LcoptModel(object):
         problem_functions = self.check_param_function_use(param_id)
         
         if len(problem_functions) != 0:
-            print('the following functions have been removed:')
+            #print('the following functions have been removed:')
             for p in problem_functions:
                 self.params[p[0]]['function'] = None
-                print(p)
+                #print(p)
 
         process['exchanges'] = new_exchanges
 
@@ -555,11 +563,11 @@ class LcoptModel(object):
         kill_list = []
         for k in self.params.keys():
             if k not in param_check_list:
-                print("{} may be obsolete".format(k))
+                #print("{} may be obsolete".format(k))
                 kill_list.append(k)
 
         for p in kill_list:
-            print("deleting parameter {}".format(p))
+            #print("deleting parameter {}".format(p))
             del self.params[p]
 
         return True
@@ -612,13 +620,13 @@ class LcoptModel(object):
         with pd.ExcelWriter(p_set_name, engine='xlsxwriter') as writer:
 
             ps_columns = [k for k in parameter_sets.keys()]
-            print (ps_columns)
+            #print (ps_columns)
             my_columns = ['name', 'unit', 'id']
             
             my_columns.extend(ps_columns)
-            print (my_columns)
+            #print (my_columns)
 
-            print(df)
+            #print(df)
 
             df.to_excel(writer, sheet_name=self.name, columns=my_columns, index=False, merge_cells=False)
        
@@ -811,7 +819,7 @@ class LcoptModel(object):
                     this_exchange['formatted_name'] = formatted_name
                     
                     param_key = (this_code,  output_code)
-                    print(param_key)
+                    #print(param_key)
                     #param_check = (formatted_name, item['name'])
                     this_param = self.parameter_map[param_key]
                     
@@ -862,9 +870,6 @@ class LcoptModel(object):
                     ext_link = this_item['ext_link']
                     if ext_link[0] != self.database['name']:
                         db_filter = lambda x: x['name'] == ext_link[0]
-                        #print('jello')
-                        #print(db_filter)
-                        #print(list(filter(db_filter, self.external_databases)))
                         extdb = list(filter(db_filter, self.external_databases))[0]['items']
 
                         ext_item = extdb[ext_link]

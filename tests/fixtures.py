@@ -2,8 +2,11 @@ import pytest
 from lcopt import LcoptModel
 from lcopt.interact import FlaskSandbox
 from lcopt.utils import DEFAULT_DB_NAME, check_for_config
+from lcopt.data_store import storage
+from lcopt.constants import ASSET_PATH
 import os
 import brightway2 as bw2
+import shutil
 
 MODEL_NAME = 'modelName'
 
@@ -30,29 +33,67 @@ FULL_MODEL_PATH = r"assets/{}".format(TEST_MODEL_NAME)
 IS_TRAVIS = 'TRAVIS' in os.environ
 IS_APPVEYOR = 'APPVEYOR' in os.environ
 
-if IS_TRAVIS or IS_APPVEYOR:
-    EI_USERNAME = os.environ['EI_USERNAME']
-    EI_PASSWORD = os.environ['EI_PASSWORD']
-    WRITE_CONFIG = False
+if IS_TRAVIS:
+    IS_PR = os.environ.get('TRAVIS_PULL_REQUEST', False) != False
+elif IS_APPVEYOR:
+    IS_PR = os.environ.get('APPVEYOR_PULL_REQUEST_NUMBER', False) != False
 else:
-    config = check_for_config()
-    if config is not None:
-        if "ecoinvent" in config:
-            EI_USERNAME = config['ecoinvent'].get('username')
-            EI_PASSWORD = config['ecoinvent'].get('password')
-            WRITE_CONFIG = False
+    IS_PR = False
 
+AUTOSETUP = not IS_PR
+
+if not IS_PR:
+
+    if IS_TRAVIS or IS_APPVEYOR:
+        EI_USERNAME = os.environ['EI_USERNAME']
+        EI_PASSWORD = os.environ['EI_PASSWORD']
+        WRITE_CONFIG = False
+    else:
+        config = check_for_config()
+        if config is not None:
+            if "ecoinvent" in config:
+                EI_USERNAME = config['ecoinvent'].get('username')
+                EI_PASSWORD = config['ecoinvent'].get('password')
+                WRITE_CONFIG = False
+else:
+    EI_USERNAME = None
+    EI_PASSWORD = None
+    WRITE_CONFIG = False
+
+# copy the default search index
+def copy_ecoinvent_si():
+    
+    EI_SI = 'ecoinvent3_3.pickle'
+    NEW_EI_SI = 'Ecoinvent3_3_cutoff.pickle'
+    
+    if not os.path.isfile(os.path.join(storage.search_index_dir, NEW_EI_SI)):
+        shutil.copy(os.path.join(ASSET_PATH, EI_SI), os.path.join(storage.search_index_dir, NEW_EI_SI))
+        return True
+
+    return False
+
+DID_COPY_SI = copy_ecoinvent_si()
+
+print(DID_COPY_SI)
 
 @pytest.fixture
 def blank_model():
-    
-    return LcoptModel(MODEL_NAME, ei_username=EI_USERNAME, ei_password=EI_PASSWORD, write_config=WRITE_CONFIG)
+
+    return LcoptModel(MODEL_NAME, ei_username=EI_USERNAME, ei_password=EI_PASSWORD, write_config=WRITE_CONFIG, autosetup=AUTOSETUP)
+
+@pytest.fixture
+def eidl_model():
+
+    if not IS_PR:
+        return LcoptModel(MODEL_NAME, ei_username=EI_USERNAME, ei_password=EI_PASSWORD, write_config=WRITE_CONFIG, autosetup=True)
+    else:
+        return None
 
 
 @pytest.fixture
 def forwast_model():
 
-    return LcoptModel(MODEL_NAME, useForwast=True)
+    return LcoptModel(MODEL_NAME, useForwast=True, autosetup=AUTOSETUP)
 
 @pytest.fixture
 def populated_model(blank_model):
@@ -126,7 +167,7 @@ def fully_formed_model():
     
     script_path = os.path.dirname(os.path.realpath(__file__))
     loadpath = os.path.join(script_path, FULL_MODEL_PATH)
-    return LcoptModel(load = loadpath, ei_username=EI_USERNAME, ei_password=EI_PASSWORD, write_config=WRITE_CONFIG)
+    return LcoptModel(load = loadpath, ei_username=EI_USERNAME, ei_password=EI_PASSWORD, write_config=WRITE_CONFIG, autosetup=AUTOSETUP)
 
 @pytest.fixture
 def blank_app(blank_model):
