@@ -2,6 +2,7 @@ import pytest
 from lcopt import LcoptModel
 from lcopt.interact import FlaskSandbox
 from lcopt.utils import DEFAULT_DB_NAME, check_for_config
+from lcopt.data_store import storage
 import os
 import brightway2 as bw2
 
