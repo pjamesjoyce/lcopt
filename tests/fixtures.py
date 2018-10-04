@@ -62,21 +62,27 @@ else:
 
 # copy the default search index
 def copy_ecoinvent_si():
+    
     EI_SI = 'ecoinvent3_3.pickle'
     NEW_EI_SI = 'Ecoinvent3_3_cutoff.pickle'
+    
     if not os.path.isfile(os.path.join(storage.search_index_dir, NEW_EI_SI)):
         shutil.copy(os.path.join(ASSET_PATH, EI_SI), os.path.join(storage.search_index_dir, NEW_EI_SI))
+        return True
+
+    return False
+
+DID_COPY_SI = copy_ecoinvent_si()
+
+print(DID_COPY_SI)
 
 @pytest.fixture
 def blank_model():
 
-    copy_ecoinvent_si()
     return LcoptModel(MODEL_NAME, ei_username=EI_USERNAME, ei_password=EI_PASSWORD, write_config=WRITE_CONFIG, autosetup=AUTOSETUP)
 
 @pytest.fixture
 def eidl_model():
-
-    copy_ecoinvent_si()
 
     if not IS_PR:
         return LcoptModel(MODEL_NAME, ei_username=EI_USERNAME, ei_password=EI_PASSWORD, write_config=WRITE_CONFIG, autosetup=True)
