@@ -1,5 +1,5 @@
 from fixtures import *
-
+import warnings
 
 def test_createModel(blank_model):
     
@@ -11,6 +11,12 @@ def test_createForwastModel(forwast_model):
     assert isinstance(forwast_model, LcoptModel)
     assert forwast_model.name == MODEL_NAME
 
+def test_createEidlModel(eidl_model):
+    if not IS_PR:
+        assert isinstance(eidl_model, LcoptModel)
+        assert eidl_model.name == MODEL_NAME
+    else:
+        warnings.warn('eidl_model not tested')
 
 def test_rename(blank_model):
     blank_model.rename('new_name')
