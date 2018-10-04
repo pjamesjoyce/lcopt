@@ -2,8 +2,11 @@ import pytest
 from lcopt import LcoptModel
 from lcopt.interact import FlaskSandbox
 from lcopt.utils import DEFAULT_DB_NAME, check_for_config
+from lcopt.data_store import storage
+from lcopt.constants import ASSET_PATH
 import os
 import brightway2 as bw2
+import shutil
 
 MODEL_NAME = 'modelName'
 
@@ -31,9 +34,9 @@ IS_TRAVIS = 'TRAVIS' in os.environ
 IS_APPVEYOR = 'APPVEYOR' in os.environ
 
 if IS_TRAVIS:
-    IS_PR = os.environ['TRAVIS_PULL_REQUEST'] != False
+    IS_PR = os.environ.get('TRAVIS_PULL_REQUEST', False) != False
 elif IS_APPVEYOR:
-    IS_PR = os.environ['APPVEYOR_PULL_REQUEST_NUMBER'] != False
+    IS_PR = os.environ.get('APPVEYOR_PULL_REQUEST_NUMBER', False) != False
 else:
     IS_PR = False
 
@@ -57,13 +60,30 @@ else:
     EI_PASSWORD = None
     WRITE_CONFIG = False
 
+# copy the default search index
+def copy_ecoinvent_si():
+    
+    EI_SI = 'ecoinvent3_3.pickle'
+    NEW_EI_SI = 'Ecoinvent3_3_cutoff.pickle'
+    
+    if not os.path.isfile(os.path.join(storage.search_index_dir, NEW_EI_SI)):
+        shutil.copy(os.path.join(ASSET_PATH, EI_SI), os.path.join(storage.search_index_dir, NEW_EI_SI))
+        return True
+
+    return False
+
+DID_COPY_SI = copy_ecoinvent_si()
+
+print(DID_COPY_SI)
+
 @pytest.fixture
 def blank_model():
-    
+
     return LcoptModel(MODEL_NAME, ei_username=EI_USERNAME, ei_password=EI_PASSWORD, write_config=WRITE_CONFIG, autosetup=AUTOSETUP)
 
 @pytest.fixture
 def eidl_model():
+
     if not IS_PR:
         return LcoptModel(MODEL_NAME, ei_username=EI_USERNAME, ei_password=EI_PASSWORD, write_config=WRITE_CONFIG, autosetup=True)
     else:
