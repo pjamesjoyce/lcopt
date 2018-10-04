@@ -101,7 +101,7 @@ class LcoptModel(object):
 
     """
 
-    def __init__(self, name=hex(random.getrandbits(128))[2:-1], load=None, useForwast=False, ecoinvent_version=None, ecoinvent_system_model=None, ei_username = None, ei_password = None, write_config=None):
+    def __init__(self, name=hex(random.getrandbits(128))[2:-1], load=None, useForwast=False, ecoinvent_version=None, ecoinvent_system_model=None, ei_username = None, ei_password = None, write_config=None, autosetup=True):
         super(LcoptModel, self).__init__()
 
         # name the instance
@@ -173,8 +173,11 @@ class LcoptModel(object):
             self.load(load)
 
         # check if lcopt is set up, and if not, set it up
-        self.lcopt_setup(ei_username=ei_username, ei_password=ei_password, write_config=write_config,
-                         ecoinvent_version=self.ecoinvent_version, ecoinvent_system_model = self.ecoinvent_system_model)
+        is_setup = self.lcopt_setup(ei_username=ei_username, ei_password=ei_password, write_config=write_config,
+                         ecoinvent_version=self.ecoinvent_version, ecoinvent_system_model = self.ecoinvent_system_model, autosetup=autosetup)
+
+        if not is_setup:
+            warnings.warn('lcopt autosetup did not run')
 
         asset_path = storage.search_index_dir #os.path.join(os.path.dirname(os.path.realpath(__file__)), 'assets')
         ecoinventPath = os.path.join(asset_path, self.ecoinventFilename)
@@ -202,7 +205,10 @@ class LcoptModel(object):
 
         self.parameter_scan()
 
-    def lcopt_setup(self, ei_username, ei_password, write_config, ecoinvent_version, ecoinvent_system_model):
+    def lcopt_setup(self, ei_username, ei_password, write_config, ecoinvent_version, ecoinvent_system_model, autosetup):
+        if not autosetup:
+            return False
+
         if storage.project_type == 'single':
 
             if self.useForwast:
@@ -233,6 +239,8 @@ class LcoptModel(object):
 
         else:
             forwast_autosetup()
+
+        return True
 
     def rename(self, newname):
         """change the name of the model (i.e. what the .lcopt file will be saved as)"""
