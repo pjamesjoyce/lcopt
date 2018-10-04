@@ -32,9 +32,9 @@ IS_TRAVIS = 'TRAVIS' in os.environ
 IS_APPVEYOR = 'APPVEYOR' in os.environ
 
 if IS_TRAVIS:
-    IS_PR = os.environ['TRAVIS_PULL_REQUEST'] != False
+    IS_PR = os.environ.get('TRAVIS_PULL_REQUEST', False) != False
 elif IS_APPVEYOR:
-    IS_PR = os.environ['APPVEYOR_PULL_REQUEST_NUMBER'] != False
+    IS_PR = os.environ.get('APPVEYOR_PULL_REQUEST_NUMBER', False) != False
 else:
     IS_PR = False
 
