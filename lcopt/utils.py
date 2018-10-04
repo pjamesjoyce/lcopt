@@ -35,7 +35,7 @@ from .constants import (DEFAULT_PROJECT_STEM,
 
 
 
-def lcopt_bw2_setup(ecospold_path, overwrite=False, db_name=DEFAULT_DB_NAME):  # pragma: no cover
+def lcopt_bw2_setup(ecospold_path, overwrite=False, db_name=None):  # pragma: no cover
 
     """
     Utility function to set up brightway2 to work correctly with lcopt.
@@ -54,6 +54,12 @@ def lcopt_bw2_setup(ecospold_path, overwrite=False, db_name=DEFAULT_DB_NAME):  #
 
     To overwrite an existing version, set overwrite=True
     """
+    default_ei_name = "Ecoinvent3_3_cutoff"
+
+    if db_name is None:
+        
+        db_name = DEFAULT_PROJECT_STEM + default_ei_name
+
     if db_name in bw2.projects:
         if overwrite:                                           
             bw2.projects.delete_project(name=db_name, delete_dir=True)
@@ -63,7 +69,7 @@ def lcopt_bw2_setup(ecospold_path, overwrite=False, db_name=DEFAULT_DB_NAME):  #
 
     bw2.projects.set_current(db_name)
     bw2.bw2setup()
-    ei = bw2.SingleOutputEcospold2Importer(ecospold_path, "Ecoinvent3_3_cutoff")
+    ei = bw2.SingleOutputEcospold2Importer(fix_mac_path_escapes(ecospold_path), default_ei_name)
     ei.apply_strategies()
     ei.statistics()
     ei.write_database()
@@ -94,7 +100,7 @@ def check_for_config():
     return config
 
 def write_search_index(project_name, ei_name, overwrite=False):
-    si_fp = os.path.join(storage.search_index_dir, '{}.pickle'.format(ei_name)) #os.path.join(ASSET_PATH, '{}.pickle'.format(ei_name))
+    si_fp = fix_mac_path_escapes(os.path.join(storage.search_index_dir, '{}.pickle'.format(ei_name))) #os.path.join(ASSET_PATH, '{}.pickle'.format(ei_name))
 
     if not os.path.isfile(si_fp) or overwrite:
 
@@ -373,3 +379,7 @@ def find_port():
             return port
         else:
             print('port {} is in use, checking {}'.format(port, port + 1))
+
+def fix_mac_path_escapes(string):
+    return string.replace(r"\ ", " ")
+

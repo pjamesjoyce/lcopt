@@ -14,7 +14,7 @@ from lcopt.analysis import Bw2Analysis
 from lcopt.data_store import storage
 from .export_disclosure import export_disclosure
 
-from .utils import check_for_config, lcopt_bw2_autosetup, bw2_project_exists, write_search_index, upgrade_old_default, lcopt_bw2_forwast_setup, forwast_autosetup
+from .utils import check_for_config, lcopt_bw2_autosetup, bw2_project_exists, write_search_index, upgrade_old_default, lcopt_bw2_forwast_setup, forwast_autosetup, fix_mac_path_escapes
 from .constants import DEFAULT_PROJECT_STEM, FORWAST_PROJECT_NAME, DEFAULT_ECOINVENT_VERSION, DEFAULT_ECOINVENT_SYSTEM_MODEL, LEGACY_SAVE_OPTION
 # This is a copy straight from bw2data.query, extracted so as not to cause a dependency.
 #from lcopt.bw2query import Query, Dictionaries, Filter
@@ -179,7 +179,7 @@ class LcoptModel(object):
         if not is_setup:
             warnings.warn('lcopt autosetup did not run')
 
-        asset_path = storage.search_index_dir #os.path.join(os.path.dirname(os.path.realpath(__file__)), 'assets')
+        asset_path = fix_mac_path_escapes(storage.search_index_dir) #os.path.join(os.path.dirname(os.path.realpath(__file__)), 'assets')
         ecoinventPath = os.path.join(asset_path, self.ecoinventFilename)
         biospherePath = os.path.join(asset_path, self.biosphereFilename)
         forwastPath = os.path.join(asset_path, self.forwastFilename)
@@ -262,6 +262,9 @@ class LcoptModel(object):
                 storage.model_dir,
                 '{}.lcopt'.format(self.name)
             )
+        
+        model_path = fix_mac_path_escapes(model_path)
+
         with open(model_path, 'wb') as model_file:
             pickle.dump(self, model_file)
 
@@ -272,7 +275,7 @@ class LcoptModel(object):
         try:
             savedInstance = pickle.load(open("{}".format(filename), "rb"))
         except FileNotFoundError:
-            savedInstance = pickle.load(open(os.path.join(storage.model_dir, "{}".format(filename)), "rb"))
+            savedInstance = pickle.load(open(fix_mac_path_escapes(os.path.join(storage.model_dir, "{}".format(filename))), "rb"))
         
         attributes = ['name',
                       'database',
