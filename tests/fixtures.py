@@ -3,8 +3,10 @@ from lcopt import LcoptModel
 from lcopt.interact import FlaskSandbox
 from lcopt.utils import DEFAULT_DB_NAME, check_for_config
 from lcopt.data_store import storage
+from lcopt.constants import ASSET_PATH
 import os
 import brightway2 as bw2
+import shutil
 
 MODEL_NAME = 'modelName'
 
@@ -57,6 +59,11 @@ else:
     EI_USERNAME = None
     EI_PASSWORD = None
     WRITE_CONFIG = False
+
+# copy the default search index
+EI_SI = 'ecoinvent3_3.pickle'
+if not os.path.isfile(os.path.join(storage.search_index_dir, EI_SI)):
+    shutil.copy(os.path.join(ASSET_PATH, EI_SI), os.path.join(storage.search_index_dir, EI_SI))
 
 @pytest.fixture
 def blank_model():
