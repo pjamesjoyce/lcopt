@@ -74,7 +74,6 @@ def copy_ecoinvent_si():
 
 DID_COPY_SI = copy_ecoinvent_si()
 
-print(DID_COPY_SI)
 
 @pytest.fixture
 def blank_model():

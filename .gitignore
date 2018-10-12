@@ -12,6 +12,7 @@ generate
 dist
 build
 lcopt.egg-info/
+*.egg-info/
 /docs/_build/*
 .coverage*
 /tests/Test_model*
