@@ -82,7 +82,7 @@ def main():
 
         titleString = "Choose a model to open"
         filetypesList = [('Lcopt model files', '.lcopt')]
-        file_path = filedialog.askopenfilename(title=titleString, filetypes=filetypesList)
+        file_path = filedialog.askopenfilename(title=titleString, filetypes=filetypesList, initialdir = storage.model_dir)
         print (file_path)
 
         if file_path:
