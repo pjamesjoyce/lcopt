@@ -195,7 +195,7 @@ class FlaskSandbox():
                         else:
                             suffix = ""
                             p_type = 'intermediate'
-                        
+                        #print({'sourceID': p_from + suffix, 'targetID': p_to, 'type': p_type, 'amount': 1, 'label': label_map[p_from]})
                         self.links.append({'sourceID': p_from + suffix, 'targetID': p_to, 'type': p_type, 'amount': 1, 'label': label_map[p_from]})
                     
         #add extra nodes

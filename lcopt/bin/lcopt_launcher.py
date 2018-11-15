@@ -128,7 +128,10 @@ def main():
     icon = os.path.join(asset_path, 'lcopt_icon.ico')
     root = Tk()
     root.title("LCOPT Launcher")
-    root.iconbitmap(icon)
+    try:
+        root.iconbitmap(icon)
+    except:
+        pass
     
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()

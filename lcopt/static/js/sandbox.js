@@ -189,6 +189,7 @@ var jsPlumbsetup = function (nodes, links,linklabels, outputlabels) {
 
     ////console.log(links)
     // This function creates all of the links
+
     for (i=0;i<links.length;i++){
 
               var this_source = links[i]['sourceID'].split(' ').join('_'),
@@ -196,6 +197,7 @@ var jsPlumbsetup = function (nodes, links,linklabels, outputlabels) {
                   this_type = links[i]['type'];
 
               console.log(this_type)
+              console.log(links[i])
 
               //console.log('from ' + this_source)
               //console.log('to ' + this_target)
