@@ -168,6 +168,7 @@ class LcoptModel(object):
 
         # set the save option, this defaults to the config value but should be overwritten on load for existing models
         self.save_option = storage.save_option
+        self.save_path = None
         
         if load is not None:
             self.load(load)
@@ -249,10 +250,18 @@ class LcoptModel(object):
     #def saveAs(self, filename):
     #    """save the instance as a pickle"""
     #    pickle.dump(self, open("{}.pickle".format(filename), "wb"))
-    
+
+    def set_save_path(self, path):
+        self.save_path = path
+
     def save(self):
         """save the instance as a .lcopt file"""
-        if self.save_option == 'curdir':
+
+        if self.save_path is not None:
+            if self.save_path[-5:] == 'lcopt':
+                print("saving to a specified path")
+                model_path = self.save_path
+        elif self.save_option == 'curdir':
             model_path = os.path.join(
                 os.getcwd(),
                 '{}.lcopt'.format(self.name)
@@ -264,9 +273,11 @@ class LcoptModel(object):
             )
         
         model_path = fix_mac_path_escapes(model_path)
-
+        print(model_path)
         with open(model_path, 'wb') as model_file:
             pickle.dump(self, model_file)
+
+        assert os.path.exists(model_path)
 
     def load(self, filename):
         """load data from a saved .lcopt file"""
@@ -306,6 +317,7 @@ class LcoptModel(object):
                       'allow_allocation',
                       'ecoinvent_version',
                       'ecoinvent_system_model',
+                      'save_path'
                       ]
 
         for attr in attributes:

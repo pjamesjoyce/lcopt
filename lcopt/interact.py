@@ -851,6 +851,12 @@ class FlaskSandbox():
             self.get_sandbox_variables()
                         
             args = {'model': {'name': name}, 'nodes': self.nodes, 'links': self.links, 'outputlabels': self.outputlabels}
+
+            isQt = os.environ.get("LCOPTQT", False)
+            print("interact says Qt is {}".format(isQt))
+            args['isQt'] = isQt
+
+
             return render_template('sandbox.html', args=args)
         
         @app.route('/process_post', methods=['POST'])
@@ -1100,10 +1106,9 @@ class FlaskSandbox():
 
         @app.route('/settings')
         def model_settings():
-            args = {}
-            args['current_methods'] = json.dumps(self.modelInstance.analysis_settings['methods'])
-            args['current_amount'] = self.modelInstance.analysis_settings['amount']
-            args['allow_allocation'] = self.modelInstance.allow_allocation
+            args = {'current_methods': json.dumps(self.modelInstance.analysis_settings['methods']),
+                    'current_amount': self.modelInstance.analysis_settings['amount'],
+                    'allow_allocation': self.modelInstance.allow_allocation}
             return render_template('settings.html', args=args)
 
         @app.errorhandler(404)
@@ -1170,7 +1175,18 @@ class FlaskSandbox():
             port = find_port()
 
         if open_browser:
+            # try and default to chrome on windows
+            if os.name == "nt":
+                chromedir = "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s"
+
+            try:
+                browser = webbrowser.get(chromedir)
+            except:
+                browser = webbrowser.get()
+
             url = 'http://127.0.0.1:{}/'.format(port)
-            webbrowser.open_new(url)
+
+            if not browser.open_new(url):
+                webbrowser.open_new(url)
 
         app.run(port=port)

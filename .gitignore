@@ -25,3 +25,4 @@ lcopt.egg-info/
 __pycache__/
 tests/__pycache__/
 video_transcript.txt
+.idea/

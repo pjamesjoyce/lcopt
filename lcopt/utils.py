@@ -31,7 +31,9 @@ from .constants import (DEFAULT_PROJECT_STEM,
                         FORWAST_URL,
                         ASSET_PATH,
                         DEFAULT_CONFIG,
-                        DEFAULT_SINGLE_PROJECT)
+                        DEFAULT_SINGLE_PROJECT,
+                        ECOINVENT_EXAMPLE_VERSION)
+from .settings import settings
 
 
 
@@ -383,3 +385,67 @@ def find_port():
 def fix_mac_path_escapes(string):
     return string.replace(r"\ ", " ")
 
+def check_databases():
+
+    example_ecoinvent_version, example_ecoinvent_system_model = ECOINVENT_EXAMPLE_VERSION
+
+    example_ecoinvent_present = False
+    default_ecoinvent_present = False
+    forwast_present = False
+    ecoinvent_list = []
+
+    example_ei_name = "Ecoinvent{}_{}_{}".format(*example_ecoinvent_version.split('.'), example_ecoinvent_system_model)
+    example_formatted = "{}.{} {}".format(*example_ei_name[9:].split("_"))
+
+    config_file = check_for_config()
+    # If, for some reason, there's no config file, write the defaults
+    if config_file is None:
+        config_file = DEFAULT_CONFIG
+        with open(storage.config_file, "w") as cfg:
+            yaml.dump(config_file, cfg, default_flow_style=False)
+
+    store_option = storage.project_type
+
+    default_ei_name = "Ecoinvent{}_{}_{}".format(*settings.ecoinvent.version.split('.'), settings.ecoinvent.system_model)
+    default_formatted = "{}.{} {}".format(*default_ei_name[9:].split("_"))
+
+    # Check if there's already a project set up that matches the current configuration
+
+    if store_option == 'single':
+
+        project_name = storage.single_project_name
+
+        if bw2_project_exists(project_name):
+            bw2.projects.set_current(project_name)
+            if example_ei_name in bw2.databases:
+                example_ecoinvent_present = True
+            if default_ei_name in bw2.databases:
+                default_ecoinvent_present = True
+            if 'forwast' in bw2.databases:
+                forwast_present = True
+
+            ecoinvent_list = ["{}.{} {}".format(*x[9:].split("_"))
+                              for x in bw2.databases
+                              if x.startswith("Ecoinvent")]
+
+    else:  # default to 'unique'
+        example_project_name = DEFAULT_PROJECT_STEM + example_ei_name
+        default_project_name = DEFAULT_PROJECT_STEM + default_ei_name
+
+        example_ecoinvent_present = bw2_project_exists(example_project_name)
+        default_ecoinvent_present = bw2_project_exists(default_project_name)
+
+        forwast_present = bw2_project_exists(FORWAST_PROJECT_NAME)
+
+        ecoinvent_list = ["{}.{} {}".format(*x.name[21:].split("_"))
+                          for x in bw2.projects
+                          if x.name.startswith("LCOPT_Setup_Ecoinvent")]
+
+    return {'ecoinvent': {
+            'default': {'name': default_formatted, 'present': default_ecoinvent_present},
+            'example': {'name': example_formatted, 'present': example_ecoinvent_present},
+            'list': ecoinvent_list
+            },
+            'forwast': {
+                'default': forwast_present}
+            }

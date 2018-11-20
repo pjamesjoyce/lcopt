@@ -11,6 +11,7 @@ ASSET_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'assets')
 BIOSPHERE_SI = 'biosphere3.pickle'
 FORWAST_SI = 'forwast.pickle'
 ECOINVENT_EXAMPLE = 'ecoinvent_example.lcopt'
+ECOINVENT_EXAMPLE_VERSION = ('3.3', 'cutoff')
 FORWAST_EXAMPLE = 'forwast_example.lcopt'
 DEFAULT_ECOINVENT_VERSION = '3.3'
 DEFAULT_ECOINVENT_SYSTEM_MODEL = 'cutoff'

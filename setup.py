@@ -100,7 +100,8 @@ setup(
             'lcopt-launcher = lcopt.bin.lcopt_launcher:main',
             'lcopt-bw2-setup = lcopt.bin.lcopt_bw2_setup:main',
             'lcopt-bw2-setup-forwast = lcopt.bin.lcopt_bw2_setup_forwast:main',
-            'lcopt-settings = lcopt.bin.lcopt_settings:main',  
+            'lcopt-settings = lcopt.bin.lcopt_settings:main',
+            'lcopt-gui = lcopt.bin.lcopt_Qt_gui:main'
         ]
     },
     #install_requires=[
