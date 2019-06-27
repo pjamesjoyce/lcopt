@@ -1,3 +1,6 @@
+| NOTE: [@pjamesjoyce](https://github.com/pjamesjoyce) is on parental leave from February until mid October 2019 so development is paused and issues might take longer to respond to than normal! |
+| --- |
+
 # lcopt-dev
 Development branch for the interactive tool for creating fully parameterised Life Cycle Assessment (LCA) foreground models (lcopt)
 
