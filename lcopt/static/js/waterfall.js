@@ -60,9 +60,9 @@ function postOrder(d, total_score, cutoff, m){
     if(splice_dict[n.data.activity]){
       for(j in splice_dict[n.data.activity]){
         remove_index = splice_dict[n.data.activity][j];
-        //console.log("removing child " + remove_index + " of " + n.data.activity)
-        //console.log(n.children[remove_index].data.activity)
-        //console.log(n.children[remove_index])
+        console.log("removing child " + remove_index + " of " + n.data.activity)
+        console.log(n.children[remove_index].data.activity)
+        console.log(n.children[remove_index])
         n.children.splice(remove_index,1);
 
         if (n.children.length == 0){
