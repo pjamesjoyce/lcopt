@@ -89,7 +89,7 @@ def create_win_shortcuts():
 
 setup(
     name='lcopt-dev',
-    version="0.4.2",
+    version="0.4.3_dev",
     packages=packages,
     author="P. James Joyce",
     author_email="pjamesjoyce@gmail.com",

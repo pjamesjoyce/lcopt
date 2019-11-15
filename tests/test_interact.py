@@ -494,9 +494,9 @@ def test_analysis(flask_client, fully_formed_model):
 
 def test_alter_methods(flask_client, fully_formed_model):
     
-    method_list = [('ReCiPe Midpoint (H)', 'climate change', 'GWP100'),
-                    ('ReCiPe Midpoint (H)', 'human toxicity', 'HTPinf'),
-                    ('ReCiPe Midpoint (H)', 'particulate matter formation', 'PMFP')]
+    method_list = [('ReCiPe Midpoint (H) V1.13', 'climate change', 'GWP100'),
+                    ('ReCiPe Midpoint (H) V1.13', 'human toxicity', 'HTPinf'),
+                    ('ReCiPe Midpoint (H) V1.13', 'particulate matter formation', 'PMFP')]
 
     method_json = json.dumps(method_list)
 

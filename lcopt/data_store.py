@@ -74,7 +74,7 @@ class LcoptStorage():
 
     def load_config(self):
         with open(self.config_file, 'r') as cf:
-            config = yaml.load(cf)
+            config = yaml.safe_load(cf)
         if config is None:
             self.write_default_config()
             config = DEFAULT_CONFIG
@@ -82,7 +82,7 @@ class LcoptStorage():
 
     def refresh(self):
         with open(self.config_file, 'r') as cf:
-            self.config = yaml.load(cf)
+            self.config = yaml.safe_load(cf)
 
     def write_default_config(self):
         self.write_config(DEFAULT_CONFIG)
