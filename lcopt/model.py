@@ -133,7 +133,7 @@ class LcoptModel(object):
 
         # default settings for bw2 analysis
         self.analysis_settings = {'amount': 1, 
-                                  'methods': [('IPCC 2013', 'climate change', 'GWP 100a'), ('USEtox', 'human toxicity', 'total')], 
+                                  'methods': [('IPCC 2013', 'climate change', 'GWP 100a')], 
                                   'top_processes': 10, 
                                   'gt_cutoff': 0.01, 
                                   'pie_cutoff': 0.05
