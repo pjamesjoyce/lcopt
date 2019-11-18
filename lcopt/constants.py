@@ -17,6 +17,7 @@ DEFAULT_ECOINVENT_SYSTEM_MODEL = 'cutoff'
 DEFAULT_SAVE_OPTION = 'appdir'
 DEFAULT_PROJECT_TYPE = 'unique'
 LEGACY_SAVE_OPTION = 'curdir'
+DEFAULT_METHODS = [('IPCC 2013', 'climate change', 'GWP 100a')]
 
 DEFAULT_CONFIG = {
     'ecoinvent':{

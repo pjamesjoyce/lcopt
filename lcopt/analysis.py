@@ -1,5 +1,5 @@
 from lcopt.bw2_export import Bw2Exporter
-from .constants import DEFAULT_PROJECT_STEM, FORWAST_PROJECT_NAME, DEFAULT_SINGLE_PROJECT
+from .constants import DEFAULT_PROJECT_STEM, FORWAST_PROJECT_NAME, DEFAULT_SINGLE_PROJECT, DEFAULT_METHODS
 from .mass_balance import recurse_mass
 from .multi_tagged import multi_traverse_tagged_databases, get_cum_impact, drop_pass_through_levels
 from .data_store import storage
@@ -84,7 +84,7 @@ class Bw2Analysis():
                     e.save()
 
     
-    def run_analyses(self, demand_item, demand_item_code, amount=1, methods=[('IPCC 2013', 'climate change', 'GWP 100a')], pie_cutoff=0.05, **kwargs):
+    def run_analyses(self, demand_item, demand_item_code, amount=1, methods=DEFAULT_METHODS, pie_cutoff=0.05, **kwargs):
         
         ready = self.setup_bw2()
         name = self.bw2_database_name

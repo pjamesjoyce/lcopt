@@ -15,7 +15,7 @@ from lcopt.data_store import storage
 from .export_disclosure import export_disclosure
 
 from .utils import check_for_config, lcopt_bw2_autosetup, bw2_project_exists, write_search_index, upgrade_old_default, lcopt_bw2_forwast_setup, forwast_autosetup, fix_mac_path_escapes
-from .constants import DEFAULT_PROJECT_STEM, FORWAST_PROJECT_NAME, DEFAULT_ECOINVENT_VERSION, DEFAULT_ECOINVENT_SYSTEM_MODEL, LEGACY_SAVE_OPTION
+from .constants import DEFAULT_PROJECT_STEM, FORWAST_PROJECT_NAME, DEFAULT_ECOINVENT_VERSION, DEFAULT_ECOINVENT_SYSTEM_MODEL, LEGACY_SAVE_OPTION, DEFAULT_METHODS
 # This is a copy straight from bw2data.query, extracted so as not to cause a dependency.
 #from lcopt.bw2query import Query, Dictionaries, Filter
 from bw2data.query import Query, Dictionaries, Filter
@@ -155,7 +155,7 @@ class LcoptModel(object):
 
         # default settings for bw2 analysis
         self.analysis_settings = {'amount': 1, 
-                                  'methods': [('IPCC 2013', 'climate change', 'GWP 100a')], 
+                                  'methods': DEFAULT_METHODS,
                                   #'top_processes': 10, 
                                   #'gt_cutoff': 0.01, 
                                   'pie_cutoff': 0.05
