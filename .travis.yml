@@ -40,6 +40,11 @@ script: cd tests; pytest --cov=lcopt
 after_success: 
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
       coveralls;
+      echo "$TRAVIS_BRANCH"
+      echo "$TRAVIS_PULL_REQUEST"
+      echo $TRAVIS_BRANCH
+      echo $TRAVIS_PULL_REQUEST
+
       if [ "$TRAVIS_BRANCH" = "development" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then 
         conda install anaconda-client;
         cp /home/travis/miniconda/conda-bld/noarch/*.tar.bz2 .;

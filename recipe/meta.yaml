@@ -1,5 +1,5 @@
 {% set name = "lcopt" %}
-{% set version = "0.4.2" %}
+{% set version = "0.4.3" %}
 {% set hash_type = "md5" %}
 {% set hash_value = "8655e7ab8b0b8a7ee627f555a90c3172" %}
 
