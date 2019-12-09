@@ -189,8 +189,7 @@ class Bw2Analysis():
                             lca.lcia()
                         else:
                             lca.switch_method(m)
-                            lca.redo_lcia(
-                            )
+                            lca.redo_lcia(fu)
                         scores.append(lca.score)
 
                     # method units at list

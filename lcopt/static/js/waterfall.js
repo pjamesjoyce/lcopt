@@ -55,7 +55,7 @@ function postOrder(d, total_score, cutoff, m){
   for (i in splice_dict){
     splice_dict[i].sort(sortNumber).reverse();
   }
-  //console.log(splice_dict);
+  console.log(splice_dict);
   d.eachAfter(function(n){
     if(splice_dict[n.data.activity]){
       for(j in splice_dict[n.data.activity]){
@@ -63,11 +63,17 @@ function postOrder(d, total_score, cutoff, m){
         //console.log("removing child " + remove_index + " of " + n.data.activity)
         //console.log(n.children[remove_index].data.activity)
         //console.log(n.children[remove_index])
-        n.children.splice(remove_index,1);
 
-        if (n.children.length == 0){
-          //console.log('no children left')
-          n.children = null;
+        try {
+            n.children.splice(remove_index,1);
+
+            if (n.children.length == 0){
+              //console.log('no children left')
+              n.children = null;
+            }
+        }
+        catch(error) {
+          console.error(error);
         }
         //console.log(n.children);
       }

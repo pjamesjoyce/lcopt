@@ -1,5 +1,5 @@
 {% set name = "lcopt-dev" %}
-{% set version = "0.4.2.dev" %}
+{% set version = "0.4.3.dev" %}
 
 package:
   name: '{{ name|lower }}'
@@ -16,11 +16,23 @@ build:
     - lcopt-launcher = lcopt.bin.lcopt_launcher:main
     - lcopt-bw2-setup = lcopt.bin.lcopt_bw2_setup:main
     - lcopt-bw2-setup-forwast = lcopt.bin.lcopt_bw2_setup_forwast:main
+    - lcopt-settings = lcopt.bin.lcopt_settings:main
 
 requirements:
   build:
     - python
     - setuptools
+    - python
+    - bw2data >=3.4.2
+    - brightway2 >=2.1.2
+    - pandas
+    - pyyaml
+    - eidl
+    - flask
+    - pywin32 # [win]
+    - bw2io >=0.7.1
+    - numpy x.x
+    
   run:
     - python
     - bw2data >=3.4.2
@@ -31,6 +43,7 @@ requirements:
     - flask
     - pywin32 # [win]
     - bw2io >=0.7.1
+    - numpy x.x
 
 about:
   home: https://github.com/pjamesjoyce/lcopt/
