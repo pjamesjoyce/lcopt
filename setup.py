@@ -107,7 +107,7 @@ setup(
     #],
     include_package_data=True, 
     url="https://github.com/pjamesjoyce/lcopt/",
-    download_url="https://github.com/pjamesjoyce/lcopt/archive/0.4.2.tar.gz",
+    download_url="https://github.com/pjamesjoyce/lcopt/archive/0.4.3.tar.gz",
     long_description=open('README.md').read(),
     description='An interactive tool for creating fully parameterised Life Cycle Assessment (LCA) foreground models',
     keywords=['LCA', 'Life Cycle Assessment', 'Foreground system', 'Background system', 'Foreground model', 'Fully parameterised'],
